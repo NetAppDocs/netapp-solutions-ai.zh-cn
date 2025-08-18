@@ -1,0 +1,25 @@
+---
+sidebar: sidebar 
+permalink: data-analytics/kafka-ontap-overview.html 
+keywords: tr4941, 4941, introduction 
+summary: 本文档概述了使用分层存储基准测试套件对NetApp ONTAP上的 Confluent 平台进行的性能基准测试。 
+---
+= TR-4941：与NetApp ONTAP存储控制器融合
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+Karthikeyan Nagalingam、Joe Scott、 NetApp Rankesh Kumar、Confluence
+
+[role="lead"]
+为了使 Confluent 平台更具可扩展性和弹性，它必须能够非常快速地扩展和平衡工作负载。分层存储通过减少这种操作负担，使得在 Confluent 中存储大量数据变得易于管理。
+
+其基本思想是将数据存储与数据处理分开，这使得独立扩展变得更加容易。
+
+NetApp ONTAP数据管理软件搭载业界领先的创新技术，无论数据位于何处，都能为 Confluent 带来诸多优势。
+
+本文档概述了使用分层存储基准测试套件对NetApp ONTAP上的 Confluent 平台进行的性能基准测试。

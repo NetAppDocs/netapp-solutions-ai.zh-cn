@@ -1,0 +1,49 @@
+---
+sidebar: sidebar 
+permalink: data-analytics/hdcs-sh-use-case-dp-multicloud.html 
+keywords: iot, aws, nps, azure, analytics application 
+summary: 此用例与负责为客户的大数据分析数据提供多云连接的云服务合作伙伴相关。 
+---
+= 用例 4：数据保护和多云连接
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+此用例与负责为客户的大数据分析数据提供多云连接的云服务合作伙伴相关。
+
+
+
+== 场景
+
+在这种情况下，AWS 从不同来源接收的物联网数据存储在 NPS 的中心位置。  NPS 存储连接到位于 AWS 和 Azure 的 Spark/Hadoop 集群，使在多个云中运行的大数据分析应用程序能够访问相同的数据。
+
+
+
+== 要求和挑战
+
+此用例的主要要求和挑战包括：
+
+* 客户希望使用多个云对相同数据运行分析作业。
+* 必须通过不同的传感器和集线器从不同来源（例如本地和云端）接收数据。
+* 该解决方案必须高效且具有成本效益。
+* 主要挑战是构建一个经济高效的解决方案，在本地和不同云之间提供混合分析服务。
+
+
+
+
+== 解决方案
+
+此图说明了数据保护和多云连接解决方案。
+
+image:hdcs-sh-012.png["该图显示输入/输出对话框或表示书面内容"]
+
+如上图所示，来自传感器的数据通过 Kafka 流式传输并输入到 AWS Spark 集群中。数据存储在 NPS 中的 NFS 共享中，NPS 位于 Equinix 数据中心内的云提供商之外。由于NetApp NPS 分别通过 Direct Connect 和 Express Route 连接连接到 Amazon AWS 和 Microsoft Azure，因此客户可以从 Amazon 和 AWS 分析集群访问 NFS 数据。这种方法解决了跨多个超大规模器的云分析问题。
+
+因此，由于内部部署和 NPS 存储都运行ONTAP软件， SnapMirror可以将 NPS 数据镜像到内部部署集群中，从而提供跨内部部署和多个云的混合云分析。
+
+为了获得最佳性能， NetApp通常建议使用多个网络接口和直接连接/快速路由来访问云实例的数据。

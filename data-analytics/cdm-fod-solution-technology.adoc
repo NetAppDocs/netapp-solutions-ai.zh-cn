@@ -1,0 +1,38 @@
+---
+sidebar: sidebar 
+permalink: data-analytics/cdm-fod-solution-technology.html 
+keywords: use case, summary, cvo, cloud volumes ontap, ml, dl 
+summary: NFS 和 S3 双协议访问的一个潜在用例是在机器学习和数据科学领域。例如，一个数据科学家团队可能正在使用 AWS SageMaker 开展机器学习项目，这需要访问以 NFS 格式存储的数据。但是，可能还需要通过 S3 存储桶访问和共享数据，以便与其他团队成员协作或与使用 S3 的其他应用程序集成。 
+---
+= 解决方案技术
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+该解决方案采用以下技术：
+
+* AWS SageMaker 笔记本。为开发人员和数据科学家提供机器学习功能，以高效地创建、训练和部署高质量的 ML 模型。
+* * NetApp BlueXP。*支持在本地以及 AWS、Azure 和 Google Cloud 上发现、部署和操作存储。它提供数据保护，防止数据丢失、网络威胁和意外中断，并优化数据存储和基础设施。
+* * NetApp Cloud Volumes ONTAP。*在 AWS、Azure 和 Google Cloud 上提供具有 NFS、SMB/CIFS、iSCSI 和 S3 协议的企业级存储卷，让用户在访问和管理云中的数据时拥有更大的灵活性。
+
+
+NetApp Cloud Volumes ONTAP由BlueXP创建，用于存储 ML 数据。
+
+下图展示了该解决方案的技术组件。
+
+image:cdm-fod-001.png["该图显示了该解决方案的技术组件。"]
+
+
+
+== 用例摘要
+
+NFS 和 S3 双协议访问的一个潜在用例是在机器学习和数据科学领域。例如，一个数据科学家团队可能正在使用 AWS SageMaker 开展机器学习项目，这需要访问以 NFS 格式存储的数据。但是，可能还需要通过 S3 存储桶访问和共享数据，以便与其他团队成员协作或与使用 S3 的其他应用程序集成。
+
+通过利用NetApp Cloud Volumes ONTAP，团队可以将其数据存储在单个位置，并可通过 NFS 和 S3 协议访问。数据科学家可以直接从 AWS SageMaker 访问 NFS 格式的数据，而其他团队成员或应用程序可以通过 S3 存储桶访问相同的数据。
+
+这种方法可以轻松高效地访问和共享数据，而无需额外的软件或不同存储解决方案之间的数据迁移。它还允许团队成员之间更简化的工作流程和协作，从而更快、更有效地开发机器学习模型。

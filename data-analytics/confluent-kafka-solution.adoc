@@ -1,0 +1,48 @@
+---
+sidebar: sidebar 
+permalink: data-analytics/confluent-kafka-solution.html 
+keywords: solution, architecture, details, hardware, software 
+summary: 本节介绍 Confluent 认证所使用的硬件和软件。此信息适用于使用NetApp存储的 Kafka 部署。 
+---
+= 解决方案架构细节
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+本节介绍用于 Confluent 验证的硬件和软件。此信息适用于使用NetApp存储的 Confluent Platform 部署。下表涵盖了经过测试的解决方案架构和基本组件。
+
+|===
+| 解决方案组件 | 详细信息 
+
+
+| Confluent Kafka 版本 6.2  a| 
+* 三位动物园管理员
+* 五台经纪商服务器
+* 五款工具服务器
+* 一个 Grafana
+* 一个控制中心
+
+
+
+
+| Linux（Ubuntu 18.04） | 所有服务器 
+
+
+| NetApp StorageGRID用于分层存储  a| 
+* StorageGRID软件
+* 1 x SG1000（负载均衡器）
+* 4 个 SGF6024
+* 4 x 24 x 800 SSD
+* S3 协议
+* 4 x 100GbE（代理和StorageGRID实例之间的网络连接）
+
+
+
+
+| 15台富士通PRIMERGY RX2540服务器 | 每个配备：* 2 个 CPU，共 16 个物理核心 * Intel Xeon * 256GB 物理内存 * 100GbE 双端口 
+|===

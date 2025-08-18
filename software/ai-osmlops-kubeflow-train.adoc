@@ -1,0 +1,70 @@
+---
+sidebar: sidebar 
+permalink: software/ai-osmlops-kubeflow-train.html 
+keywords: Jupyter Notebook, Kubeflow Pipeline, NetApp DataOps Toolkit, MNIST, Image Recognition 
+summary: NetApp开源 MLOps - 示例工作流程 - 使用 Kubeflow 和NetApp DataOps 工具包训练图像识别模型 
+---
+= 示例工作流程 - 使用 Kubeflow 和NetApp DataOps 工具包训练图像识别模型
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+本节介绍使用 Kubeflow 和NetApp DataOps Toolkit 训练和部署用于图像识别的神经网络的步骤。这旨在作为示例来展示结合NetApp存储的训练作业。
+
+
+
+== 前提条件
+
+创建一个包含所需配置的 Dockerfile，用于 Kubeflow 管道内的训练和测试步骤。以下是 Dockerfile 的一个示例 -
+
+[source]
+----
+FROM pytorch/pytorch:latest
+RUN pip install torchvision numpy scikit-learn matplotlib tensorboard
+WORKDIR /app
+COPY . /app
+COPY train_mnist.py /app/train_mnist.py
+CMD ["python", "train_mnist.py"]
+----
+根据您的要求，安装运行程序所需的所有必需库和包。在训练机器学习模型之前，假设您已经有一个可运行的 Kubeflow 部署。
+
+
+
+== 使用 PyTorch 和 Kubeflow Pipelines 在 MNIST 数据上训练小型 NN
+
+我们使用在 MNIST 数据上训练的小型神经网络作为示例。 MNIST 数据集由 0-9 的手写数字图像组成。图像尺寸为 28x28 像素。该数据集分为 60,000 张训练图像和 10,000 张验证图像。本实验所采用的神经网络是一个2层前馈网络。训练是使用 Kubeflow Pipelines 执行的。请参阅文档 https://www.kubeflow.org/docs/components/pipelines/v1/introduction/["此处"^]了解更多信息。我们的 Kubeflow 管道包含了先决条件部分的 docker 镜像。
+
+image:kubeflow-pipeline.png["Kubeflow 管道运行可视化"]
+
+
+
+== 使用 Tensorboard 可视化结果
+
+一旦模型训练完成，我们就可以使用 Tensorboard 将结果可视化。 https://www.tensorflow.org/tensorboard["Tensorboard"^]作为 Kubeflow 仪表板上的一项功能提供。您可以为您的工作创建自定义张量板。下面的示例展示了训练准确度与时期数以及训练损失与时期数的关系图。
+
+image:tensorboard-graph.png["训练损失和准确率的 Tensorboard 图表"]
+
+
+
+== 使用 Katib 进行超参数实验
+
+https://www.kubeflow.org/docs/components/katib/hyperparameter/["卡提布"^]是 Kubeflow 中的一个工具，可用于试验模型超参数。要创建实验，首先要定义所需的指标/目标。这通常是测试准确度。一旦定义了指标，选择您想要使用的超参数（优化器/学习率/层数）。 Katib 使用用户定义的值进行超参数扫描，以找到满足所需指标的最佳参数组合。您可以在 UI 的每个部分中定义这些参数。或者，您可以定义一个具有必要规范的 *YAML* 文件。以下是 Katib 实验的说明 -
+
+image:katib-experiment-001.png["带有超参数的 Katib 实验仪表板"]
+
+image:katib-experiment-002.png["试运行成功"]
+
+
+
+== 使用NetApp快照保存数据以实现可追溯性
+
+在模型训练期间，我们可能希望保存训练数据集的快照以便于追溯。为此，我们可以向管道添加快照步骤，如下所示。要创建快照，我们可以使用 https://github.com/NetApp/netapp-dataops-toolkit/tree/main/netapp_dataops_k8s["适用于 Kubernetes 的NetApp DataOps 工具包"^]。
+
+image:kubeflow-snapshot.png["在 Kubeflow 中构建快照管道的代码"]
+
+请参阅 https://github.com/NetApp/netapp-dataops-toolkit/tree/main/netapp_dataops_k8s/Examples/Kubeflow["适用于 Kubeflow 的NetApp DataOps Toolkit 示例"^]了解更多信息。

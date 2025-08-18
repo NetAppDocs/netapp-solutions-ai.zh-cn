@@ -1,0 +1,19 @@
+---
+sidebar: sidebar 
+permalink: infra/ai-lenovo-train-plan.html 
+keywords: test plan, validation, image recognition training, processes 
+summary: 在本次验证中，我们按照 MLPerf v2.0 的规定执行了图像识别训练。具体来说，我们使用 ImageNet 数据集训练了 ResNet v2.0 模型。主要指标是达到所需精度的时间。我们还报告了每秒图像数的训练带宽，以便更好地判断扩展效率。 
+---
+= 测试计划
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+在本次验证中，我们按照 MLPerf v2.0 的规定执行了图像识别训练。具体来说，我们使用 ImageNet 数据集训练 ResNet v2.0 模型，直到达到 76.1% 的准确率。主要指标是达到所需精度的时间。我们还报告了每秒图像数的训练带宽，以便更好地判断扩展效率。
+
+主要测试用例评估同时运行的多个独立训练过程（每个节点一个）。这模拟了主要用例，即多个数据科学家使用的共享系统。第二个测试用例评估了横向扩展效率。

@@ -1,0 +1,26 @@
+---
+sidebar: sidebar 
+permalink: data-analytics/stgr-splunkss-solution-benefits.html 
+keywords: benefits, performance, multi-site, scalability, capacity, availability, cache 
+summary: 该解决方案允许添加计算、热存储或 S3 资源，以满足单站点和多站点部署中用户数量或摄取率不断增长的需求。 
+---
+= 此解决方案的优势
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+该解决方案允许添加计算、热存储或 S3 资源，以满足单站点和多站点部署中用户数量或摄取率不断增长的需求。
+
+* *表现。*  Splunk SmartStore 和NetApp StorageGRID的结合使用对象存储在热存储桶和温存储桶之间实现数据的快速迁移。  StorageGRID通过为大型对象工作负载提供快速性能来加速迁移过程。
+* *多站点就绪。*  StorageGRID分布式架构允许 Splunk SmartStore 通过单个全局命名空间扩展跨单个和多个站点的部署，无论数据位于何处，都可以从任何站点访问数据。
+* *提高了可扩展性。*独立于计算资源扩展存储资源，以满足 Splunk 环境中不断变化的需求，从而提供更好的 TCO。
+* *容量。*使用StorageGRID将单个命名空间扩展到 560PB 以上，满足 Splunk 部署中快速增长的容量。
+* *数据可用性。*使用元数据驱动的策略来优化数据可用性、性能、地理分布、保留、保护和存储成本，这些策略可以随着数据的业务价值的发展而动态调整。
+
+
+使用 SmartStore 缓存提高性能，它是索引器的一个组件，用于处理本地（热）和远程（温）存储之间的存储桶副本传输。此解决方案的 Splunk 规模基于 https://docs.splunk.com/Documentation/Splunk/8.0.5/Capacity/Summaryofperformancerecommendations["Splunk 提供的指南"^]。该解决方案允许添加计算、热存储或 S3 资源，以满足单站点和多站点部署中用户数量或摄取率不断增长的需求。

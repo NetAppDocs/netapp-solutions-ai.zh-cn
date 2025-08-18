@@ -1,0 +1,73 @@
+---
+sidebar: sidebar 
+permalink: software/ai-hybrid-ddlnexus-vols.html 
+keywords: NetApp AI, AI, Artificial Intelligence, ML, Machine Learning, NVIDIA, Hybrid, Hybrid Cloud, Hybrid Multicloud, Cloud, AWS, Amazon, Amazon Web Services, FSx ONTAP, FSx, NetApp ONTAP, FlexCache, SnapMirror, BlueXP 
+summary: Domino Data Lab 和NetApp的混合多云 MLOps - 将现有NetApp卷暴露给 Domino 
+---
+= 将现有NetApp卷公开给 Domino
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+本节介绍将现有NetApp ONTAP NFS 卷公开给 Domino MLOps 平台所需执行的任务。这些相同的步骤适用于本地和 AWS。
+
+
+
+== 为什么要将NetApp ONTAP卷公开给 Domino？
+
+将NetApp卷与 Domino 结合使用可带来以下好处：
+
+* 您可以利用NetApp ONTAP 的横向扩展功能针对极大数据集执行工作负载。
+* 您可以在多个计算节点上执行工作负载，而无需将数据复制到各个节点。
+* 您可以利用 NetApp 的混合多云数据移动和同步功能来跨多个数据中心和/或云访问您的数据。
+* 您希望能够快速轻松地在不同的数据中心或云中创建数据缓存。
+
+
+
+
+== 公开未由Trident配置的现有 NFS 卷
+
+如果您现有的NetApp ONTAP NFS 卷不是由Trident配置的，请按照本小节中概述的步骤进行操作。
+
+
+
+=== 在 Kubernetes 中创建 PV 和 PVC
+
+
+NOTE: 对于本地卷，在本地 Kubernetes 集群中创建 PV 和 PVC。对于Amazon FSx ONTAP卷，在 Amazon EKS 中创建 PV 和 PVC。
+
+首先，您必须在 Kubernetes 集群中创建持久卷 (PV) 和持久卷声明 (PVC)。要创建 PV 和 PVC，请使用link:https://docs.dominodatalab.com/en/latest/admin_guide/4cdae9/set-up-kubernetes-pv-and-pvc/#_nfs_pvpvc_example["NFS PV/PVC 示例"]从 Domino 管理指南中更新值以反映您的环境。确保为 `namespace`， `nfs.path` ， 和 `nfs.server`字段。此外，我们建议为您的 PV 和 PVC 提供唯一的名称，以代表存储在相应ONTAP NFS 卷上的数据的性质。例如，如果卷包含制造缺陷的图像，您可以将 PV 命名为 `pv-mfg-defect-images`以及 PVC， `pvc-mfg-defect-images` 。
+
+
+
+=== 在 Domino 中注册外部数据卷
+
+接下来，您必须在 Domino 中注册一个外部数据卷。要注册外部数据卷，请参阅link:https://docs.dominodatalab.com/en/latest/admin_guide/9c3564/register-external-data-volumes/["指示"]在 Domino 管理指南中。注册卷时，请确保从“卷类型”下拉菜单中选择“NFS”。选择“NFS”后，您应该会在“可用卷”列表中看到您的 PVC。
+
+image:ddlnexus-003.png["该图显示输入/输出对话框或表示书面内容"]
+
+
+
+== 公开由Trident提供的现有卷
+
+如果您现有的卷是由Trident配置的，请按照本小节中概述的步骤进行操作。
+
+
+
+=== 编辑现有 PVC
+
+如果您的卷是由Trident配置的，那么您已经拥有与您的卷相对应的持久卷声明 (PVC)。为了将此卷公开给 Domino，您必须编辑 PVC 并将以下标签添加到 `metadata.labels`场地：
+
+....
+"dominodatalab.com/external-data-volume": "Generic"
+....
+
+
+=== 在 Domino 中注册外部数据卷
+
+接下来，您必须在 Domino 中注册一个外部数据卷。要注册外部数据卷，请参阅link:https://docs.dominodatalab.com/en/latest/admin_guide/9c3564/register-external-data-volumes/["指示"]在 Domino 管理指南中。注册卷时，请务必从“卷类型”下拉菜单中选择“通用”。选择“通用”后，您应该会在“可用卷”列表中看到您的 PVC。

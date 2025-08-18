@@ -1,0 +1,27 @@
+---
+sidebar: sidebar 
+permalink: infra/ai-lenovo-train-results.html 
+keywords: test results, data, 
+summary: 本节总结了此解决方案的测试结果。 
+---
+= 测试结果
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+下表总结了针对该解决方案执行的所有测试的结果。
+
+|===
+| 测试描述 | 结果摘要 
+
+
+| 图像识别训练：多个并发作业 | 高效的性能。即使集群已被充分利用，所有作业仍能全速运行。  NetApp存储系统提供了与本地 SSD 存储相当的训练性能，同时支持服务器之间轻松共享数据。 
+
+
+| 图像识别训练：横向扩展 | 最多四个节点效率极高。此时，横向扩展的效率较低，但仍然可行。使用更高速的计算网络可以提高可扩展性。  NetApp存储系统提供了与本地 SSD 存储相当的训练性能，同时支持服务器之间轻松共享数据。 
+|===

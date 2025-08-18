@@ -1,0 +1,68 @@
+---
+sidebar: sidebar 
+permalink: vector-db/ai-vdb-conclusion.html 
+keywords: vector database, conclusion 
+summary: 结论 - NetApp 的矢量数据库解决方案 
+---
+= 结束语
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+本节总结了NetApp的矢量数据库解决方案。
+
+
+
+== 结束语
+
+总而言之，本文档全面概述了在NetApp存储解决方案上部署和管理矢量数据库（例如 Milvus 和 pgvector）。我们讨论了利用NetApp ONTAP和StorageGRID对象存储的基础设施指南，并通过文件和对象存储验证了 AWS FSx ONTAP中的 Milvus 数据库。
+
+我们探索了 NetApp 的文件对象二元性，证明了它不仅适用于矢量数据库中的数据，也适用于其他应用程序。我们还重点介绍了 NetApp 的企业管理产品SnapCenter如何为矢量数据库数据提供备份、恢复和克隆功能，确保数据的完整性和可用性。
+
+该文档还深入探讨了 NetApp 的混合云解决方案如何在本地和云环境中提供数据复制和保护，从而提供无缝、安全的数据管理体验。我们对NetApp ONTAP上 Milvus 和 pgvecto 等矢量数据库的性能验证提供了见解，并提供了有关其效率和可扩展性的宝贵信息。
+
+最后，我们讨论了两个生成式 AI 用例：带有 LLM 的 RAG 和 NetApp 的内部 ChatAI。这些实际示例强调了本文档中概述的概念和实践的实际应用和好处。总的来说，对于任何希望利用 NetApp 强大的存储解决方案来管理矢量数据库的人来说，本文档都是一份全面的指南。
+
+
+
+=== 声明
+
+作者衷心感谢以下贡献者以及其他提供反馈和评论的人，使本文对NetApp客户和NetApp领域具有价值。
+
+. Sathish Thyagarajan， NetApp ONTAP AI 与分析技术营销工程师
+. NetApp技术营销工程师 Mike Oglesby
+. NetApp高级总监 AJ Mahajan
+. NetApp工作负载性能工程经理 Joe Scott
+. NetApp Fsx 产品管理高级总监 Puneet Dhawan
+. NetApp FSx 产品团队高级产品经理 Yuval Kalderon
+
+
+
+
+=== 在哪里可以找到更多信息
+
+要了解有关本文档中描述的信息的更多信息，请查看以下文档和/或网站：
+
+* Milvus 文档 - https://milvus.io/docs/overview.md[]
+* Milvus 独立文档 - https://milvus.io/docs/v2.0.x/install_standalone-docker.md[]
+* NetApp产品文档https://www.netapp.com/support-and-training/documentation/[]
+* instaclustr -link:https://www.instaclustr.com/support/documentation/?_bt=&_bk=&_bm=&_bn=x&_bg=&utm_term=&utm_campaign=&utm_source=adwords&utm_medium=ppc&hsa_acc=1467100120&hsa_cam=20766399079&hsa_grp=&hsa_ad=&hsa_src=x&hsa_tgt=&hsa_kw=&hsa_mt=&hsa_net=adwords&hsa_ver=3&gad_source=1&gclid=CjwKCAjw26KxBhBDEiwAu6KXtzOZhN0dl0H1smOMcj9nsC0qBQphdMqFR7IrVQqeG2Y4aHWydUMj2BoCdFwQAvD_BwE["installclustr 文档"]
+
+
+
+
+=== 版本历史
+
+|===
+
+
+| 版本 | 日期 | 文档版本历史 
+
+
+| 1.0 版 | 2024年4月 | 初始版本 
+|===

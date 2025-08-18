@@ -1,0 +1,31 @@
+---
+sidebar: sidebar 
+permalink: infra/ai-aipod-nv-intro.html 
+keywords: NetApp AI, AI, Artificial Intelligence, ML, Machine Learning, NVIDIA, NVIDIA AI Enterprise, NVIDIA BasePOD, NVIDIA DGX 
+summary: 采用NVIDIA DGX 系统的NetApp AIPod是一种企业级参考架构，基于NVIDIA BasePOD，用于深度学习和人工智能，使用NetApp ONTAP AFF存储系统以及NVIDIA网络和 DGX 系统。 
+---
+= NVA-1173 NetApp AIPod与NVIDIA DGX 系统 - 简介
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+image:poweredbynvidia.png["200,200,错误：缺少图形图像"]
+
+[role="lead"]
+NetApp解决方案工程
+
+
+
+== 内容提要
+
+NetApp™ AIPod配备NVIDIA DGX™ 系统和NetApp云连接存储系统，通过消除设计复杂性和猜测，简化了机器学习 (ML) 和人工智能 (AI) 工作负载的基础设施部署。基于NVIDIA DGX BasePOD™ 设计，旨在为下一代工作负载提供卓越的计算性能，搭载NVIDIA DGX 系统的AIPod增加了NetApp AFF存储系统，使客户能够从小规模开始并无中断地发展，同时智能地管理从边缘到核心再到云端的数据。  NetApp AIPod是NetApp AI 解决方案产品组合的一部分，如下图所示。
+
+_NetApp 人工智能解决方案组合_
+
+image:aipod-nv-portfolio.png["该图显示输入/输出对话框或表示书面内容"]
+
+本文档描述了AIPod参考架构的关键组件、系统连接和配置信息、验证测试结果和解决方案规模指导。本文档适用于有兴趣为 ML/DL 和分析工作负载部署高性能基础架构的NetApp和合作伙伴解决方案工程师以及客户战略决策者。

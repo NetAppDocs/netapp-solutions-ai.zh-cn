@@ -1,0 +1,86 @@
+---
+sidebar: sidebar 
+permalink: infra/ai-lenovo-edge-conclusion.html 
+keywords: acknowledgements, additional information 
+summary: 人工智能驱动的自动化和边缘计算是帮助商业组织实现数字化转型并最大限度提高运营效率和安全性的领先方法。通过边缘计算，数据处理速度更快，因为它不必往返于数据中心。因此，与数据中心或云端来回发送数据相关的成本就会降低。 
+---
+= 结束语
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+人工智能驱动的自动化和边缘计算是帮助商业组织实现数字化转型并最大限度提高运营效率和安全性的领先方法。通过边缘计算，数据处理速度更快，因为它不必往返于数据中心。因此，与数据中心或云端来回发送数据相关的成本就会降低。当企业必须使用部署在边缘的人工智能推理模型近乎实时地做出决策时，更低的延迟和更高的速度会很有帮助。
+
+NetApp存储系统提供与本地 SSD 存储相同或更好的性能，并为数据科学家、数据工程师、AI/ML 开发人员以及业务或 IT 决策者提供以下优势：
+
+* 在人工智能系统、分析系统和其他关键业务系统之间轻松共享数据。这种数据共享减少了基础设施开销，提高了性能，并简化了整个企业的数据管理。
+* 独立可扩展的计算和存储，以最大限度地降低成本并提高资源利用率。
+* 使用集成的 Snapshot 副本和克隆来简化开发和部署工作流程，以实现即时且节省空间的用户工作区、集成版本控制和自动部署。
+* 实现灾难恢复和业务连续性的企业级数据保护。本文档中介绍的NetApp和联想解决方案是一种灵活的横向扩展架构，非常适合边缘企业级 AI 推理部署。
+
+
+
+
+== 声明
+
+* 俊杰Falkanger，联想 HPC 和人工智能解决方案高级经理
+* NetApp技术营销工程师 Dave Arnette
+* Joey Parnell， NetApp E 系列 AI 解决方案技术主管
+* Cody Harryman， NetApp质量保证工程师
+
+
+
+
+== 在哪里可以找到更多信息
+
+要了解有关本文档中描述的信息的更多信息，请参阅以下文档和/或网站：
+
+* NetApp AFF A系列阵列产品页面
++
+https://www.netapp.com/data-storage/aff-a-series/["https://www.netapp.com/data-storage/aff-a-series/"^]
+
+* NetApp ONTAP数据管理软件 - ONTAP 9 信息库
++
+http://mysupport.netapp.com/documentation/productlibrary/index.html?productID=62286["http://mysupport.netapp.com/documentation/productlibrary/index.html?productID=62286"^]
+
+* TR-4727： NetApp EF系列简介
++
+https://www.netapp.com/pdf.html?item=/media/17179-tr4727pdf.pdf["https://www.netapp.com/pdf.html?item=/media/17179-tr4727pdf.pdf"^]
+
+* NetApp E系列SANtricity软件数据表
++
+https://www.netapp.com/pdf.html?item=/media/19775-ds-3171-66862.pdf["https://www.netapp.com/pdf.html?item=/media/19775-ds-3171-66862.pdf"^]
+
+* NetApp容器持久存储 — NetApp Trident
++
+https://netapp.io/persistent-storage-provisioner-for-kubernetes/["https://netapp.io/persistent-storage-provisioner-for-kubernetes/"^]
+
+* MLPerf
++
+** https://mlcommons.org/en/["https://mlcommons.org/en/"^]
+** http://www.image-net.org/["http://www.image-net.org/"^]
+** https://mlcommons.org/en/news/mlperf-inference-v11/["https://mlcommons.org/en/news/mlperf-inference-v11/"^]
+
+
+* NetApp BlueXP复制和同步
++
+https://docs.netapp.com/us-en/occm/concept_cloud_sync.html#how-cloud-sync-works["https://docs.netapp.com/us-en/occm/concept_cloud_sync.html#how-cloud-sync-works"^]
+
+* TensorFlow 基准测试
++
+https://github.com/tensorflow/benchmarks["https://github.com/tensorflow/benchmarks"^]
+
+* 联想 ThinkSystem SE350 边缘服务器
++
+https://lenovopress.com/lp1168["https://lenovopress.com/lp1168"^]
+
+* 联想 ThinkSystem DM5100F 统一闪存存储阵列
++
+https://lenovopress.com/lp1365-thinksystem-dm5100f-unified-flash-storage-array["https://lenovopress.com/lp1365-thinksystem-dm5100f-unified-flash-storage-array"]
+
+

@@ -1,0 +1,87 @@
+---
+sidebar: sidebar 
+permalink: data-analytics/bda-ai-gpfs-to-netapp-ontap-nfs.html 
+keywords: GPFS, nfs, nsd, admin node, quorum node, manager node, nsd server, protocol node 
+summary: 在本次验证中，我们使用了四台服务器作为网络共享磁盘（NSD）服务器，为GPFS提供物理磁盘。 GPFS 创建于 NSD 磁盘之上，以将其导出为 NFS 导出，以便 NFS 客户端可以访问它们，如下图所示。我们使用 XCP 将数据从 GPFS 导出的 NFS 复制到NetApp NFS 卷。 
+---
+= GPFS 到NetApp ONTAP NFS
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+在本次验证中，我们使用了四台服务器作为网络共享磁盘（NSD）服务器，为GPFS提供物理磁盘。 GPFS 创建于 NSD 磁盘之上，以将其导出为 NFS 导出，以便 NFS 客户端可以访问它们，如下图所示。我们使用 XCP 将数据从 GPFS 导出的 NFS 复制到NetApp NFS 卷。
+
+image:bda-ai-005.png["该图显示输入/输出对话框或表示书面内容"]
+
+
+
+== GPFS 基础知识
+
+GPFS 中使用以下节点类型：
+
+* *管理节点。*指定一个可选字段，其中包含管理命令用于在节点之间进行通信的节点名称。例如，管理节点 `mastr-51.netapp.com`可以将网络检查传递给集群中的所有其他节点。
+* *仲裁节点。*确定节点是否包含在派生仲裁的节点池中。您至少需要一个节点作为仲裁节点。
+* *管理节点*指示节点是否属于节点池的一部分，可以从中选择文件系统管理器和令牌管理器。将多个节点定义为管理节点是一个好主意。您指定为管理器的节点数取决于工作负载和您拥有的 GPFS 服务器许可证数量。如果您正在运行大型并行作业，则可能需要比支持 Web 应用程序的四节点集群更多的管理器节点。
+* *NSD 服务器。*准备每个物理磁盘以供 GPFS 使用的服务器。
+* *协议节点。*通过任何安全外壳 (SSH) 协议直接与 NFS 共享 GPFS 数据的节点。此节点需要 GPFS 服务器许可证。
+
+
+
+
+== GPFS、NFS 和 XCP 的操作列表
+
+本节提供了创建 GPFS、将 GPFS 导出为 NFS 导出以及使用 XCP 传输数据的操作列表。
+
+
+
+=== 创建 GPFS
+
+要创建 GPFS，请完成以下步骤：
+
+. 在其中一台服务器上下载并安装 Linux 版本的频谱规模数据访问。
+. 在所有节点上安装必备包（例如 chef），并在所有节点上禁用安全增强型 Linux（SELinux）。
+. 设置安装节点并将管理节点和 GPFS 节点添加到集群定义文件中。
+. 添加管理器节点、仲裁节点、NSD 服务器和 GPFS 节点。
+. 添加 GUI、管理和 GPFS 节点，并根据需要添加额外的 GUI 服务器。
+. 添加另一个 GPFS 节点并检查所有节点的列表。
+. 在集群定义文件中的所有 GPFS 节点上指定集群名称、配置文件、远程 shell 二进制文件、远程文件复制二进制文件和端口范围。
+. 查看 GPFS 配置设置并添加额外的管理节点。
+. 禁用数据收集并将数据包上传至 IBM 支持中心。
+. 启用 NTP 并在安装前预检查配置。
+. 配置、创建和检查 NSD 磁盘。
+. 创建 GPFS。
+. 挂载 GPFS。
+. 验证并提供 GPFS 所需的权限。
+. 通过运行以下命令验证 GPFS 读写 `dd`命令。
+
+
+
+
+=== 将 GPFS 导出到 NFS
+
+要将 GPFS 导出到 NFS，请完成以下步骤：
+
+. 通过以下方式将 GPFS 导出为 NFS `/etc/exports`文件。
+. 安装所需的 NFS 服务器包。
+. 启动 NFS 服务。
+. 列出 GPFS 中的文件以验证 NFS 客户端。
+
+
+
+
+=== 配置 NFS 客户端
+
+要配置 NFS 客户端，请完成以下步骤：
+
+. 通过 `/etc/exports`文件。
+. 启动 NFS 客户端服务。
+. 在NFS客户端上通过NFS协议挂载GPFS。
+. 验证 NFS 挂载文件夹中的 GPFS 文件列表。
+. 使用 XCP 将数据从 GPFS 导出的 NFS 移动到NetApp NFS。
+. 验证 NFS 客户端上的 GPFS 文件。
+

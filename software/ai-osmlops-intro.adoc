@@ -1,0 +1,45 @@
+---
+sidebar: sidebar 
+permalink: software/ai-osmlops-intro.html 
+keywords: tr-4798, tr4798, 4798, MLOps, Trident, ONTAP, containers, AI, Kubernetes, Kubeflow, Jupyter, Airflow, MLflow, JupyterHub 
+summary: 该解决方案旨在演示可纳入 MLOps 工作流的几种不同的开源工具和框架。根据需求和用例，这些不同的工具和框架可以一起使用或单独使用。 
+---
+= NetApp的开源 MLOps
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+Mike Oglesby， NetApp Sufian Ahmad， NetApp Rick Huang， NetApp Mohan Acharya， NetApp
+
+[role="lead"]
+各种规模和各个行业的公司和组织都在转向人工智能 (AI) 来解决现实世界的问题、提供创新的产品和服务，并在竞争日益激烈的市场中占据优势。许多组织正在转向开源 MLOps 工具，以跟上行业快速创新的步伐。这些开源工具提供了先进的功能和尖端的特性，但通常不考虑数据可用性和数据安全性。不幸的是，这意味着高技能的数据科学家被迫花费大量时间等待获取数据或等待基本的数据相关操作完成。通过将流行的开源 MLOps 工具与NetApp的智能数据基础架构相结合，组织可以加速其数据管道，从而加速其 AI 计划。他们可以从数据中释放价值，同时确保数据受到保护且安全。该解决方案展示了NetApp数据管理功能与几种流行的开源工具和框架的配对，以应对这些挑战。
+
+以下列表重点介绍了此解决方案支持的一些关键功能：
+
+* 用户可以快速配置由高性能、横向扩展NetApp存储支持的新的高容量数据卷和开发工作区。
+* 用户可以几乎即时地克隆大容量数据卷和开发工作区，以便进行实验或快速迭代。
+* 用户可以几乎即时保存大容量数据卷和开发工作区的快照，以进行备份和/或可追溯性/基准测试。
+
+
+image:aicp-001.png["该图显示输入/输出对话框或表示书面内容"]
+
+典型的 MLOps 工作流程包含开发工作区，通常采用以下形式link:https://jupyter.org["Jupyter 笔记本"^]；实验跟踪；自动化训练管道；数据管道；以及推理/部署。该解决方案重点介绍了几种不同的工具和框架，它们可以独立使用或结合使用来解决工作流程的不同方面。我们还展示了NetApp数据管理功能与每种工具的配对。该解决方案旨在提供构建模块，组织可据此构建针对其用例和要求的定制 MLOps 工作流程。
+
+此解决方案涵盖以下工具/框架：
+
+* link:https://airflow.apache.org["Apache Airflow"^]
+* link:https://jupyter.org/hub["JupyterHub"^]
+* link:https://www.kubeflow.org["Kubeflow"^]
+* link:https://www.mlflow.org["机器学习流"^]
+
+
+以下列表描述了独立或联合部署这些工具的常见模式。
+
+* 联合部署 JupyterHub、MLflow 和 Apache Airflow - JupyterHublink:https://jupyter.org["Jupyter 笔记本"^] 、用于实验跟踪的 MLflow 以及用于自动化训练和数据管道的 Apache Airflow。
+* 联合部署 Kubeflow 和 Apache Airflow - Kubeflowlink:https://jupyter.org["Jupyter 笔记本"^] 、实验跟踪、自动化训练管道和推理；以及用于数据管道的 Apache Airflow。
+* 将 Kubeflow 部署为一体化 MLOps 平台解决方案link:https://jupyter.org["Jupyter 笔记本"^]、实验跟踪、自动化训练和数据管道以及推理。
+

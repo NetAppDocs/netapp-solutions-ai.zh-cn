@@ -1,0 +1,92 @@
+---
+sidebar: sidebar 
+permalink: software/ai-nvaie-vmw-tech.html 
+keywords: NetApp AI, AI, Artificial Intelligence, ML, Machine Learning, NVIDIA, NVIDIA AI Enterprise, NVAIE, VMware 
+summary: NVIDIA AI Enterprise 与NetApp和 VMware 合作 - 技术概述 
+---
+= 技术概述
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+本节概述了NVIDIA AI Enterprise 与NetApp和 VMware 的技术。
+
+
+
+== NVIDIA AI 企业版
+
+NVIDIA AI Enterprise 是一款端到端、云原生的 AI 和数据分析软件套件，经过NVIDIA优化、认证和支持，可在具有NVIDIA认证系统的 VMware vSphere 上运行。该软件有助于在现代混合云环境中简单、快速地部署、管理和扩展 AI 工作负载。
+
+
+
+== NVIDIA GPU 云 (NGC)
+
+NVIDIA NGC 为 AI 从业者提供了一系列针对 GPU 优化的软件，以开发他们的 AI 解决方案。它还提供对各种 AI 服务的访问，包括用于模型训练的NVIDIA Base Command、用于部署和监控模型的NVIDIA Fleet Command 以及用于安全访问和管理专有 AI 软件的 NGC Private Registry。此外， NVIDIA AI Enterprise 客户可以通过 NGC 门户请求支持。
+
+
+
+== VMware vSphere
+
+VMware vSphere 是 VMware 的虚拟化平台，它将数据中心转变为包含 CPU、存储和网络资源的聚合计算基础架构。vSphere 将这些基础架构作为统一的操作环境进行管理，并为管理员提供管理该环境中数据中心的工具。
+
+vSphere 的两个核心组件是 ESXi 和 vCenter Server。  ESXi 是管理员创建和运行虚拟机及虚拟设备的虚拟化平台。vCenter Server 是管理员管理网络中连接的多台主机并池化主机资源的服务。
+
+
+
+== NetApp ONTAP
+
+ONTAP 9 是NetApp最新一代存储管理软件，它支持企业实现基础架构现代化并过渡到云就绪数据中心。 ONTAP利用业界领先的数据管理功能，只需一套工具即可管理和保护数据，无论数据位于何处。您还可以将数据自由移动到任何需要的地方：边缘、核心或云端。  ONTAP 9 包含众多功能，可简化数据管理、加速和保护关键数据，并支持跨混合云架构的下一代基础架构功能。
+
+
+
+=== 简化数据管理
+
+数据管理对于企业 IT 运营和数据科学家至关重要，以便将适当的资源用于 AI 应用程序和训练 AI/ML 数据集。以下有关NetApp技术的附加信息超出了本次验证的范围，但可能与您的部署相关。
+
+ONTAP数据管理软件包括以下功能，可简化操作并降低总运营成本：
+
+* 内联数据压缩和扩展重复数据删除。数据压缩减少了存储块内部浪费的空间，重复数据删除显著增加了有效容量。这适用于本地存储的数据和分层到云的数据。
+* 最小、最大和自适应服务质量 (AQoS)。细粒度的服务质量 (QoS) 控制有助于维持高度共享环境中关键应用程序的性能水平。
+* NetApp FabricPool。提供冷数据自动分层到公共和私有云存储选项，包括 Amazon Web Services (AWS)、Azure 和NetApp StorageGRID存储解决方案。有关FabricPool的更多信息，请参阅 https://www.netapp.com/pdf.html?item=/media/17239-tr4598pdf.pdf["TR-4598： FabricPool最佳实践"^]。
+
+
+
+
+=== 加速并保护数据
+
+ONTAP提供卓越级别的性能和数据保护，并通过以下方式扩展这些功能：
+
+* 性能和更低的延迟。  ONTAP以尽可能低的延迟提供尽可能高的吞吐量。
+* 数据保护。ONTAP提供内置数据保护功能，并在所有平台上提供通用管理。
+* NetApp卷加密 (NVE)。  ONTAP提供原生卷级加密，同时支持板载和外部密钥管理。
+* 多租户和多因素身份验证。  ONTAP支持以最高级别的安全性共享基础设施资源。
+
+
+
+
+=== 面向未来的基础设施
+
+ONTAP具有以下功能，可帮助满足苛刻且不断变化的业务需求：
+
+* 无缝扩展和无中断运行。 ONTAP支持无中断地向现有控制器和横向扩展集群添加容量。客户可以升级到最新技术，例如 NVMe 和 32Gb FC，而无需昂贵的数据迁移或中断。
+* 云连接。  ONTAP是与云连接最紧密的存储管理软件，在所有公共云中均提供软件定义存储（ONTAP Select）和云原生实例（Google Cloud NetApp Volumes）的选项。
+* 与新兴应用程序的集成。  ONTAP使用支持现有企业应用的相同基础架构，为下一代平台和应用（如自动驾驶汽车、智能城市和工业 4.0）提供企业级数据服务。
+
+
+
+
+== NetApp DataOps 工具包
+
+NetApp DataOps Toolkit 是一款基于 Python 的工具，可简化由高性能、横向扩展NetApp存储支持的开发/培训工作区和推理服务器的管理。主要功能包括：
+
+* 快速配置由高性能、横向扩展NetApp存储支持的新的高容量 JupyterLab 工作区。
+* 快速配置由企业级NetApp存储支持的全新NVIDIA Triton 推理服务器实例。
+* 近乎即时地克隆高容量的 JupyterLab 工作区，以实现实验或快速迭代。
+* 近乎即时地保存高容量 JupyterLab 工作区的快照，以用于备份和/或可追溯性/基准测试。
+* 近乎即时地提供、克隆和快照大容量、高性能数据卷。
+

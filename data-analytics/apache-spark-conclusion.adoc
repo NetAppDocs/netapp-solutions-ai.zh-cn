@@ -1,0 +1,17 @@
+---
+sidebar: sidebar 
+permalink: data-analytics/apache-spark-conclusion.html 
+keywords: conclusion 
+summary: 本节总结了有关 Apache Spark 的NetApp存储解决方案的文档。 
+---
+= 结束语
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+在本文档中，我们讨论了 Apache Spark 架构、客户用例以及与大数据、现代分析、AI、ML 和 DL 相关的NetApp存储产品组合。在我们基于行业标准基准测试工具和客户需求的性能验证测试中， NetApp Spark 解决方案表现出了相对于原生 Hadoop 系统的卓越性能。本报告中提供的客户用例和性能结果的组合可以帮助您为您的部署选择合适的 Spark 解决方案。

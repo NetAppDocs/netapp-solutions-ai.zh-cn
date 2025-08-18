@@ -1,0 +1,50 @@
+---
+section: ai-use-cases
+title: 人工智能用例
+url: "/ai-use-cases/index.html"
+entries:
+- title: 适用于企业 RAG 的NetApp AIPod Mini
+  pdf-filename: 适用于 RAG 推理的NetApp AIPod Mini
+  url: "/infra/ai-minipod.html"
+- title: Protopia 图像转换的负责任的 AI
+  pdf-filename: 负责任的 AI 和机密推理 - NetApp AI 与 Protopia 图像转换
+  entries:
+  - title: 概述
+    url: "/software/ai-conf-protopia-overview.html"
+  - title: 解决方案领域
+    url: "/software/ai-conf-protopia-usecases.html"
+  - title: 技术概述
+    url: "/software/ai-conf-protopia-tech.html"
+  - title: 测试和验证计划
+    url: "/software/ai-conf-protopia-plan.html"
+  - title: 测试配置
+    url: "/software/ai-conf-protopia-config.html"
+  - title: 测试程序
+    url: "/software/ai-conf-protopia-procedure.html"
+  - title: 推理精度比较
+    url: "/software/ai-conf-protopia-accuracy.html"
+  - title: 混淆速度
+    url: "/software/ai-conf-protopia-speed.html"
+  - title: 结束语
+    url: "/software/ai-conf-protopia-conclusion.html"
+  - title: 追加信息
+    url: "/software/ai-conf-protopia-addtl.html"
+- title: 大数据分析向人工智能迁移
+  pdf-filename: 将数据从大数据环境迁移到人工智能环境
+  url: "/data-analytics/bda-ai-introduction.html"
+- title: NetApp和联想合作的边缘 AI 推理
+  pdf-filename: 边缘 AI 推理 - NetApp与联想 ThinkSystem - 解决方案设计
+  entries:
+  - title: 简介
+    url: "/infra/ai-lenovo-edge-intro.html"
+  - title: 结束语
+    url: "/infra/ai-lenovo-edge-conclusion.html"
+- title: 生成式人工智能和NetApp价值
+  pdf-filename: 生成式人工智能和NetApp价值
+  url: "/gen-ai/ai-wp-genai.html"
+- title: 采用 E 系列系统设计 Quantum StorNext
+  pdf-filename: Quantum StorNext 与NetApp E 系列系统设计指南
+  url: "/infra/ai-eseries-nva1150-design.html"
+- title: 使用 E 系列系统部署 Quantum StorNext
+  pdf-filename: Quantum StorNext 与NetApp E 系列系统部署指南
+  url: "/infra/ai-eseries-nva1150-deploy.html"

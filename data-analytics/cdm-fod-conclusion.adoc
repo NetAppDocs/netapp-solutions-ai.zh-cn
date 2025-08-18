@@ -1,0 +1,30 @@
+---
+sidebar: sidebar 
+permalink: data-analytics/cdm-fod-conclusion.html 
+keywords: conclusion 
+summary: 基于此验证，数据科学家和工程师可以通过NetApp Cloud Volumes ONTAP的 S3 存储桶访问来自 AWS SageMaker Jupyter Notebooks 的 NFS 数据。这种方法可以轻松访问和共享来自 NFS 和 S3 的相同数据，而无需额外的软件。 
+---
+= 结束语
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+基于此验证，数据科学家和工程师可以通过NetApp Cloud Volumes ONTAP的 S3 存储桶访问来自 AWS SageMaker Jupyter Notebooks 的 NFS 数据。这种方法可以轻松访问和共享来自 NFS 和 S3 的相同数据，而无需额外的软件。
+
+
+
+== 在哪里可以找到更多信息
+
+要了解有关本文档中描述的信息的更多信息，请查看以下文档和/或网站：
+
+* 使用 SageMaker BlazingText 进行文本分类
+* ONTAP版本对 S3 对象存储的支持
++
+https://docs.netapp.com/us-en/ontap/s3-config/ontap-version-support-s3-concept.html["https://docs.netapp.com/us-en/ontap/s3-config/ontap-version-support-s3-concept.html"^]
+
+

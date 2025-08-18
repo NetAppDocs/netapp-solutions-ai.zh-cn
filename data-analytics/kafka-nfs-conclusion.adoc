@@ -1,0 +1,19 @@
+---
+sidebar: sidebar 
+permalink: data-analytics/kafka-nfs-conclusion.html 
+keywords: conclusion 
+summary: NetApp针对愚蠢重命名问题的解决方案为以前与 NFS 不兼容的工作负载提供了一种简单、廉价且集中管理的存储形式。 
+---
+= 结束语
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+NetApp针对愚蠢重命名问题的解决方案为以前与 NFS 不兼容的工作负载提供了一种简单、廉价且集中管理的存储形式。
+
+这种新模式使客户能够创建更易于管理的 Kafka 集群，这些集群更易于迁移和镜像，以实现灾难恢复和数据保护。我们还看到 NFS 提供了其他好处，例如降低 CPU 利用率和加快恢复时间、显著提高存储效率以及通过NetApp ONTAP实现更好的性能。

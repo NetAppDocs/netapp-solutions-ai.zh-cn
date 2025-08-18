@@ -1,0 +1,73 @@
+---
+sidebar: sidebar 
+permalink: infra/ai-lenovo-edge-config.html 
+keywords: test, configuration, network infrastructure, storage provisioning, SE350 server 
+summary: 本节介绍测试的配置、网络基础设施、SE350 服务器和存储配置详细信息。 
+---
+= 测试配置
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+下图显示了测试配置。我们使用了NetApp AFF C190存储系统和两台 Lenovo ThinkSystem SE350 服务器（每台配备一个NVIDIA T4 加速器）。这些组件通过 10GbE 网络交换机连接。网络存储保存验证/测试数据集和预训练模型。服务器提供计算能力，并通过 NFS 协议访问存储。
+
+本节介绍测试的配置、网络基础设施、SE350 服务器和存储配置详细信息。下表列出了解决方案架构的基本组件。
+
+|===
+| 解决方案组件 | 详细信息 
+
+
+| 联想 ThinkSystem 服务器  a| 
+* 2 台 SE350 服务器，每台配备一张NVIDIA T4 GPU 卡
+
+
+
+
+|   a| 
+* 每台服务器包含一个 Intel Xeon D-2123IT CPU，该 CPU 具有四个物理核心，运行频率为 2.20GHz，并配备 128GB RAM
+
+
+
+
+| 入门级NetApp AFF存储系统（HA 对）  a| 
+* NetApp ONTAP 9 软件
+* 24个960GB SSD
+* NFS 协议
+* 每个控制器一个接口组，具有四个用于挂载点的逻辑 IP 地址
+
+
+|===
+image:ai-edge-010.png["该图显示输入/输出对话框或表示书面内容"]
+
+下表列出了存储配置： AFF C190 ，24 个驱动器插槽。
+
+|===
+| 控制器 | 聚合 | FlexGroup 卷 | 聚合尺寸 | 体积大小 | 操作系统挂载点 
+
+
+| Controller1 | Aggr1 | /netapplenovo_AI_fg | 8.42TiB | 15 TB | /netapp_lenovo_fg 
+
+
+| Controller2 | Aggr2 |  | 8.42TiB |  |  
+|===
+/netappLenovo_AI_fg 文件夹包含用于模型验证的数据集。
+
+下图显示了测试配置。我们使用了NetApp EF280 存储系统和两台 Lenovo ThinkSystem SE350 服务器（每台配备一个NVIDIA T4 加速器）。这些组件通过 10GbE 网络交换机连接。网络存储保存验证/测试数据集和预训练模型。服务器提供计算能力，并通过 NFS 协议访问存储。
+
+下表列出了 EF280 的存储配置。
+
+|===
+| 控制器 | 卷组 | 卷 | 体积大小 | DDP大小 | 连接方法 
+
+
+| Controller1 | DDP1 | 卷 1 | 8.42TiB | 16 TB | SE350-1 到 iSCSI LUN 0 
+
+
+| Controller2 |  | 卷 2 | 8.42TiB |  | SE350-2 到 iSCSI LUN 1 
+|===
+image:ai-edge-011.png["该图显示输入/输出对话框或表示书面内容"]

@@ -1,0 +1,33 @@
+---
+sidebar: sidebar 
+permalink: software/ai-conf-protopia-config.html 
+keywords: test, configuration, Kubernetes, trident, dataops, toolkit, nvidia 
+summary: 本节概述了解决方案设计验证环境。 
+---
+= 测试配置
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+下表概述了解决方案设计验证环境。
+
+|===
+| 组件 | 版本 
+
+
+| Kubernetes | 1.21.6 
+
+
+| NetApp Trident CSI 驱动程序 | 22.01.0 
+
+
+| 适用于 Kubernetes 的NetApp DataOps 工具包 | 2.3.0 
+
+
+| NVIDIA Triton 推理服务器 | 21.11-py3 
+|===

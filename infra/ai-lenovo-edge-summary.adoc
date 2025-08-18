@@ -1,0 +1,17 @@
+---
+sidebar: sidebar 
+permalink: infra/ai-lenovo-edge-summary.html 
+keywords:  
+summary:  
+---
+= 摘要
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+高级驾驶辅助系统 (ADAS)、工业 4.0、智能城市和物联网 (IoT) 等一些新兴应用场景需要在接近零延迟的情况下处理连续数据流。本文档介绍了一种计算和存储架构，用于在满足这些要求的边缘环境中的NetApp存储控制器和 Lenovo ThinkSystem 服务器上部署基于 GPU 的人工智能 (AI) 推理。本文档还提供了行业标准 MLPerf 推理基准的性能数据，评估了配备NVIDIA T4 GPU 的边缘服务器上的各种推理任务。我们研究了离线、单流和多流推理场景的性能，并表明具有经济高效的共享网络存储系统的架构性能高，并为多个边缘服务器的数据和模型管理提供了中心点。

@@ -1,0 +1,56 @@
+---
+sidebar: sidebar 
+permalink: data-analytics/confluent-kafka-introduction.html 
+keywords: tr-4912, tr4912, 4912, introduction, best practices, Kafka, confluent 
+summary: 本文档介绍了在NetApp存储控制器上使用 Kafka 的最佳实践指南。 
+---
+= TR-4912： NetApp Confluent Kafka 分层存储的最佳实践指南
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+Karthikeyan Nagalingam、Joseph Kandatilparambil、 NetApp Rankesh Kumar、Confluence
+
+[role="lead"]
+Apache Kafka 是一个社区分布式事件流平台，每天能够处理数万亿个事件。 Kafka 最初被认为是一个消息队列，基于分布式提交日志的抽象。自 2011 年由 LinkedIn 创建并开源以来，Kafka 已经从一个消息队列发展成为一个成熟的事件流平台。  Confluent 通过 Confluent 平台提供 Apache Kafka 的分发。  Confluent 平台为 Kafka 提供了额外的社区和商业功能，旨在增强大规模生产中运营商和开发人员的流媒体体验。
+
+本文档通过提供以下内容描述了在 NetApp 对象存储产品上使用 Confluent 分层存储的最佳实践指南：
+
+* 使用NetApp对象存储进行汇合验证 – NetApp StorageGRID
+* 分层存储性能测试
+* NetApp存储系统上 Confluent 的最佳实践指南
+
+
+
+
+== 为什么选择 Confluent 分层存储？
+
+Confluent 已成为许多应用程序的默认实时流媒体平台，尤其是对于大数据、分析和流媒体工作负载。分层存储使用户能够在 Confluent 平台中将计算与存储分开。它使存储数据更具成本效益，使您能够存储几乎无限量的数据并按需扩大（或缩小）工作负载，并使数据和租户重新平衡等管理任务更加容易。 S3 兼容存储系统可以利用所有这些功能，将所有事件集中在一个地方，实现数据民主化，从而无需复杂的数据工程。有关为什么应该为 Kafka 使用分层存储的更多信息，请查看link:https://docs.confluent.io/platform/current/kafka/tiered-storage.html#netapp-object-storage["本文由 Confluent 撰写"^]。
+
+
+
+== 为什么选择NetApp StorageGRID进行分层存储？
+
+StorageGRID是NetApp推出的业界领先的对象存储平台。  StorageGRID是一种软件定义的基于对象的存储解决方案，支持行业标准对象 API，包括 Amazon Simple Storage Service (S3) API。 StorageGRID大规模存储和管理非结构化数据，以提供安全、持久的对象存储。内容被放置在正确的位置、正确的时间和正确的存储层，从而优化工作流程并降低全球分布的富媒体的成本。
+
+StorageGRID最大的区别在于其信息生命周期管理 (ILM) 策略引擎，它支持策略驱动的数据生命周期管理。策略引擎可以使用元数据来管理数据在其整个生命周期内的存储方式，以便最初优化性能，并随着数据老化自动优化成本和耐用性。
+
+
+
+== 启用 Confluent 分层存储
+
+分层存储的基本思想是将数据存储任务与数据处理任务分离。通过这种分离，数据存储层和数据处理层可以更轻松地独立扩展。
+
+Confluent 的分层存储解决方案必须应对两个因素。首先，它必须解决或避免常见的对象存储一致性和可用性属性，例如 LIST 操作中的不一致和偶尔的对象不可用。其次，它必须正确处理分层存储与 Kafka 的复制和容错模型之间的交互，包括僵尸领导者继续分层偏移范围的可能性。  NetApp对象存储提供一致的对象可用性和 HA 模型，使分层存储可用于层偏移范围。  NetApp对象存储提供一致的对象可用性和 HA 模型，使分层存储可用于层偏移范围。
+
+通过分层存储，您可以使用高性能平台在流数据尾部附近进行低延迟读写，还可以使用更便宜、可扩展的对象存储（如NetApp StorageGRID）进行高吞吐量历史读取。我们还为带有 netapp 存储控制器的 Spark 提供了技术解决方案，详细信息请见此处。下图显示了 Kafka 如何融入实时分析管道。
+
+image:confluent-kafka-002.png["该图显示输入/输出对话框或表示书面内容"]
+
+下图描述了NetApp StorageGRID如何作为 Confluent Kafka 的对象存储层。
+
+image:confluent-kafka-003.png["该图显示输入/输出对话框或表示书面内容"]

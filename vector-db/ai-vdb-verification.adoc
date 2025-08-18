@@ -1,0 +1,24 @@
+---
+sidebar: sidebar 
+permalink: vector-db/ai-vdb-verification.html 
+keywords: Solution Overview vector database 
+summary: 解决方案验证概述 - NetApp 的矢量数据库解决方案 
+---
+= 解决方案概述
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+我们针对五个关键领域进行了全面的解决方案验证，具体细节概述如下。每个部分都深入探讨了客户面临的挑战、 NetApp提供的解决方案以及随后给客户带来的好处。
+
+. link:ai-vdb-milvus-setup.html["在本地使用 Kubernetes 设置 Milvus 集群"]客户面临的挑战是独立扩展存储和计算、有效的基础设施管理和数据管理。在本节中，我们详细介绍了在 Kubernetes 上安装 Milvus 集群的过程，并利用NetApp存储控制器存储集群数据和客户数据。
+. milvus 与 Amazon FSx ONTAP for NetApp ONTAP – 文件和对象二元性 在本节中，我们将介绍为什么ONTAP在云中部署矢量数据库，以及在NetApp Amazon FSxAmazon FSxONTAPNetAppONTAP（milvus 独立版）的步骤。
+. link:ai-vdb-dp-snapcenter.html["使用NetApp SnapCenter进行矢量数据库保护。"]在本节中，我们将深入探讨SnapCenter如何保护驻留在ONTAP中的矢量数据库数据和 Milvus 数据。在此示例中，我们利用源自 NFS ONTAP卷（vol1）的 NAS 存储桶（milvusdbvol1）来存储客户数据，并使用单独的 NFS 卷（vectordbpv）来存储 Milvus 集群配置数据。
+. link:ai-vdb-dr-snapmirror.html["使用NetApp SnapMirror进行灾难恢复"]在本节中，我们讨论灾难恢复（DR）对于矢量数据库的重要性以及NetApp灾难恢复产品SnapMirror如何为矢量数据库提供DR解决方案。
+. link:ai-vdb-perf-validation.html["性能验证"]在本节中，我们旨在深入研究矢量数据库（例如 Milvus 和 pgvecto.rs）的性能验证，重点关注它们的存储性能特征，例如 I/O 配置文件和 NetApp 存储控制器在 LLM 生命周期内支持 RAG 和推理工作负载的行为。当这些数据库与ONTAP存储解决方案结合时，我们将评估并识别任何性能差异因素。我们的分析将基于关键性能指标，例如每秒处理的查询数（QPS）。
+

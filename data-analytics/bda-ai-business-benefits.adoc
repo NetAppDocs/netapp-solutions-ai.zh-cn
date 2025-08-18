@@ -1,0 +1,26 @@
+---
+sidebar: sidebar 
+permalink: data-analytics/bda-ai-business-benefits.html 
+keywords: business, benefits 
+summary: 本节介绍此解决方案的业务优势。 
+---
+= 商业利益
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+将数据从大数据分析转移到人工智能有以下好处：
+
+* 能够将数据从不同的 Hadoop 文件系统和 GPFS 提取到统一的 NFS 存储系统
+* 一种与 Hadoop 集成的自动化数据传输方式
+* 降低从 Hadoop 文件系统移动数据的库开发成本
+* 通过使用 NIPAM，通过从单一数据源聚合多个网络接口的吞吐量实现最高性能
+* 预定和按需传输数据的方法
+* 使用ONTAP数据管理软件实现统一 NFS 数据的存储效率和企业管理能力
+* 使用 Hadoop 方法进行数据传输，实现零成本
+

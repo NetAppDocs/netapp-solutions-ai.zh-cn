@@ -1,0 +1,114 @@
+---
+sidebar: sidebar 
+permalink: data-analytics/kafka-sc-confluent-perf.html 
+keywords: setup, verification results, Object store, correctness test, Tiering functionality, Tier fetch benchmark, Produce-consume, workload generator, Retention 
+summary: 本页描述了 Confluent 在该解决方案参数范围内的性能验证。 
+---
+= Confluent 性能验证
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+我们已经使用 Confluent Platform 对NetApp ONTAP上的分层存储进行了验证。  NetApp和 Confluent 团队共同进行了此次验证，并运行了所需的测试用例。
+
+
+
+== Confluent 设置
+
+在设置中，我们使用了三个 Zookeeper、五个代理和五个测试服务器，配备 256GB RAM 和 16 个 CPU。对于NetApp存储，我们使用了带有AFF A900 HA 对的ONTAP 。存储和代理通过 100GbE 连接进行连接。
+
+下图为分层存储验证配置的网络拓扑图。
+
+image:kafka-sc-007.png["该图显示了用于分层存储验证的配置的网络拓扑。"]
+
+工具服务器充当应用程序客户端，向 Confluent 节点发送事件或从 Confluent 节点接收事件。
+
+
+
+== Confluent 分层存储配置
+
+我们使用了以下测试参数：
+
+....
+confluent.tier.fetcher.num.threads=80
+confluent.tier.archiver.num.threads=80
+confluent.tier.enable=true
+confluent.tier.feature=true
+confluent.tier.backend=S3
+confluent.tier.s3.bucket=kafkabucket1-1
+confluent.tier.s3.region=us-east-1
+confluent.tier.s3.cred.file.path=/data/kafka/.ssh/credentials
+confluent.tier.s3.aws.endpoint.override=http://wle-mendocino-07-08/
+confluent.tier.s3.force.path.style.access=true
+bootstrap.server=192.168.150.172:9092,192.168.150.120:9092,192.168.150.164:9092,192.168.150.198:9092,192.168.150.109:9092,192.168.150.165:9092,192.168.150.119:9092,192.168.150.133:9092
+debug=true
+jmx.port=7203
+num.partitions=80
+num.records=200000000
+#object PUT size - 512MB and fetch 100MB – netapp
+segment.bytes=536870912
+max.partition.fetch.bytes=1048576000
+#GET size is max.partition.fetch.bytes/num.partitions
+length.key.value=2048
+trogdor.agent.nodes=node0,node1,node2,node3,node4
+trogdor.coordinator.hostname.port=192.168.150.155:8889
+num.producers=20
+num.head.consumers=20
+num.tail.consumers=1
+test.binary.task.max.heap.size=32G
+test.binary.task.timeout.sec=3600
+producer.timeout.sec=3600
+consumer.timeout.sec=3600
+....
+为了验证，我们使用了带有 HTTP 协议的ONTAP ，但 HTTPS 也可以运行。访问密钥和密钥存储在 `confluent.tier.s3.cred.file.path`范围。
+
+
+
+== NetApp存储控制器 – ONTAP
+
+我们在ONTAP中配置了单个 HA 对配置以进行验证。
+
+image:kafka-sc-008.png["该图描述了如何将环境配置为单个 HA 对以进行验证。"]
+
+
+
+== 验证结果
+
+我们完成了以下五个测试用例进行验证。前两个是功能测试，其余三个是性能测试。
+
+
+
+=== 对象存储正确性测试
+
+此测试使用 API 调用对用于分层存储的对象存储执行获取、放置和删除等基本操作。
+
+
+
+=== 分层功能正确性测试
+
+此测试检查对象存储的端到端功能。它创建一个主题，为新创建的主题生成一个事件流，等待代理将段存档到对象存储，使用事件流，并验证使用的流是否与生成的流匹配。我们已经在有和没有对象存储故障注入的情况下执行了此测试。我们通过停止ONTAP中某个节点的服务管理器服务来模拟节点故障，并验证端到端功能是否与对象存储兼容。
+
+
+
+=== 层级获取基准
+
+该测试验证了分层对象存储的读取性能，并检查了基准测试生成的段在高负载下的范围提取读取请求。在这个基准测试中，Confluent 开发了自定义客户端来满足层级获取请求。
+
+
+
+=== 生产-消费工作负载生成器
+
+该测试通过段的归档间接在对象存储上生成写入工作负载。当消费者群体获取段时，从对象存储中生成读取工作负载（读取的段）。此工作负载由 TOCC 脚本生成。该测试检查了并行线程对对象存储的读写性能。我们对分层功能正确性测试进行了测试，测试了有和没有对象存储故障注入的情况。
+
+
+
+=== 保留工作量生成器
+
+该测试检查了对象存储在高主题保留工作负载下的删除性能。保留工作负载是使用 TOCC 脚本生成的，该脚本与测试主题并行生成许多消息。测试主题是使用基于大小和基于时间的激进保留设置进行配置，这会导致事件流不断从对象存储中清除。然后将这些片段存档。这导致代理在对象存储中进行多次删除，并收集对象存储删除操作的性能。
+
+有关验证详细信息，请参阅 https://docs.confluent.io/platform/current/kafka/tiered-storage.html["汇合"^]网站。

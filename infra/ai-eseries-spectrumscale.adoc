@@ -1,0 +1,21 @@
+---
+sidebar: sidebar 
+permalink: infra/ai-eseries-spectrumscale.html 
+keywords:  
+summary:  
+---
+= TR-4859：使用NetApp E 系列存储部署 IBM Spectrum Scale - 安装和验证
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+NetApp的 Chris Seirer
+
+[role="lead"]
+TR-4859 描述了基于 IBM 的 Spectrum Scale 软件堆栈部署完整并行文件系统解决方案的过程。  TR-4859 旨在提供有关如何安装 Spectrum Scale、验证基础设施和管理配置的详细信息。
+
+link:https://www.netapp.com/pdf.html?item=/media/22029-tr-4859.pdf["TR-4859：使用NetApp E 系列存储部署 IBM Spectrum Scale - 安装和验证"^]

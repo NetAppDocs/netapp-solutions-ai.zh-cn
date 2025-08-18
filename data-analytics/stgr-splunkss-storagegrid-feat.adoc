@@ -1,0 +1,63 @@
+---
+sidebar: sidebar 
+permalink: data-analytics/stgr-splunkss-storagegrid-feat.html 
+keywords: ILM policies, Grid Manager, performance, Load Balancer, endpoint configuration 
+summary: StorageGRID具有多种功能，用户可以利用这些功能并根据不断变化的环境进行定制。 
+---
+= 适用于 Splunk SmartStore 的灵活StorageGRID功能
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+StorageGRID具有多种功能，用户可以利用这些功能并根据不断变化的环境进行定制。从部署到扩展您的 Splunk SmartStore，您的环境需要快速适应变化，并且不应对 Splunk 造成干扰。  StorageGRID灵活的数据管理策略 (ILM) 和流量分类器 (QoS) 让您可以规划并适应您的环境。
+
+
+
+== 使用网格管理器进行简单管理
+
+Grid Manager 是基于浏览器的图形界面，允许您在单个玻璃窗格中配置、管理和监控全球分布位置的StorageGRID系统，如下图所示。
+
+image:stgr-splunkss-003.png["该图显示输入/输出对话框或表示书面内容"]
+
+使用网格管理器界面执行以下任务：
+
+* 管理全球分布的 PB 级对象存储库，例如图像、视频和记录。
+* 监控网格节点和服务以确保对象可用性。
+* 使用信息生命周期管理 (ILM) 规则来管理对象数据随时间推移的放置。这些规则控制着对象数据被摄取后会发生什么、如何防止数据丢失、对象数据存储在何处以及存储多长时间。
+* 监控系统内的交易、性能和操作。
+
+
+
+
+== 适用于 Splunk 的NetApp StorageGRID应用程序
+
+NetApp StorageGRID App for Splunk 是一款专用于 Splunk Enterprise 的应用程序。此应用程序与 Splunk 的NetApp StorageGRID附加组件配合使用。它提供对StorageGRID健康状况、帐户使用信息、安全审计详细信息、资源使用情况和监控等方面的可见性。
+
+下图显示了适用于 Splunk 的StorageGRID应用程序。
+
+image:stgr-splunkss-004.png["该图显示输入/输出对话框或表示书面内容"]
+
+
+
+== ILM 策略
+
+StorageGRID具有灵活的数据管理策略，包括保留对象的多个副本，并使用 EC（擦除编码）方案（如 2+1 和 4+2（以及许多其他方案））根据特定的性能和数据保护要求存储对象。由于工作负载和需求随时间而变化，ILM 策略通常也必须随时间而变化。修改 ILM 策略是一项核心功能，允许StorageGRID客户快速轻松地适应不断变化的环境。
+
+
+
+== 性能
+
+StorageGRID通过添加更多节点来扩展性能，这些节点可以是虚拟机、裸机或专用设备，如 SG5712、SG5760、SG6060 或 SGF6024。在我们的测试中，我们使用 SG6060 设备以最小尺寸的三节点网格超出了 SmartStore 关键性能要求。当客户使用附加索引器扩展其 Splunk 基础设施时，他们可以添加更多存储节点来提高性能和容量。
+
+
+
+== 负载均衡器和端点配置
+
+StorageGRID中的管理节点提供网格管理器 UI（用户界面）和 REST API 端点来查看、配置和管理您的StorageGRID系统，以及审计日志来跟踪系统活动。为了为 Splunk SmartStore 远程存储提供高可用性 S3 端点，我们实施了StorageGRID负载均衡器，它作为管理节点和网关节点上的服务运行。此外，负载均衡器还管理本地流量并与 GSLB（全局服务器负载均衡）对话以帮助进行灾难恢复。
+
+为了进一步增强端点配置， StorageGRID提供了内置于管理节点的流量分类策略，让您监控工作负载流量，并对工作负载应用各种服务质量 (QoS) 限制。流量分类策略应用于网关节点和管理节点的StorageGRID负载均衡器服务上的端点。这些策略可以帮助限制和监控流量。

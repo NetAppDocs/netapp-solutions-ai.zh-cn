@@ -1,0 +1,17 @@
+---
+sidebar: sidebar 
+permalink: data-analytics/dremio-lakehouse-introduction.html 
+keywords: introduction, best practices, dremio, lakehouse 
+summary: 本文档介绍了在NetApp存储控制器上使用 Dremio 的最佳实践指南。 
+---
+= NetApp和 Dremio 的下一代混合 Iceberg Lakehouse 解决方案
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+在本文档中，我们讨论了 Dremio 与来自NetApp存储控制器的不同数据源的部署细节，包括ONTAP S3、NAS 和StorageGRID。在部署期间，我们使用 TPC-DS 基准测试工具跨各种来源执行 99 个 SQL 查询。该文档还探讨了NetApp内部的客户用例，以及涉及汽车零部件销售客户的用例。

@@ -1,0 +1,82 @@
+---
+sidebar: sidebar 
+permalink: software/ai-osmlops-trident-backend.html 
+keywords: ONTAP, Trident, AI, Deployment, 
+summary: NetApp开源 MLOps - NetApp AIPod部署的Trident后端示例 
+---
+= NetApp AIPod部署的Trident后端示例
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+在使用Trident在 Kubernetes 集群中动态配置存储资源之前，您必须创建一个或多个Trident后端。以下示例代表了如果您要在以下位置部署此解决方案的组件，您可能需要创建的不同类型的后端：link:../infra/ai-aipod-nv-intro.html["NetApp AIPod"^] 。有关后端的更多信息，以及其他平台/环境的后端示例，请参阅link:https://docs.netapp.com/us-en/trident/index.html["Trident文档"^]。
+
+. NetApp建议为您的AIPod创建支持FlexGroup的Trident Backend。
++
+下面的示例命令展示了如何为AIPod存储虚拟机 (SVM) 创建支持FlexGroup的Trident Backend。此后端使用 `ontap-nas-flexgroup`存储驱动程序。  ONTAP支持两种主要数据卷类型： FlexVol和FlexGroup。 FlexVol卷的大小受到限制（截至撰写本文时，最大大小取决于具体的部署）。另一方面， FlexGroup卷可以线性扩展到最多 20PB 和 4000 亿个文件，从而提供单一命名空间，大大简化数据管理。因此， FlexGroup卷最适合依赖大量数据的 AI 和 ML 工作负载。
+
++
+如果您处理的数据量较小，并且想要使用FlexVol卷而不是FlexGroup卷，则可以创建使用 `ontap-nas`存储驱动程序，而不是 `ontap-nas-flexgroup`存储驱动程序。
+
++
+....
+$ cat << EOF > ./trident-backend-aipod-flexgroups-iface1.json
+{
+    "version": 1,
+    "storageDriverName": "ontap-nas-flexgroup",
+    "backendName": "aipod-flexgroups-iface1",
+    "managementLIF": "10.61.218.100",
+    "dataLIF": "192.168.11.11",
+    "svm": "ontapai_nfs",
+    "username": "admin",
+    "password": "ontapai"
+}
+EOF
+$ tridentctl create backend -f ./trident-backend-aipod-flexgroups-iface1.json -n trident
++-------------------------+---------------------+--------------------------------------+--------+---------+
+|            NAME         |   STORAGE DRIVER    |                 UUID                 | STATE  | VOLUMES |
++-------------------------+---------------------+--------------------------------------+--------+---------+
+| aipod-flexgroups-iface1 | ontap-nas-flexgroup | b74cbddb-e0b8-40b7-b263-b6da6dec0bdd | online |       0 |
++-------------------------+---------------------+--------------------------------------+--------+---------+
+$ tridentctl get backend -n trident
++-------------------------+---------------------+--------------------------------------+--------+---------+
+|            NAME         |   STORAGE DRIVER    |                 UUID                 | STATE  | VOLUMES |
++-------------------------+---------------------+--------------------------------------+--------+---------+
+| aipod-flexgroups-iface1 | ontap-nas-flexgroup | b74cbddb-e0b8-40b7-b263-b6da6dec0bdd | online |       0 |
++-------------------------+---------------------+--------------------------------------+--------+---------+
+....
+. NetApp还建议创建支持FlexVol的Trident Backend。您可能希望使用FlexVol卷来托管持久应用程序、存储结果、输出、调试信息等。如果要使用FlexVol卷，则必须创建一个或多个启用FlexVol的Trident后端。下面的示例命令显示如何创建启用单个FlexVol的Trident后端。
+
+
+....
+$ cat << EOF > ./trident-backend-aipod-flexvols.json
+{
+    "version": 1,
+    "storageDriverName": "ontap-nas",
+    "backendName": "aipod-flexvols",
+    "managementLIF": "10.61.218.100",
+    "dataLIF": "192.168.11.11",
+    "svm": "ontapai_nfs",
+    "username": "admin",
+    "password": "ontapai"
+}
+EOF
+$ tridentctl create backend -f ./trident-backend-aipod-flexvols.json -n trident
++-------------------------+---------------------+--------------------------------------+--------+---------+
+|            NAME         |   STORAGE DRIVER    |                 UUID                 | STATE  | VOLUMES |
++-------------------------+---------------------+--------------------------------------+--------+---------+
+| aipod-flexvols          | ontap-nas           | 52bdb3b1-13a5-4513-a9c1-52a69657fabe | online |       0 |
++-------------------------+---------------------+--------------------------------------+--------+---------+
+$ tridentctl get backend -n trident
++-------------------------+---------------------+--------------------------------------+--------+---------+
+|            NAME         |   STORAGE DRIVER    |                 UUID                 | STATE  | VOLUMES |
++-------------------------+---------------------+--------------------------------------+--------+---------+
+| aipod-flexvols          | ontap-nas           | 52bdb3b1-13a5-4513-a9c1-52a69657fabe | online |       0 |
+| aipod-flexgroups-iface1 | ontap-nas-flexgroup | b74cbddb-e0b8-40b7-b263-b6da6dec0bdd | online |       0 |
++-------------------------+---------------------+--------------------------------------+--------+---------+
+....

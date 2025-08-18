@@ -1,0 +1,50 @@
+---
+sidebar: sidebar 
+permalink: data-analytics/hdcs-sh-use-case-backup-dr-cloud.html 
+keywords: cloud-based analytics, apache spark, hadoop, ebs, hdfs 
+summary: 此用例基于需要将基于云的分析数据备份到其内部数据中心的广播客户。 
+---
+= 用例 2：从云到本地的备份和灾难恢复
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+此用例基于一个广播客户，该客户需要将基于云的分析数据备份到其内部数据中心，如下图所示。
+
+image:hdcs-sh-009.png["该图显示输入/输出对话框或表示书面内容"]
+
+
+
+== 场景
+
+在这种情况下，物联网传感器数据被引入云中，并使用 AWS 内的开源 Apache Spark 集群进行分析。要求是将处理后的数据从云端备份到本地。
+
+
+
+== 要求和挑战
+
+此用例的主要要求和挑战包括：
+
+* 启用数据保护不会对云中的生产 Spark/Hadoop 集群造成任何性能影响。
+* 需要以高效、安全的方式将云传感器数据移动并保护到本地。
+* 在不同条件下灵活地将数据从云端传输到本地，例如按需、即时以及低集群负载时间期间。
+
+
+
+
+== 解决方案
+
+客户使用 AWS Elastic Block Store (EBS) 作为其 Spark 集群 HDFS 存储，以通过 Kafka 接收和提取来自远程传感器的数据。因此，HDFS 存储充当备份数据的来源。
+
+为了满足这些要求， NetApp ONTAP Cloud 部署在 AWS 中，并创建了一个 NFS 共享作为 Spark/Hadoop 集群的备份目标。
+
+创建 NFS 共享后，将数据从 HDFS EBS 存储复制到ONTAP NFS 共享。当数据驻留在ONTAP Cloud 中的 NFS 中时，可以根据需要使用SnapMirror技术以安全高效的方式将数据从云端镜像到本地存储中。
+
+此图显示了从云到本地解决方案的备份和灾难恢复。
+
+image:hdcs-sh-010.png["该图显示输入/输出对话框或表示书面内容"]

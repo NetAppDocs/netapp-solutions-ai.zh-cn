@@ -1,0 +1,64 @@
+---
+sidebar: sidebar 
+permalink: software/ai-osmlops-kubeflow-deploy.html 
+keywords: Kubeflow, Prerequisites, Kubernetes, cluster 
+summary: NetApp开源 MLOps - Kubeflow 部署 
+---
+= Kubeflow部署
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+本节介绍在 Kubernetes 集群中部署 Kubeflow 必须完成的任务。
+
+
+
+== 前提条件
+
+在执行本节概述的部署练习之前，我们假设您已经执行了以下任务：
+
+. 您已经有一个可运行的 Kubernetes 集群，并且您正在运行您打算部署的 Kubeflow 版本支持的 Kubernetes 版本。有关受支持的 Kubernetes 版本列表，请参阅 Kubeflow 版本的依赖项link:https://www.kubeflow.org/docs/releases/["Kubeflow 官方文档"^]。
+. 您已经在 Kubernetes 集群中安装并配置了NetApp Trident 。有关Trident的更多详细信息，请参阅link:https://docs.netapp.com/us-en/trident/index.html["Trident文档"]。
+
+
+
+
+== 设置默认 Kubernetes StorageClass
+
+在部署 Kubeflow 之前，我们建议在 Kubernetes 集群中指定一个默认 StorageClass。 Kubeflow 部署过程可能会尝试使用默认 StorageClass 配置新的持久卷。如果没有指定 StorageClass 作为默认 StorageClass，则部署可能会失败。要在集群中指定默认 StorageClass，请从部署跳转主机执行以下任务。如果您已经在集群中指定了默认 StorageClass，则可以跳过此步骤。
+
+. 将现有 StorageClass 之一指定为默认 StorageClass。以下示例命令显示了名为 `ontap-ai-flexvols-retain`作为默认的 StorageClass。
+
+
+
+NOTE: 这 `ontap-nas-flexgroup`Trident Backend 类型的最小 PVC 尺寸相当大。默认情况下，Kubeflow 尝试配置大小仅为几 GB 的 PVC。因此，您不应该指定使用 `ontap-nas-flexgroup`后端类型作为 Kubeflow 部署的默认 StorageClass。
+
+....
+$ kubectl get sc
+NAME                                PROVISIONER             AGE
+ontap-ai-flexgroups-retain          csi.trident.netapp.io   25h
+ontap-ai-flexgroups-retain-iface1   csi.trident.netapp.io   25h
+ontap-ai-flexgroups-retain-iface2   csi.trident.netapp.io   25h
+ontap-ai-flexvols-retain            csi.trident.netapp.io   3s
+$ kubectl patch storageclass ontap-ai-flexvols-retain -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
+storageclass.storage.k8s.io/ontap-ai-flexvols-retain patched
+$ kubectl get sc
+NAME                                 PROVISIONER             AGE
+ontap-ai-flexgroups-retain           csi.trident.netapp.io   25h
+ontap-ai-flexgroups-retain-iface1    csi.trident.netapp.io   25h
+ontap-ai-flexgroups-retain-iface2    csi.trident.netapp.io   25h
+ontap-ai-flexvols-retain (default)   csi.trident.netapp.io   54s
+....
+
+
+== Kubeflow部署选项
+
+部署 Kubeflow 有很多不同的选择。请参阅link:https://www.kubeflow.org/docs/started/installing-kubeflow/["Kubeflow 官方文档"]获取部署选项列表，然后选择最适合您需求的选项。
+
+
+NOTE: 为了验证目的，我们使用以下方式部署了 Kubeflow 1.7link:https://www.deploykf.org["部署KF"] 0.1.1。

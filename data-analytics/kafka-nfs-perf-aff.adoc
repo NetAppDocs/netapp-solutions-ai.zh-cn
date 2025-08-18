@@ -1,0 +1,190 @@
+---
+sidebar: sidebar 
+permalink: data-analytics/kafka-nfs-perf-aff.html 
+keywords: storage configuration, client tuning, kafka broker tuning, workload ganerator, steady state, performance, extreme performance 
+summary: 在本地，我们使用带有ONTAP 9.12.1RC1 的NetApp AFF A900存储控制器来验证 Kafka 集群的性能和扩展。我们使用了与之前的ONTAP和AFF分层存储最佳实践相同的测试平台。 
+---
+= 本地AFF A900的性能概述和验证
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+在本地，我们使用带有ONTAP 9.12.1RC1 的NetApp AFF A900存储控制器来验证 Kafka 集群的性能和扩展性。我们使用了与之前的ONTAP和AFF分层存储最佳实践相同的测试平台。
+
+我们使用 Confluent Kafka 6.2.0 来评估AFF A900。该集群有八个代理节点和三个 zookeeper 节点。为了进行性能测试，我们使用了五个 OMB 工作节点。
+
+image:kafka-nfs-032.png["该图显示输入/输出对话框或表示书面内容"]
+
+
+
+== 存储配置
+
+我们使用NetApp FlexGroups 实例为日志目录提供单一命名空间，从而简化恢复和配置。我们使用 NFSv4.1 和 pNFS 来提供对日志段数据的直接路径访问。
+
+
+
+== 客户端调优
+
+每个客户端使用以下命令挂载FlexGroup实例。
+
+....
+mount -t nfs -o vers=4.1,nconnect=16 172.30.0.121:/kafka_vol01 /data/kafka_vol01
+....
+此外，我们增加了 `max_session_slots``从默认 `64`到 `180`。这与ONTAP中的默认会话槽限制相匹配。
+
+
+
+== Kafka 代理调优
+
+为了最大限度地提高测试系统的吞吐量，我们显著增加了某些关键线程池的默认参数。对于大多数配置，我们建议遵循 Confluent Kafka 最佳实践。此调整用于最大化存储的未完成 I/O 的并发性。这些参数可以进行调整以匹配您的代理的计算资源和存储属性。
+
+....
+num.io.threads=96
+num.network.threads=96
+background.threads=20
+num.replica.alter.log.dirs.threads=40
+num.replica.fetchers=20
+queued.max.requests=2000
+....
+
+
+== 工作负载生成器测试方法
+
+我们对吞吐量驱动程序和主题配置使用了与云测试相同的 OMB 配置。
+
+. 使用 Ansible 在AFF集群上配置了FlexGroup实例。
++
+....
+---
+- name: Set up kafka broker processes
+  hosts: localhost
+  vars:
+    ntap_hostname: 'hostname'
+    ntap_username: 'user'
+    ntap_password: 'password'
+    size: 10
+    size_unit: tb
+    vserver: vs1
+    state: present
+    https: true
+    export_policy: default
+    volumes:
+      - name: kafka_fg_vol01
+        aggr: ["aggr1_a", "aggr2_a", "aggr1_b", "aggr2_b"]
+        path: /kafka_fg_vol01
+  tasks:
+    - name: Edit volumes
+      netapp.ontap.na_ontap_volume:
+        state: "{{ state }}"
+        name: "{{ item.name }}"
+        aggr_list: "{{ item.aggr }}"
+        aggr_list_multiplier: 8
+        size: "{{ size }}"
+        size_unit: "{{ size_unit }}"
+        vserver: "{{ vserver }}"
+        snapshot_policy: none
+        export_policy: default
+        junction_path: "{{ item.path }}"
+        qos_policy_group: none
+        wait_for_completion: True
+        hostname: "{{ ntap_hostname }}"
+        username: "{{ ntap_username }}"
+        password: "{{ ntap_password }}"
+        https: "{{ https }}"
+        validate_certs: false
+      connection: local
+      with_items: "{{ volumes }}"
+....
+. ONTAP SVM 上已启用 pNFS。
++
+....
+vserver modify -vserver vs1 -v4.1-pnfs enabled -tcp-max-xfer-size 262144
+....
+. 工作负载由吞吐量驱动程序触发，使用与Cloud Volumes ONTAP相同的工作负载配置。请参阅“<<稳态性能>> “ 以下。工作负载使用的复制因子为 3，这意味着在 NFS 中维护了三个日志段副本。
++
+....
+sudo bin/benchmark --drivers driver-kafka/kafka-throughput.yaml workloads/1-topic-100-partitions-1kb.yaml
+....
+. 最后，我们使用积压完成了测量，以衡量消费者赶上最新消息的能力。 OMB 通过在测量开始时暂停消费者来构建积压。这会产生三个不同的阶段：积压创建（仅生产者的流量）、积压消耗（消费者密集的阶段，其中消费者追赶主题中错过的事件）和稳定状态。请参阅“<<极致性能和探索存储极限>> ”了解更多信息。
+
+
+
+
+=== 稳态性能
+
+我们使用 OpenMessaging Benchmark 评估了AFF A900 ，以提供与 AWS 中的Cloud Volumes ONTAP和 AWS 中的 DAS 类似的比较。所有性能值代表生产者和消费者级别的 Kafka 集群吞吐量。
+
+Confluent Kafka 和AFF A900的稳定状态性能为生产者和消费者实现了超过 3.4GBps 的平均吞吐量。 Kafka 集群中的消息超过 340 万条。通过以每秒字节数为单位可视化 BrokerTopicMetrics 的持续吞吐量，我们可以看到AFF A900支持的出色稳定状态性能和流量。
+
+image:kafka-nfs-033.png["该图显示了代理网络吞吐量。"]
+
+这与按主题传递的消息的视图非常一致。下图提供了按主题的细分情况。在测试的配置中，我们看到四个主题中每个主题有近 90 万条消息。
+
+image:kafka-nfs-034.png["该图显示了代理网络吞吐量。"]
+
+
+
+== 极致性能和探索存储极限
+
+对于AFF，我们还使用积压功能对 OMB 进行了测试。当 Kafka 集群中积累了大量事件积压时，积压功能会暂停消费者订阅。在此阶段，仅发生生产者流量，从而生成提交到日志的事件。这最接近地模拟了批处理或离线分析工作流程；在这些工作流程中，消费者订阅已启动，并且必须读取已从代理缓存中逐出的历史数据。
+
+为了了解此配置中存储对消费者吞吐量的限制，我们测量了仅生产者阶段，以了解 A900 可以吸收多少写入流量。请参阅下一节“<<尺寸指南>> “来了解如何利用这些数据。
+
+在本次测量的仅生产者部分，我们看到了高峰值吞吐量，突破了 A900 性能的极限（当其他代理资源未饱和地为生产者和消费者流量提供服务时）。
+
+image:kafka-nfs-035.png["该图显示输入/输出对话框或表示书面内容"]
+
+
+NOTE: 我们将此测量的消息大小增加到 16k，以限制每个消息的开销并最大限度地提高 NFS 挂载点的存储吞吐量。
+
+....
+messageSize: 16384
+consumerBacklogSizeGB: 4096
+....
+Confluent Kafka 集群实现了 4.03GBps 的峰值生产者吞吐量。
+
+....
+18:12:23.833 [main] INFO WorkloadGenerator - Pub rate 257759.2 msg/s / 4027.5 MB/s | Pub err     0.0 err/s …
+....
+OMB 完成填充事件积压日志后，消费者流量重新启动。在积压工作消耗的测量过程中，我们观察到所有主题的峰值消费者吞吐量超过 20GBps。存储 OMB 日志数据的 NFS 卷的组合吞吐量接近 ~30GBps。
+
+
+
+== 尺寸指南
+
+亚马逊网络服务提供 https://aws.amazon.com/blogs/big-data/best-practices-for-right-sizing-your-apache-kafka-clusters-to-optimize-performance-and-cost/["尺码指南"^]用于 Kafka 集群大小调整和扩展。
+
+此大小提供了一个有用的公式来确定 Kafka 集群的存储吞吐量要求：
+
+对于复制因子为 r 的 tcluster 集群产生的聚合吞吐量，代理存储收到的吞吐量如下：
+
+....
+t[storage] = t[cluster]/#brokers + t[cluster]/#brokers * (r-1)
+          = t[cluster]/#brokers * r
+....
+这可以进一步简化：
+
+....
+max(t[cluster]) <= max(t[storage]) * #brokers/r
+....
+使用此公式，您可以根据 Kafka 热层需求选择合适的ONTAP平台。
+
+下表解释了具有不同复制因子的 A900 的预期生产者吞吐量：
+
+|===
+| 复制因子 | 生产者吞吐量 (GPps) 
+
+
+| 3（测量） | 3.4 
+
+
+| 2 | 5.1 
+
+
+| 1 | 10.2 
+|===

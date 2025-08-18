@@ -1,0 +1,36 @@
+---
+sidebar: sidebar 
+permalink: vector-db/ai-vdb-dr-snapmirror.html 
+keywords: vector database 
+summary: 使用NetApp SnapMirror进行灾难恢复 - NetApp 的矢量数据库解决方案 
+---
+= 使用NetApp SnapMirror进行灾难恢复
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+本节讨论使用SnapMirror为NetApp实现矢量数据库解决方案的 DR（灾难恢复）。
+
+
+
+== 使用NetApp SnapMirror进行灾难恢复
+
+image:vector-database-dr-fsxn-gcnv.png["该图显示输入/输出对话框或表示书面内容"]
+
+灾难恢复对于维护矢量数据库的完整性和可用性至关重要，尤其是考虑到其在管理高维数据和执行复杂相似性搜索中的作用。精心规划和实施的灾难恢复策略可确保在发生硬件故障、自然灾害或网络攻击等不可预见的事件时数据不会丢失或受到损害。这对于依赖矢量数据库的应用程序尤其重要，因为数据的丢失或损坏可能导致严重的运营中断和财务损失。此外，强大的灾难恢复计划还可以最大限度地减少停机时间并允许快速恢复服务，从而确保业务连续性。这是通过NetApp数据复制产品 SnapMirror 跨不同地理位置、定期备份和故障转移机制实现的。因此，灾难恢复不仅仅是一种保护措施，而且是负责任、高效的矢量数据库管理的重要组成部分。
+
+NetApp 的SnapMirror提供从一个NetApp ONTAP存储控制器到另一个存储控制器的数据复制，主要用于灾难恢复 (DR) 和混合解决方案。在矢量数据库的背景下，该工具有助于实现数据在本地和云环境之间的平稳过渡。这种转变无需任何数据转换或应用程序重构即可实现，从而提高了跨多个平台数据管理的效率和灵活性。
+
+NetApp Hybrid解决方案在矢量数据库场景下可以带来更多优势：
+
+. 可扩展性：NetApp 的混合云解决方案能够根据您的需求扩展您的资源。您可以利用本地资源来处理常规、可预测的工作负载，并利用云资源（例如Amazon FSx ONTAP for NetApp ONTAP和 Google Cloud NetApp Volume（NetApp Volumes））来应对高峰时段或意外负载。
+. 成本效益：NetApp 的混合云模型允许您通过使用内部资源来处理常规工作负载并仅在需要时支付云资源费用，从而优化成本。这种按需付费模式通过NetApp instaclustr 服务产品可以实现相当高的成本效益。对于本地和主要云服务提供商，instaclustr 提供支持和咨询。
+. 灵活性：NetApp 的混合云让您可以灵活地选择在何处处理数据。例如，您可能选择在拥有更强大硬件的本地执行复杂的矢量操作，而在云中执行不太密集的操作。
+. 业务连续性：如果发生灾难，将数据保存在NetApp混合云中可以确保业务连续性。如果您的本地资源受到影响，您可以快速切换到云端。我们可以利用NetApp SnapMirror将数据从本地移动到云端，反之亦然。
+. 创新：NetApp 的混合云解决方案还可以通过提供对尖端云服务和技术的访问来实现更快的创新。  NetApp在云领域的创新，例如Amazon FSx ONTAP for NetApp ONTAP、 Azure NetApp Files和Google Cloud NetApp Volumes都是云服务提供商的创新产品和首选 NAS。
+

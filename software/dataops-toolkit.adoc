@@ -1,0 +1,26 @@
+---
+sidebar: sidebar 
+permalink: software/dataops-toolkit.html 
+keywords:  
+summary:  
+---
+= NetApp DataOps 工具包
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+NetApp DataOps Toolkit 是一款基于 Python 的工具，可简化由高性能、横向扩展NetApp存储支持的开发/培训工作区和推理服务器的管理。主要功能包括：
+
+* 快速配置由高性能、横向扩展NetApp存储支持的新的高容量 JupyterLab 工作区。
+* 快速配置由企业级NetApp存储支持的全新NVIDIA Triton 推理服务器实例。
+* 近乎即时地克隆高容量的 JupyterLab 工作区，以便进行实验或快速迭代。
+* 几乎即时保存高容量 JupyterLab 工作区的快照，以用于备份和/或可追溯性/基准测试。
+* 近乎即时地提供、克隆和快照大容量、高性能数据卷。
+
+
+link:https://github.com/NetApp/netapp-dataops-toolkit["NetApp DataOps 工具包"^]

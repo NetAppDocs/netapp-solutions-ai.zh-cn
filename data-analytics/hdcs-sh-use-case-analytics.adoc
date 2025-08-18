@@ -1,0 +1,43 @@
+---
+sidebar: sidebar 
+permalink: data-analytics/hdcs-sh-use-case-analytics.html 
+keywords: analytics platform, nfs, hadoop, jbod, monte carlo 
+summary: 在此场景中，一家大型金融服务和投资银行的分析平台使用NetApp NFS 存储解决方案进行了现代化改造，从而显著提高了其资产管理和量化业务部门的投资风险和衍生品分析能力。 
+---
+= 用例 5：加速分析工作负载
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+在此场景中，一家大型金融服务和投资银行的分析平台使用NetApp NFS 存储解决方案进行了现代化改造，从而显著提高了其资产管理和量化业务部门的投资风险和衍生品分析能力。
+
+
+
+== 场景
+
+在客户现有的环境中，用于分析平台的 Hadoop 基础架构利用了 Hadoop 服务器的内部存储。由于 JBOD 环境的专有性，组织内的许多内部客户无法利用他们的蒙特卡罗定量模型，该模型是一种依赖于实时数据重复样本的模拟。对市场走势不确定性的影响的理解能力不足，对量化资产管理业务部门不利。
+
+
+
+== 要求和挑战
+
+该银行的定量业务部门需要一种有效的预测方法来实现准确、及时的预测。为此，团队认识到需要实现基础设施现代化，减少现有的 I/O 等待时间，并提高 Hadoop 和 Spark 等分析应用程序的性能，以有效模拟投资模型、衡量潜在收益和分析风险。
+
+
+
+== 解决方案
+
+客户现有的 Spark 解决方案已配备 JBOD。然后利用NetApp ONTAP、 NetApp StorageGRID和 MinIO Gateway to NFS 来减少银行量化金融小组的 I/O 等待时间，该小组对评估潜在收益和风险的投资模型进行模拟和分析。此图显示了采用NetApp存储的 Spark 解决方案。
+
+image:hdcs-sh-013.png["该图显示输入/输出对话框或表示书面内容"]
+
+如上图所示，部署了AFF A800、A700 系统和StorageGRID ，以便在六节点 Hadoop 集群中通过 NFS 和 S3 协议访问 parquet 文件，并使用 Spark、YARN 和 Hive 元数据服务进行数据分析操作。
+
+客户旧环境中的直接连接存储 (DAS) 解决方案的缺点是无法独立扩展计算和存储。借助NetApp ONTAP Spark 解决方案，该银行的财务分析业务部门能够将存储与计算分离，并根据需要更有效地无缝地提供基础设施资源。
+
+通过使用带有 NFS 的ONTAP ，计算服务器 CPU 几乎完全用于 Spark SQL 作业，并且 I/O 等待时间减少了近 70%，从而为 Spark 工作负载提供了更好的计算能力和性能提升。随后，提高 CPU 利用率还使客户能够利用 GPU（例如 GPUDirect）进一步实现平台现代化。此外， StorageGRID为 Spark 工作负载提供了低成本的存储选项，而 MinIO Gateway 通过 S3 协议提供对 NFS 数据的安全访问。对于云中的数据， NetApp推荐使用Cloud Volumes ONTAP、 Azure NetApp Files和Google Cloud NetApp Volumes。

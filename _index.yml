@@ -1,0 +1,68 @@
+---
+indexpage:
+  title: NetApp人工智能解决方案
+  summary: NetApp提供全面的 AI 解决方案，结合企业级数据管理、经过验证的参考架构和战略合作伙伴关系，以加速您的 AI 计划并支持关键业务成果。从基础设施部署到
+    MLOps 自动化，我们的解决方案可在边缘、数据中心和混合云环境之间无缝扩展。
+  lead: NetApp提供全面的 AI 解决方案，结合企业级数据管理、经过验证的参考架构和战略合作伙伴关系，以加速您的 AI 计划并支持关键业务成果。从基础设施部署到
+    MLOps 自动化，我们的解决方案可在边缘、数据中心和混合云环境之间无缝扩展。
+  tiles:
+  - title: 开始使用
+    links:
+    - title: 什么是新的
+      url: "/whats-new.html"
+    - title: 博客
+      url: "/blogs.html"
+    - title: 视频和演示
+      url: "/videos/ai-ml-videos.html"
+  - title: 人工智能基础设施和融合系统
+    links:
+    - title: 搭载NVIDIA DGX 系统的NetApp AIPod
+      url: "/infra/ai-aipod-nv-intro.html"
+    - title: 搭载 EF 系列的NVIDIA DGX SuperPOD
+      url: "/infra/ai-eseries-superpod.html"
+    - title: NetApp AIPod与联想携手为NVIDIA OVX 提供支持
+      url: "/infra/ai-aipod-lenovo-nva1172.html"
+    - title: E系列的BeeGFS并行文件系统
+      url: "/infra/ai-eseries-beegfs.html"
+  - title: 人工智能用例和应用
+    links:
+    - title: 用于 RAG 推理的AIPod Mini
+      url: "/infra/ai-minipod.html"
+    - title: 边缘人工智能推理
+      url: "/infra/ai-lenovo-edge-intro.html"
+    - title: 矢量数据库解决方案
+      url: "/vector-db/ai-vdb-solution-with-netapp.html"
+    - title: 自动驾驶工作负载
+      url: "/infra/ai-storagegrid-datalake-adas.html"
+    - title: 昆腾 StorNext E 系列
+      url: "/infra/ai-eseries-nva1150-design.html"
+  - title: MLOps 和数据管理
+    links:
+    - title: NetApp的开源 MLOps
+      url: "/software/ai-osmlops-intro.html"
+    - title: Domino Data Lab 的混合多云 MLOps
+      url: "/software/ai-hybrid-ddlnexus-intro.html"
+    - title: 适用于 MLOps 的 FSx ONTAP
+      url: "/cloud/ai-mlops-fsxn-intro.html"
+    - title: NetApp DataOps 工具包
+      url: "/software/dataops-toolkit.html"
+  - title: 大数据和混合云AI解决方案
+    links:
+    - title: 混合云数据解决方案
+      url: "/data-analytics/hdcs-sh-solution-overview.html"
+    - title: Apache Spark 解决方案
+      url: "/data-analytics/apache-spark-solution-overview.html"
+    - title: Confluent Kafka 与NetApp ONTAP存储
+      url: "/data-analytics/kafka-ontap-overview.html"
+    - title: NetApp StorageGRID与 Splunk SmartStore
+      url: "/data-analytics/stgr-splunkss-introduction.html"
+    - title: 配备NetApp存储的 Dremio Lakehouse
+      url: "/data-analytics/dremio-lakehouse-introduction.html"
+  - title: 解决方案请求和反馈
+    links:
+    - title: 请求自动化
+      url: https://github.com/NetAppDocs/netapp-solutions/issues/new?body=[Request%20Automation]%0d%0a%0d%0aSolution%20Name:%20%0d%0aRequest%20Title:%20%0d%0aDescription:%0d%0aSuggestions:&title=Request%20Automation%20-%20%3Crequest_title%3E
+    - title: 提出新的解决方案
+      url: https://github.com/NetAppDocs/netapp-solutions/issues/new?body=[Request%20Solution]%0d%0a%0d%0aSolution%20Use%20Case:%20%0d%0aSolution%20Description:%20%0d%0aAdditional%20Comments:&title=Request%20Solution%20-%20%3Csolution%3E
+    - title: 提供解决方案反馈
+      url: https://github.com/NetAppDocs/netapp-solutions/issues/new?body=[Solution%20Feedback]%0d%0a%0d%0aSolution%20Name:%20%0d%0aSolution%20Feedback:%20%0d%0aAdditional%20Comments:&title=Solution%20Feedback%20-%20%3Csolution%3E

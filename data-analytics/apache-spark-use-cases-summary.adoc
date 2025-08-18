@@ -1,0 +1,75 @@
+---
+sidebar: sidebar 
+permalink: data-analytics/apache-spark-use-cases-summary.html 
+keywords: streaming data, machine learning, deep learning, interactive analysis, recommender system, natural language processing, 
+summary: 本页描述了可以使用该解决方案的不同领域。 
+---
+= 用例摘要
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+本页描述了可以使用该解决方案的不同领域。
+
+
+
+== 流数据
+
+Apache Spark 可以处理流数据，用于流式提取、转换和加载 (ETL) 过程；数据丰富；触发事件检测；以及复杂的会话分析：
+
+* 流式 ETL。*数据在被推送到数据存储之前会被不断地清理和汇总。 Netflix 使用 Kafka 和 Spark 流构建实时在线电影推荐和数据监控解决方案，每天可以处理来自不同数据源的数十亿个事件。然而，用于批处理的传统 ETL 的处理方式有所不同。首先读取该数据，然后将其转换为数据库格式，再写入数据库。
+* *数据丰富。* Spark 流使用静态数据丰富实时数据，以实现更实时的数据分析。例如，在线广告商可以根据客户行为信息投放个性化、有针对性的广告。
+* *触发事件检测。* Spark 流允许您检测并快速响应可能表明存在严重问题的异常行为。例如，金融机构使用触发器来检测和阻止欺诈交易，医院使用触发器来检测患者生命体征中检测到的危险健康变化。
+* *复杂的会话分析。* Spark 流收集用户登录网站或应用程序后的活动等事件，然后对其进行分组和分析。例如，Netflix 使用此功能提供实时电影推荐。
+
+
+有关流数据配置、Confluent Kafka 验证和性能测试的更多内容，请参阅link:confluent-kafka-introduction.html["TR-4912： NetApp Confluent Kafka 分层存储的最佳实践指南"^]。
+
+
+
+== 机器学习
+
+Spark 集成框架可帮助您使用机器学习库 (MLlib) 对数据集运行重复查询。  MLlib 用于聚类、分类和降维等领域，用于一些常见的大数据功能，例如预测智能、用于营销目的的客户细分和情感分析。 MLlib 用于网络安全，对数据包进行实时检查，以发现恶意活动的迹象。它可以帮助安全提供商了解新的威胁并领先于黑客，同时实时保护他们的客户。
+
+
+
+== 深度学习
+
+TensorFlow 是业界流行的深度学习框架。 TensorFlow支持在CPU或GPU集群上进行分布式训练。这种分布式训练允许用户在具有大量深层的数据上运行它。
+
+直到最近，如果我们想将 TensorFlow 与 Apache Spark 一起使用，我们需要在 PySpark 中为 TensorFlow 执行所有必要的 ETL，然后将数据写入中间存储。然后，该数据将被加载到 TensorFlow 集群上，用于实际的训练过程。此工作流程要求用户维护两个不同的集群，一个用于 ETL，一个用于 TensorFlow 的分布式训练。运行和维护多个集群通常很繁琐且耗时。
+
+早期 Spark 版本中的 DataFrames 和 RDD 不太适合深度学习，因为随机访问受到限制。在带有氢项目的 Spark 3.0 中，添加了对深度学习框架的原生支持。这种方法允许在 Spark 集群上进行非基于 MapReduce 的调度。
+
+
+
+== 交互式分析
+
+Apache Spark 的速度足够快，可以使用 Spark 以外的开发语言（包括 SQL、R 和 Python）执行探索性查询而无需采样。 Spark 使用可视化工具来处理复杂数据并以交互方式进行可视化。具有结构化流的 Spark 对网络分析中的实时数据执行交互式查询，使您能够对网络访问者的当前会话运行交互式查询。
+
+
+
+== 推荐系统
+
+多年来，随着企业和消费者对网上购物、在线娱乐和许多其他行业的巨大变化做出了反应，推荐系统给我们的生活带来了巨大的变化。事实上，这些系统是人工智能在生产中最明显的成功案例之一。在许多实际用例中，推荐系统与对话式 AI 或与 NLP 后端交互的聊天机器人相结合，以获取相关信息并产生有用的推论。
+
+如今，许多零售商正在采用更新的商业模式，例如网上购买、店内取货、路边取货、自助结账、扫描即走等等。这些模式在新冠疫情期间尤为突出，因为它们让消费者的购物更加安全、更加便捷。人工智能对于这些日益增长的数字趋势至关重要，这些趋势受到消费者行为的影响，反之亦然。为了满足消费者日益增长的需求、增强客户体验、提高运营效率和增加收入， NetApp帮助其企业客户和企业使用机器学习和深度学习算法来设计更快、更准确的推荐系统。
+
+有几种流行的技术用于提供推荐，包括协同过滤、基于内容的系统、深度学习推荐模型 (DLRM) 和混合技术。客户之前利用 PySpark 实现协同过滤来创建推荐系统。  Spark MLlib 实现了用于协同过滤的交替最小二乘法 (ALS)，这是 DLRM 兴起之前企业中非常流行的算法。
+
+
+
+== 自然语言处理
+
+对话式人工智能是通过自然语言处理 (NLP) 实现的，它是帮助计算机与人类交流的人工智能的一个分支。 NLP 在每个垂直行业和许多用例中都很普遍，从智能助手和聊天机器人到谷歌搜索和预测文本。根据 https://www.forbes.com/sites/forbestechcouncil/2021/05/07/nice-chatbot-ing-with-you/?sh=7011eff571f4["Gartner"^]预测到2022年，70%的人将每天与对话式人工智能平台进行互动。为了实现人与机器之间的高质量对话，响应必须快速、智能且听起来自然。
+
+客户需要大量数据来处理和训练他们的 NLP 和自动语音识别 (ASR) 模型。他们还需要在边缘、核心和云端移动数据，并且需要在几毫秒内进行推理的能力，以与人类建立自然的交流。  NetApp AI 和 Apache Spark 是计算、存储、数据处理、模型训练、微调和部署的理想组合。
+
+情感分析是 NLP 中的一个研究领域，它从文本中提取积极、消极或中性情感。情绪分析有多种用例，从确定支持中心员工与呼叫者对话的表现到提供适当的自动聊天机器人响应。它还被用来根据公司代表和季度收益电话会议上的听众之间的互动来预测公司的股价。此外，情绪分析可用于确定客户对品牌提供的产品、服务或支持的看法。
+
+我们使用了 https://www.johnsnowlabs.com/spark-nlp/["Spark NLP"^]来自的图书馆 https://www.johnsnowlabs.com/["约翰·斯诺实验室"^]加载预训练管道和 Transformer (BERT) 模型的双向编码器表示，包括 https://sparknlp.org/2023/01/12/classifierdl_bertwiki_finance_sentiment_pipeline_en.html["财经新闻情绪"^]和 https://sparknlp.org/2022/04/11/bert_embeddings_finbert_pretrain_yiyanghkust_en_3_0.html["FinBERT"^]，大规模执行标记化、命名实体识别、模型训练、拟合和情感分析。 Spark NLP 是唯一一个正在生产中的开源 NLP 库，它提供最先进的转换器，例如 BERT、ALBERT、ELECTRA、XLNet、DistilBERT、RoBERTa、DeBERTa、XLM-RoBERTa、Longformer、ELMO、Universal Sentence Encoder、Google T5、MarianMT 和 GPT2。该库不仅适用于 Python 和 R，还可以通过原生扩展 Apache Spark 在 JVM 生态系统（Java、Scala 和 Kotlin）中大规模运行。

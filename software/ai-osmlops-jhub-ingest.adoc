@@ -1,0 +1,23 @@
+---
+sidebar: sidebar 
+permalink: software/ai-osmlops-jhub-ingest.html 
+keywords: AI, control plane, MLOps, JupyterHub 
+summary: 使用NetApp SnapMirror提取数据 
+---
+= 使用NetApp SnapMirror将数据导入 JupyterHub
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+NetApp SnapMirror是一种复制技术，可让您在NetApp存储系统之间复制数据。  SnapMirror可用于将数据从远程环境提取到 JupyterHub。
+
+
+
+== 示例工作流程和演示
+
+参考link:https://community.netapp.com/t5/Tech-ONTAP-Blogs/Accelerating-Data-Ingestion-and-AI-ML-Experimentation-with-NetApp-SnapMirror-and/ba-p/457814["此 Tech ONTAP博客文章"]有关使用NetApp SnapMirror将数据导入 JupyterHub 的详细示例工作流程和演示。

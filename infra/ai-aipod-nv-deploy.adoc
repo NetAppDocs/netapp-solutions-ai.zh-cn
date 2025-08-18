@@ -1,0 +1,393 @@
+---
+sidebar: sidebar 
+permalink: infra/ai-aipod-nv-deploy.html 
+keywords: NetApp AI, AI, Artificial Intelligence, ML, Machine Learning, NVIDIA, NVIDIA AI Enterprise, NVIDIA BasePOD, NVIDIA DGX 
+summary: NetApp AIPod与NVIDIA DGX 系统 - 部署 
+---
+= NVA-1173 NetApp AIPod与NVIDIA DGX 系统 - 部署详情
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+本节介绍验证此解决方案期间使用的部署细节。使用的 IP 地址仅供参考，请根据部署环境进行修改。有关此配置的实现中使用的特定命令的更多信息，请参阅相应的产品文档。
+
+下图显示了 1 个 DGX H100 系统和 1 个 HA 对AFF A90控制器的详细网络和连接信息。以下部分中的部署指南基于此图中的详细信息。
+
+NetApp AIpod 网络配置
+
+image:aipod-nv-a90-netdetail.png["该图显示输入/输出对话框或表示书面内容"]
+
+下表显示了最多 16 个 DGX 系统和 2 个AFF A90 HA 对的示例布线分配。
+
+|===
+| 交换机和端口 | 设备 | 设备端口 
+
+
+| 交换机1端口1-16 | DGX-H100-01 至 -16 | enp170s0f0np0，插槽1端口1 
+
+
+| 交换机1端口17-32 | DGX-H100-01 至 -16 | enp170s0f1np1，插槽1端口2 
+
+
+| 交换机1端口33-36 | AFF-A90-01 至 -04 | 端口 e6a 
+
+
+| 交换机1端口37-40 | AFF-A90-01 至 -04 | 端口 e11a 
+
+
+| 交换机1端口41-44 | AFF-A90-01 至 -04 | 端口 e2a 
+
+
+| 交换机1端口57-64 | ISL 到交换机 2 | 端口 57-64 
+
+
+|  |  |  
+
+
+| 交换机2端口1-16 | DGX-H100-01 至 -16 | enp41s0f0np0，插槽2端口1 
+
+
+| 交换机2端口17-32 | DGX-H100-01 至 -16 | enp41s0f1np1，插槽 2 端口 2 
+
+
+| 交换机2端口33-36 | AFF-A90-01 至 -04 | 端口 e6b 
+
+
+| 交换机2端口37-40 | AFF-A90-01 至 -04 | 端口 e11b 
+
+
+| 交换机2端口41-44 | AFF-A90-01 至 -04 | 端口 e2b 
+
+
+| 交换机2端口57-64 | ISL 到交换机 1 | 端口 57-64 
+|===
+下表显示了本次验证中使用的各个组件的软件版本。
+
+|===
+| 设备 | 软件版本 
+
+
+| NVIDIA SN4600 交换机 | Cumulus Linux v5.9.1 
+
+
+| NVIDIA DGX 系统 | DGX 操作系统 v6.2.1（Ubuntu 22.04 LTS） 
+
+
+| Mellanox OFED | 24.01 
+
+
+| NetApp AFF A90 | NetApp ONTAP 9.14.1 
+|===
+
+
+== 存储网络配置
+
+本节概述以太网存储网络配置的关键细节。有关配置 InfiniBand 计算网络的信息，请参阅link:https://nvdam.widen.net/s/nfnjflmzlj/nvidia-dgx-basepod-reference-architecture["NVIDIA BasePOD 文档"]。有关交换机配置的详细信息，请参阅link:https://docs.nvidia.com/networking-ethernet-software/cumulus-linux-59/["NVIDIA Cumulus Linux 文档"]。
+
+配置 SN4600 交换机的基本步骤概述如下。此过程假定布线和基本交换机设置（管理 IP 地址、许可等）已完成。
+
+. 配置交换机之间的 ISL 绑定以启用多链路聚合 (MLAG) 和故障转移流量
++
+** 本次验证使用了 8 条链路，为测试的存储配置提供了足够的带宽
+** 有关启用 MLAG 的具体说明，请参阅 Cumulus Linux 文档。
+
+
+. 为两台交换机上的每对客户端端口和存储端口配置 LACP MLAG
++
+** 每个交换机上的端口 swp17 用于 DGX-H100-01（enp170s0f1np1 和 enp41s0f1np1），端口 swp18 用于 DGX-H100-02，等等（bond1-16）
+** 每个交换机上的端口 swp41 用于AFF-A90-01（e2a 和 e2b），端口 swp42 用于AFF-A90-02，等等（bond17-20）
+** nv 设置接口 bondX 债券成员 swpX
+** nv 设置接口 bondx 绑定 mlag id X
+
+
+. 将所有端口和 MLAG 绑定添加到默认桥接域
++
+** nv 设置 int swp1-16,33-40 桥接域 br_default
+** nv 设置 int bond1-20 桥接域 br_default
+
+
+. 在每台交换机上启用 RoCE
++
+** nv 设置 roce 模式无损
+
+
+. 配置 VLAN - 2 个用于客户端端口，2 个用于存储端口，1 个用于管理，1 个用于 L3 交换机到交换机
++
+** 开关 1-
++
+*** VLAN 3 用于在客户端 NIC 发生故障时进行 L3 交换机到交换机的路由
+*** 每个 DGX 系统上的存储端口 1 的 VLAN 101（enp170s0f0np0，slot1 端口 1）
+*** 每个AFF A90存储控制器上的端口 e6a 和 e11a 的 VLAN 102
+*** VLAN 301 用于使用 MLAG 接口对每个 DGX 系统和存储控制器进行管理
+
+
+** 开关 2-
++
+*** VLAN 3 用于在客户端 NIC 发生故障时进行 L3 交换机到交换机的路由
+*** 每个 DGX 系统上的存储端口 2 的 VLAN 201（enp41s0f0np0，slot2 端口 1）
+*** 每个AFF A90存储控制器上的端口 e6b 和 e11b 的 VLAN 202
+*** VLAN 301 用于使用 MLAG 接口对每个 DGX 系统和存储控制器进行管理
+
+
+
+
+. 根据需要将物理端口分配给每个 VLAN，例如客户端 VLAN 中的客户端端口和存储 VLAN 中的存储端口
++
+** nv 设置 int <swpX> 桥接域 br_default 访问 <vlan id>
+** MLAG 端口应保持为中继端口，以根据需要在绑定接口上启用多个 VLAN。
+
+
+. 在每个 VLAN 上配置交换机虚拟接口 (SVI) 以充当网关并启用 L3 路由
++
+** 开关 1-
++
+*** nv 设置 int vlan3 ip 地址 100.127.0.0/31
+*** nv 设置 int vlan101 ip 地址 100.127.101.1/24
+*** nv 设置 int vlan102 ip 地址 100.127.102.1/24
+
+
+** 开关 2-
++
+*** nv 设置 int vlan3 ip 地址 100.127.0.1/31
+*** nv 设置 int vlan201 ip 地址 100.127.201.1/24
+*** nv 设置 int vlan202 ip 地址 100.127.202.1/24
+
+
+
+
+. 创建静态路由
++
+** 同一交换机上的子网将自动创建静态路由
+** 当客户端链路发生故障时，交换机到交换机的路由需要额外的静态路由
++
+*** 开关 1-
++
+**** nv 设置 VRF 默认路由器静态 100.127.128.0/17 通过 100.127.0.1
+
+
+*** 开关 2-
++
+**** nv 设置 VRF 默认路由器静态 100.127.0.0/17 通过 100.127.0.0
+
+
+
+
+
+
+
+
+
+
+== 存储系统配置
+
+本节介绍此解决方案的 A90 存储系统配置的关键细节。有关ONTAP系统配置的更多详细信息，请参阅link:https://docs.netapp.com/us-en/ontap/index.html["ONTAP 文档"]。下图显示了存储系统的逻辑配置。
+
+NetApp A90 存储集群逻辑配置
+
+image:aipod-nv-a90-logical.png["该图显示输入/输出对话框或表示书面内容"]
+
+配置存储系统的基本步骤概述如下。此过程假设基本存储集群安装已经完成。
+
+. 在每个控制器上配置 1 个聚合，所有可用分区减去 1 个备用分区
++
+** aggr create -node <节点> -aggregate <节点>_data01 -diskcount <47>
+
+
+. 在每个控制器上配置 ifgrps
++
+** 网络端口 ifgrp create -node <节点> -ifgrp a1a -mode multimode_lacp -distr-function port
+** 网络端口 ifgrp add-port -node <节点> -ifgrp <ifgrp> -ports <节点>:e2a,<节点>:e2b
+
+
+. 在每个控制器上的 ifgrp 上配置 mgmt vlan 端口
++
+** 网络端口 vlan 创建 -节点 aff-a90-01 -端口 a1a -vlan-id 31
+** 网络端口 vlan 创建 -节点 aff-a90-02 -端口 a1a -vlan-id 31
+** 网络端口 vlan 创建 -节点 aff-a90-03 -端口 a1a -vlan-id 31
+** 网络端口 vlan 创建 -节点 aff-a90-04 -端口 a1a -vlan-id 31
+
+
+. 创建广播域
++
+** 广播域创建-广播域vlan21-mtu 9000-端口aff-a90-01：e6a，aff-a90-01：e11a，aff-a90-02：e6a，aff-a90-02：e11a，aff-a90-03：e6a，aff-a90-03：e11a，aff-a90-04：e6a，aff-a90-04：e11a
+** 广播域创建-广播域vlan22-mtu 9000-端口aaff-a90-01：e6b，aff-a90-01：e11b，aff-a90-02：e6b，aff-a90-02：e11b，aff-a90-03：e6b，aff-a90-03：e11b，aff-a90-04：e6b，aff-a90-04：e11b
+** 广播域创建-广播域vlan31-mtu 9000-端口aff-a90-01:a1a-31，aff-a90-02:a1a-31，aff-a90-03:a1a-31，aff-a90-04:a1a-31
+
+
+. 创建管理 SVM *
+. 配置管理 SVM
++
+** 创建 LIF
++
+*** net int create -vserver basepod-mgmt -lif vlan31-01 -home-node aff-a90-01 -home-port a1a-31 -address 192.168.31.X -netmask 255.255.255.0
+
+
+** 创建FlexGroup卷-
++
+*** 卷创建-vserver basepod-mgmt-volume home-size 10T-auto-provision-as flexgroup-junction-path /home
+*** 卷创建-vserver basepod-mgmt-volume cm-size 10T-auto-provision-as flexgroup-junction-path /cm
+
+
+** 制定出口政策
++
+*** 导出策略规则创建-vserver basepod-mgmt-policy default-client-match 192.168.31.0/24-rorule sys-rwrule sys-superuser sys
+
+
+
+
+. 创建数据 SVM *
+. 配置数据 SVM
++
+** 配置 SVM 以支持 RDMA
++
+*** vserver nfs 修改-vserver basepod-data -rdma 已启用
+
+
+** 创建 LIF
++
+*** net int create -vserver basepod-data -lif c1-6a-lif1 -home-node aff-a90-01 -home-port e6a -address 100.127.102.101 -netmask 255.255.255.0
+*** net int create -vserver basepod-data -lif c1-6a-lif2 -home-node aff-a90-01 -home-port e6a -address 100.127.102.102 -netmask 255.255.255.0
+*** net int create -vserver basepod-data -lif c1-6b-lif1 -home-node aff-a90-01 -home-port e6b -address 100.127.202.101 -netmask 255.255.255.0
+*** net int create -vserver basepod-data -lif c1-6b-lif2 -home-node aff-a90-01 -home-port e6b -address 100.127.202.102 -netmask 255.255.255.0
+*** net int create -vserver basepod-data -lif c1-11a-lif1 -home-node aff-a90-01 -home-port e11a -address 100.127.102.103 -netmask 255.255.255.0
+*** net int create -vserver basepod-data -lif c1-11a-lif2 -home-node aff-a90-01 -home-port e11a -address 100.127.102.104 -netmask 255.255.255.0
+*** net int create -vserver basepod-data -lif c1-11b-lif1 -home-node aff-a90-01 -home-port e11b -address 100.127.202.103 -netmask 255.255.255.0
+*** net int create -vserver basepod-data -lif c1-11b-lif2 -home-node aff-a90-01 -home-port e11b -address 100.127.202.104 -netmask 255.255.255.0
+*** net int create -vserver basepod-data -lif c2-6a-lif1 -home-node aff-a90-02 -home-port e6a -address 100.127.102.105 -netmask 255.255.255.0
+*** net int create -vserver basepod-data -lif c2-6a-lif2 -home-node aff-a90-02 -home-port e6a -address 100.127.102.106 -netmask 255.255.255.0
+*** net int create -vserver basepod-data -lif c2-6b-lif1 -home-node aff-a90-02 -home-port e6b -address 100.127.202.105 -netmask 255.255.255.0
+*** net int create -vserver basepod-data -lif c2-6b-lif2 -home-node aff-a90-02 -home-port e6b -address 100.127.202.106 -netmask 255.255.255.0
+*** net int create -vserver basepod-data -lif c2-11a-lif1 -home-node aff-a90-02 -home-port e11a -address 100.127.102.107 -netmask 255.255.255.0
+*** net int create-vserver basepod-data-lif c2-11a-lif2-home-node aff-a90-02-home-port e11a-address 100.127.102.108-netmask 255.255.255.0
+*** net int create -vserver basepod-data -lif c2-11b-lif1 -home-node aff-a90-02 -home-port e11b -address 100.127.202.107 -netmask 255.255.255.0
+*** net int create-vserver basepod-data-lif c2-11b-lif2-home-node aff-a90-02-home-port e11b-address 100.127.202.108-netmask 255.255.255.0
+
+
+
+
+. 配置 LIF 以进行 RDMA 访问
++
+** 对于使用ONTAP 9.15.1 的部署，物理信息的 RoCE QoS 配置需要ONTAP CLI 中不可用的操作系统级命令。请联系NetApp支持以获取有关 RoCE 支持端口配置的帮助。  NFS over RDMA 功能正常
+** 从ONTAP 9.16.1 开始，物理接口将自动配置适当的设置以实现端到端 RoCE 支持。
+** net int 修改-vserver basepod-data -lif * -rdma-protocols roce
+
+
+. 在数据 SVM 上配置 NFS 参数
++
+** nfs 修改 -vserver basepod-data -v4.1 已启用 -v4.1-pnfs 已启用 -v4.1-trunking 已启用 -tcp-max-transfer-size 262144
+
+
+. 创建FlexGroup卷
++
+** 卷创建-vserver basepod-data-volume数据-size 100T-auto-provision-as flexgroup-junction-path /data
+
+
+. 创建导出策略
++
+** 导出策略规则创建-vserver basepod-data-policy default-client-match 100.127.101.0/24-rorule sys-rwrule sys-superuser sys
+** 导出策略规则创建-vserver basepod-data-policy default-client-match 100.127.201.0/24-rorule sys-rwrule sys-superuser sys
+
+
+. 创建路线
++
+** 路由添加-vserver basepod_data-目的地100.127.0.0/17-网关100.127.102.1度量20
+** 路由添加-vserver basepod_data-目的地100.127.0.0/17-网关100.127.202.1度量30
+** 路由添加-vserver basepod_data-目的地100.127.128.0/17-网关100.127.202.1度量20
+** 路由添加-vserver basepod_data-目的地100.127.128.0/17-网关100.127.102.1度量30
+
+
+
+
+
+
+=== 用于 RoCE 存储访问的 DGX H100 配置
+
+本节介绍 DGX H100 系统配置的关键细节。许多配置项可以包含在部署到 DGX 系统的 OS 映像中，或者在启动时由 Base Command Manager 实现。这里列出它们以供参考，有关在 BCM 中配置节点和软件映像的更多信息，请参阅link:https://docs.nvidia.com/base-command-manager/index.html#overview["BCM 文档"]。
+
+. 安装其他软件包
++
+** ipmitool
+** python3-pip
+
+
+. 安装 Python 包
++
+** 波罗米科
+** matplotlib
+
+
+. 软件包安装后重新配置 dpkg
++
+** dpkg——配置-a
+
+
+. 安装 MOFED
+. 设置 mst 值以进行性能调整
++
+** mstconfig -y -d <aa:00.0,29:00.0> 设置 ADVANCED_PCI_SETTINGS=1 NUM_OF_VFS=0 MAX_ACC_OUT_READ=44
+
+
+. 修改设置后重置适配器
++
+** mlxfwreset -d <aa:00.0,29:00.0> -y 重置
+
+
+. 在 PCI 设备上设置 MaxReadReq
++
+** setpci -s <aa:00.0,29:00.0> 68.W=5957
+
+
+. 设置 RX 和 TX 环形缓冲区大小
++
+** ethtool -G <enp170s0f0np0,enp41s0f0np0> rx 8192 tx 8192
+
+
+. 使用 mlnx_qos 设置 PFC 和 DSCP
++
+** mlnx_qos -i <enp170s0f0np0,enp41s0f0np0> --pfc 0,0,0,1,0,0,0,0 --trust=dscp --cable_len=3
+
+
+. 为网络端口上的 RoCE 流量设置 ToS
++
+** echo 106 > /sys/class/infiniband/<mlx5_7,mlx5_1>/tc/1/traffic_class
+
+
+. 在适当的子网上为每个存储 NIC 配置一个 IP 地址
++
+** 100.127.101.0/24 用于存储 NIC 1
+** 100.127.201.0/24 用于存储 NIC 2
+
+
+. 配置带内网络端口进行 LACP 绑定（enp170s0f1np1、enp41s0f1np1）
+. 为每个存储子网的主路径和次路径配置静态路由
++
+** 路由添加 –net 100.127.0.0/17 gw 100.127.101.1 metric 20
+** 路由添加 –net 100.127.0.0/17 gw 100.127.201.1 公制 30
+** 路由添加 –net 100.127.128.0/17 gw 100.127.201.1 公制 20
+** 路由添加 –net 100.127.128.0/17 gw 100.127.101.1 公制 30
+
+
+. 挂载 /home 卷
++
+** 安装-o vers = 3，nconnect = 16，rsize = 262144，wsize = 262144 192.168.31.X：/home /home
+
+
+. 挂载/数据卷
++
+** 安装数据卷时使用了以下安装选项-
++
+*** vers=4.1 # 启用 pNFS 来并行访问多个存储节点
+*** proto=rdma # 将传输协议设置为 RDMA，而不是默认的 TCP
+*** max_connect=16 #启用 NFS 会话中继来聚合存储端口带宽
+*** write=eager # 提高缓冲写入的写入性能
+*** rsize=262144,wsize=262144 # 将 I/O 传输大小设置为 256k
+
+
+
+
+

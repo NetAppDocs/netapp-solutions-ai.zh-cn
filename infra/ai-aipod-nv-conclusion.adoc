@@ -1,0 +1,89 @@
+---
+sidebar: sidebar 
+permalink: infra/ai-aipod-nv-conclusion.html 
+keywords: NetApp AI, AI, Artificial Intelligence, ML, Machine Learning, NVIDIA, NVIDIA AI Enterprise, NVIDIA BasePOD, NVIDIA DGX 
+summary: NetApp AIPod与NVIDIA DGX 系统 - 在哪里可以找到更多信息 
+---
+= NVA-1173 NetApp AIPod与NVIDIA DGX 系统 - 结论及其他信息
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+本节包含有关带有NVIDIA DGX 系统的NetApp AIPod的更多信息的参考。
+
+
+
+== 结束语
+
+DGX BasePOD 架构是下一代深度学习平台，需要同样先进的存储和数据管理功能。通过将 DGX BasePOD 与NetApp AFF系统相结合， NetApp AIPod与 DGX 系统架构几乎可以在任何规模上实现。结合NetApp ONTAP卓越的云集成和软件定义功能， AFF可为成功的 DL 项目提供涵盖边缘、核心和云的全方位数据管道。
+
+
+
+== 追加信息
+
+要了解有关本文档中描述的信息的更多信息，请参阅以下文档和/或网站：
+
+* NetApp ONTAP数据管理软件 — ONTAP信息库
++
+https://docs.netapp.com/us-en/ontap-family/["https://docs.netapp.com/us-en/ontap-family/"^]
+
+* NetApp AFF A90存储系统-
++
+https://www.netapp.com/pdf.html?item=/media/7828-ds-3582-aff-a-series-ai-era.pdf["https://www.netapp.com/pdf.html?item=/media/7828-ds-3582-aff-a-series-ai-era.pdf"]
+
+* NetApp ONTAP RDMA 信息-
++
+link:https://docs.netapp.com/us-en/ontap/nfs-rdma/index.html["https://docs.netapp.com/us-en/ontap/nfs-rdma/index.html"]
+
+* NetApp DataOps 工具包
++
+https://github.com/NetApp/netapp-dataops-toolkit["https://github.com/NetApp/netapp-dataops-toolkit"^]
+
+* NetApp Trident
++
+link:https://docs.netapp.com/us-en/netapp-solutions-containers/openshift/os-trident-overview.html["概述"^]
+
+* NetApp GPUDirect 存储博客-
++
+https://www.netapp.com/blog/ontap-reaches-171-gpudirect-storage/["https://www.netapp.com/blog/ontap-reaches-171-gpudirect-storage/"]
+
+* NVIDIA DGX BasePOD
++
+https://www.nvidia.com/en-us/data-center/dgx-basepod/["https://www.nvidia.com/en-us/data-center/dgx-basepod/"^]
+
+* NVIDIA DGX H100 系统
++
+https://www.nvidia.com/en-us/data-center/dgx-h100/["https://www.nvidia.com/en-us/data-center/dgx-h100/"^]
+
+* NVIDIA 网络连接
++
+https://www.nvidia.com/en-us/networking/["https://www.nvidia.com/en-us/networking/"^]
+
+* NVIDIA Magnum IO&#8482; GPUDirect&#174; 存储
++
+https://docs.nvidia.com/gpudirect-storage["https://docs.nvidia.com/gpudirect-storage"]
+
+* NVIDIA基本命令
++
+https://www.nvidia.com/en-us/data-center/base-command/["https://www.nvidia.com/en-us/data-center/base-command/"]
+
+* NVIDIA基础命令管理器
++
+https://www.nvidia.com/en-us/data-center/base-command/manager["https://www.nvidia.com/en-us/data-center/base-command/manager"]
+
+* NVIDIA AI 企业版
++
+https://www.nvidia.com/en-us/data-center/products/ai-enterprise/["https://www.nvidia.com/en-us/data-center/products/ai-enterprise/"^]
+
+
+
+
+
+== 致谢
+
+本文档由NetApp解决方案和ONTAP工程团队（David Arnette、Olga Kornievskaia、Dustin Fischer、Srikanth Kaligotla、Mohit Kumar 和 Raghuram Sudhaakar）编写。作者还要感谢NVIDIA和NVIDIA DGX BasePOD工程团队的持续支持。

@@ -1,0 +1,111 @@
+---
+sidebar: sidebar 
+permalink: software/ai-hybrid-ddlnexus-tech.html 
+keywords: NetApp AI, AI, Artificial Intelligence, ML, Machine Learning, NVIDIA, Hybrid, Hybrid Cloud, Hybrid Multicloud, Cloud, AWS, Amazon, Amazon Web Services, FSx ONTAP, FSx, NetApp ONTAP, FlexCache, SnapMirror, BlueXP 
+summary: Domino Data Lab 和NetApp的混合多云 MLOps - 技术概述 
+---
+= 技术概述
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+本节提供了 Domino Data Lab 和NetApp的混合多云 MLOps 技术概述。
+
+
+
+== 多米诺数据实验室
+
+Domino Data Lab 通过其领先的企业 AI 平台为模型驱动型企业提供支持，该平台受到超过 20% 的财富 100 强企业的信赖。 Domino 加速了数据科学工作的开发和部署，同时增强了协作和治理。借助多米诺骨牌，世界各地的企业可以开发更好的药品、种植更高产的作物、制造更好的汽车等等。  Domino 成立于 2013 年，由 Coatue Management、Great Hill Partners、Highland Capital、Sequoia Capital 和其他领先投资者提供支持。
+
+Domino 让企业及其数据科学家能够在统一的端到端平台上快速、负责且经济高效地构建、部署和管理 AI。团队可以在任何环境中访问他们所需的所有数据、工具、计算、模型和项目，以便他们可以协作、重复使用过去的工作、跟踪生产中的模型以提高准确性、使用最佳实践进行标准化，并使 AI 负责任且受到管理。
+
+* *开放且灵活：*访问最广泛的开源和商业工具及基础设施生态系统，获得最佳创新且不受供应商锁定。
+* *记录系统*：整个企业的人工智能操作和知识的中心枢纽，支持最佳实践、跨职能协作、更快的创新和效率。
+* *集成*：集成的工作流和自动化——专为企业流程、控制和治理而构建——满足您的合规性和监管需求。
+* *混合多云：*在任何地方（本地、混合、任何云或多云）运行靠近数据的 AI 工作负载，以降低成本、实现最佳性能和合规性。
+
+
+image:ddlnexus-002.png["该图显示输入/输出对话框或表示书面内容"]
+
+
+
+== Domino Nexus
+
+Domino Nexus 是一个单一玻璃窗格，可让您在任何计算集群（任何云、区域或本地）运行数据科学和机器学习工作负载。它统一了整个企业的数据科学孤岛，因此您可以在一个地方构建、部署和监控模型。
+
+
+
+== NetApp BlueXP
+
+NetApp BlueXP将 NetApp 的所有存储和数据服务统一到一个工具中，让您可以构建、保护和管理混合多云数据资产。它为本地和云环境中的存储和数据服务提供统一的体验，并通过 AIOps 的强大功能实现操作简化，具有当今云主导世界所需的灵活消费参数和集成保护。
+
+
+
+== NetApp ONTAP
+
+ONTAP 9 是NetApp最新一代存储管理软件，它支持企业实现基础架构现代化并过渡到云就绪数据中心。 ONTAP利用业界领先的数据管理功能，只需一套工具即可管理和保护数据，无论数据位于何处。您还可以将数据自由移动到任何需要的地方：边缘、核心或云端。  ONTAP 9 包含众多功能，可简化数据管理、加速和保护关键数据，并支持跨混合云架构的下一代基础架构功能。
+
+
+
+=== 简化数据管理
+
+数据管理对于企业 IT 运营和数据科学家至关重要，以便将适当的资源用于 AI 应用程序和训练 AI/ML 数据集。以下有关NetApp技术的附加信息超出了本次验证的范围，但可能与您的部署相关。
+
+ONTAP数据管理软件包括以下功能，可简化操作并降低总运营成本：
+
+* 内联数据压缩和扩展重复数据删除。数据压缩减少了存储块内部浪费的空间，重复数据删除显著增加了有效容量。这适用于本地存储的数据和分层到云的数据。
+* 最小、最大和自适应服务质量 (AQoS)。细粒度的服务质量 (QoS) 控制有助于维持高度共享环境中关键应用程序的性能水平。
+* NetApp FabricPool。提供冷数据自动分层到公共和私有云存储选项，包括 Amazon Web Services (AWS)、Azure 和NetApp StorageGRID存储解决方案。有关FabricPool的更多信息，请参阅 https://www.netapp.com/pdf.html?item=/media/17239-tr4598pdf.pdf["TR-4598： FabricPool最佳实践"^]。
+
+
+
+
+=== 加速并保护数据
+
+ONTAP提供卓越级别的性能和数据保护，并通过以下方式扩展这些功能：
+
+* 性能和更低的延迟。  ONTAP以尽可能低的延迟提供尽可能高的吞吐量。
+* 数据保护。ONTAP提供内置数据保护功能，并在所有平台上提供通用管理。
+* NetApp卷加密 (NVE)。  ONTAP提供原生卷级加密，同时支持板载和外部密钥管理。
+* 多租户和多因素身份验证。  ONTAP支持以最高级别的安全性共享基础设施资源。
+
+
+
+
+=== 面向未来的基础设施
+
+ONTAP具有以下功能，可帮助满足苛刻且不断变化的业务需求：
+
+* 无缝扩展和无中断运行。 ONTAP支持无中断地向现有控制器和横向扩展集群添加容量。客户可以升级到最新技术，例如 NVMe 和 32Gb FC，而无需昂贵的数据迁移或中断。
+* 云连接。  ONTAP是与云连接最紧密的存储管理软件，在所有公共云中提供软件定义存储和云原生实例的选项。
+* 与新兴应用程序的集成。  ONTAP使用支持现有企业应用的相同基础架构，为下一代平台和应用（如自动驾驶汽车、智能城市和工业 4.0）提供企业级数据服务。
+
+
+
+
+== Amazon FSx for NetApp ONTAP (FSx ONTAP)
+
+Amazon FSx ONTAP是第一方完全托管的 AWS 服务，它基于 NetApp 流行的ONTAP文件系统构建，提供高度可靠、可扩展、高性能且功能丰富的文件存储。FSx ONTAP将NetApp文件系统的熟悉功能、性能、功能和 API 操作与完全托管的 AWS 服务的灵活性、可扩展性和简单性相结合。
+
+
+
+== NetApp Trident
+
+Trident支持在所有流行的NetApp存储平台上（无论是在公共云还是在本地）使用和管理存储资源，包括ONTAP （AFF、 FAS、Select、Cloud、 Amazon FSx ONTAP）、Element 软件（NetApp HCI、 SolidFire）、 Azure NetApp Files服务和 Google Cloud 上的Google Cloud NetApp Volumes 。  Trident是一个符合容器存储接口 (CSI) 的动态存储编排器，可与 Kubernetes 原生集成。
+
+
+
+== Kubernetes
+
+Kubernetes 是一个开源的、分布式的容器编排平台，最初由 Google 设计，现在由云原生计算基金会 (CNCF) 维护。  Kubernetes 实现了容器化应用程序的部署、管理和扩展功能的自动化，是企业环境中占主导地位的容器编排平台。
+
+
+
+== 亚马逊弹性 Kubernetes 服务 (EKS)
+
+Amazon Elastic Kubernetes Service (Amazon EKS) 是 AWS 云中的托管 Kubernetes 服务。 Amazon EKS 自动管理负责调度容器、管理应用程序可用性、存储集群数据和其他关键任务的 Kubernetes 控制平面节点的可用性和可扩展性。借助 Amazon EKS，您可以利用 AWS 基础设施的所有性能、规模、可靠性和可用性，以及与 AWS 网络和安全服务的集成。

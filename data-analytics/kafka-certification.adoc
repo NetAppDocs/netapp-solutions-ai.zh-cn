@@ -1,0 +1,95 @@
+---
+sidebar: sidebar 
+permalink: data-analytics/kafka-certification.html 
+keywords: certification, setup, configuration, benchmark 
+summary: 我们已经对带有 Kafka 的 Confluent Platform 进行了认证，用于NetApp StorageGRID中的分层存储。 
+---
+= 汇合验证
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+我们使用NetApp StorageGRID中的 Confluent Platform 6.2 Tiered Storage 进行了验证。  NetApp和 Confluent 团队共同进行了此次验证，并运行了验证所需的测试用例。
+
+
+
+== Confluent 平台设置
+
+我们使用以下设置进行验证。
+
+为了验证，我们使用了三个 zookeeper、五个 broker、五个测试脚本执行服务器、命名工具服务器（配备 256GB RAM 和 16 个 CPU）。对于NetApp存储，我们使用了带有四个 SGF6024 的 SG1000 负载均衡器的StorageGRID 。存储和代理通过 100GbE 连接进行连接。
+
+下图显示了用于 Confluent 验证的配置的网络拓扑。
+
+image:confluent-kafka-007.png["该图显示输入/输出对话框或表示书面内容"]
+
+工具服务器充当向 Confluent 节点发送请求的应用程序客户端。
+
+
+
+== Confluent 分层存储配置
+
+分层存储配置在Kafka中需要以下参数：
+
+....
+Confluent.tier.archiver.num.threads=16
+confluent.tier.fetcher.num.threads=32
+confluent.tier.enable=true
+confluent.tier.feature=true
+confluent.tier.backend=S3
+confluent.tier.s3.bucket=kafkasgdbucket1-2
+confluent.tier.s3.region=us-west-2
+confluent.tier.s3.cred.file.path=/data/kafka/.ssh/credentials
+confluent.tier.s3.aws.endpoint.override=http://kafkasgd.rtpppe.netapp.com:10444/
+confluent.tier.s3.force.path.style.access=true
+....
+为了验证，我们使用了带有 HTTP 协议的StorageGRID ，但 HTTPS 也可以使用。访问密钥和密钥存储在 `confluent.tier.s3.cred.file.path`范围。
+
+
+
+== NetApp对象存储 - StorageGRID
+
+我们在StorageGRID中配置了单站点配置以进行验证。
+
+image:confluent-kafka-008.png["该图显示输入/输出对话框或表示书面内容"]
+
+
+
+== 验证测试
+
+我们完成了以下五个测试用例进行验证。这些测试在 Trogdor 框架上执行。前两个是功能测试，其余三个是性能测试。
+
+
+
+=== 对象存储正确性测试
+
+此测试确定对象存储 API 上的所有基本操作（例如，获取/放置/删除）是否根据分层存储的需求正常运行。这是每个对象存储服务都应该在后续测试之前通过的基本测试。这是一个要么通过要么失败的断言测试。
+
+
+
+=== 分层功能正确性测试
+
+该测试通过或失败的断言测试来确定端到端分层存储功能是否运行良好。该测试创建了一个测试主题，该主题默认配置为启用分层，并且热集大小大大减少。它为新创建的测试主题生成一个事件流，等待代理将段存档到对象存储，然后使用事件流并验证所消耗的流是否与生成的流匹配。向事件流生成的消息数量是可配置的，这使得用户可以根据测试的需要生成足够大的工作量。减少的热集大小可确保活动段之外的消费者提取仅从对象存储中提供；这有助于测试对象存储读取的正确性。我们已经在有和没有对象存储故障注入的情况下执行了此测试。我们通过停止StorageGRID中某个节点的服务管理器服务来模拟节点故障，并验证端到端功能是否与对象存储兼容。
+
+
+
+=== 层级获取基准
+
+该测试验证了分层对象存储的读取性能，并检查了基准测试生成的段在高负载下的范围提取读取请求。在这个基准测试中，Confluent 开发了自定义客户端来满足层级获取请求。
+
+
+
+=== 生产-消费工作负载基准测试
+
+该测试通过段归档间接生成对象存储上的写入工作负载。当消费者群体获取段时，从对象存储中生成读取工作负载（读取的段）。该工作负载由测试脚本生成。该测试检查了并行线程对对象存储的读写性能。我们对分层功能正确性测试进行了测试，测试了有和没有对象存储故障注入的情况。
+
+
+
+=== 保留工作量基准
+
+该测试检查了对象存储在繁重的主题保留工作负载下的删除性能。保留工作负载是使用测试脚本生成的，该脚本与测试主题并行生成许多消息。测试主题是使用基于大小和基于时间的激进保留设置进行配置，这会导致事件流不断从对象存储中清除。然后将这些片段存档。这导致代理在对象存储中执行大量删除操作，并收集对象存储删除操作的性能。

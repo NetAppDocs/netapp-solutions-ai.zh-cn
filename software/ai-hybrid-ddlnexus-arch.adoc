@@ -1,0 +1,40 @@
+---
+sidebar: sidebar 
+permalink: software/ai-hybrid-ddlnexus-arch.html 
+keywords: NetApp AI, AI, Artificial Intelligence, ML, Machine Learning, NVIDIA, Hybrid, Hybrid Cloud, Hybrid Multicloud, Cloud, AWS, Amazon, Amazon Web Services, FSx ONTAP, FSx, NetApp ONTAP, FlexCache, SnapMirror, BlueXP 
+summary: Domino Data Lab 和NetApp的混合多云 MLOps - 架构 
+---
+= 架构
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+该解决方案将 Domino Nexus 的混合多云工作负载调度功能与NetApp数据服务相结合，以创建统一的混合云 MLOps 平台。请参阅下表以了解详情。
+
+|===
+| 组件 | 名称 | 环境 
+
+
+| MLOps 控制平面 | link:https://domino.ai/platform/nexus["Domino Enterprise AI 平台与 Domino Nexus"] | AWS 
+
+
+| MLOps 平台计算环境 | link:https://docs.dominodatalab.com/en/latest/admin_guide/5781ea/data-planes/["Domino Nexus 数据平面"] | AWS，本地数据中心 
+
+
+| 本地计算平台 | link:https://kubernetes.io["Kubernetes"]和link:https://docs.netapp.com/us-en/trident/index.html["NetApp Trident"] | 本地数据中心 
+
+
+| 云计算平台 | link:https://aws.amazon.com/eks/["亚马逊弹性 Kubernetes 服务 (EKS)"]和link:https://docs.netapp.com/us-en/trident/index.html["NetApp Trident"] | AWS 
+
+
+| 本地数据平台 | link:https://www.netapp.com/data-storage/["NetApp存储设备"]供电link:https://www.netapp.com/data-management/ontap-data-management-software/["NetApp ONTAP"] | 本地数据中心 
+
+
+| 云数据平台 | link:https://aws.amazon.com/fsx/netapp-ontap/["Amazon FSx ONTAP"] | AWS 
+|===
+image:ddlnexus-001.png["该图显示输入/输出对话框或表示书面内容"]

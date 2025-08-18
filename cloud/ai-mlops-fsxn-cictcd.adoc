@@ -1,0 +1,177 @@
+---
+sidebar: sidebar 
+permalink: cloud/ai-mlops-fsxn-cictcd.html 
+keywords: FSx ONTAP, FSx ONTAP, MLOps, NetApp ONTAP, AWS Lambda Functions, SageMaker, AWS S3 
+summary: 本文提供了使用 AWS 服务构建 MLOps 管道的指南，重点关注自动化模型再训练、部署和成本优化。 
+---
+= 第 3 部分 - 构建简化的 MLOps 管道 (CI/CT/CD)
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+本文提供了使用 AWS 服务构建 MLOps 管道的指南，重点关注自动模型再训练、部署和成本优化。
+
+
+
+== 简介
+
+在本教程中，您将学习如何利用各种 AWS 服务构建一个包含持续集成 (CI)、持续训练 (CT) 和持续部署 (CD) 的简单 MLOps 管道。与传统的 DevOps 管道不同，MLOps 需要额外的考虑才能完成操作周期。通过学习本教程，您将深入了解如何将 CT 纳入 MLOps 循环，从而实现模型的持续训练和推理的无缝部署。本教程将指导您完成利用 AWS 服务建立此端到端 MLOps 管道的过程。
+
+
+
+== 显现
+
+|===
+| 功能 | 名称 | 注释 
+
+
+| 数据存储 | AWS FSx ONTAP | 请参阅link:ai-mlops-fsxn-s3.html["第 1 部分 - 将Amazon FSx for NetApp ONTAP (FSx ONTAP) 作为私有 S3 存储桶集成到 AWS SageMaker"] 。 
+
+
+| 数据科学 IDE | AWS SageMaker | 本教程基于link:ai-mlops-fsxn-sagemaker.html["第 2 部分 - 利用Amazon FSx for NetApp ONTAP (FSx ONTAP) 作为 SageMaker 模型训练的数据源"]。 
+
+
+| 触发 MLOps 管道的函数 | AWS Lambda 函数 | - 
+
+
+| Cron 作业触发器 | AWS EventBridge | - 
+
+
+| 深度学习框架 | PyTorch | - 
+
+
+| AWS Python 开发工具包 | boto3 | - 
+
+
+| 编程语言 | Python | v3.10 
+|===
+
+
+== 前提条件
+
+* 预配置的 FSx ONTAP文件系统。本教程利用 FSx ONTAP中存储的数据进行训练过程。
+* 配置为与上面提到的 FSx ONTAP文件系统共享相同 VPC 的 *SageMaker Notebook 实例*。
+* 在触发 *AWS Lambda 函数* 之前，请确保 *SageMaker Notebook 实例* 处于 *已停止* 状态。
+* 需要 *ml.g4dn.xlarge* 实例类型来利用深度神经网络计算所需的 GPU 加速。
+
+
+
+
+== 架构
+
+image:mlops-fsxn-cictcd-012.png["架构"]
+
+这个 MLOps 管道是一个实际的实现，它利用 cron 作业来触发无服务器功能，进而执行使用生命周期回调函数注册的 AWS 服务。 *AWS EventBridge* 充当 cron 作业。它定期调用负责重新训练和重新部署模型的 *AWS Lambda 函数*。此过程涉及启动 *AWS SageMaker Notebook* 实例以执行必要的任务。
+
+
+
+== 分步配置
+
+
+
+=== 生命周期配置
+
+要为 AWS SageMaker Notebook 实例配置生命周期回调函数，您需要使用*生命周期配置*。此服务允许您定义启动笔记本实例时需要执行的必要操作。具体来说，可以在*生命周期配置*中实现一个 shell 脚本，以便在训练和部署过程完成后自动关闭笔记本实例。这是必需的配置，因为成本是 MLOps 中的主要考虑因素之一。
+
+值得注意的是，*生命周期配置*的配置需要提前设置。因此，建议在继续其他 MLOps 管道设置之前优先配置这一方面。
+
+. 要设置生命周期配置，请打开 *Sagemaker* 面板并导航到 *Admin configuration* 部分下的 *Lifecycle configuration*。
++
+image:mlops-fsxn-cictcd-001.png["SageMaker 面板"]
+
+. 选择“笔记本实例”选项卡，然后单击“创建配置”按钮
++
+image:mlops-fsxn-cictcd-002.png["生命周期配置欢迎页面"]
+
+. 将以下代码粘贴到输入区域。
++
+[source, bash]
+----
+#!/bin/bash
+
+set -e
+sudo -u ec2-user -i <<'EOF'
+# 1. Retraining and redeploying the model
+NOTEBOOK_FILE=/home/ec2-user/SageMaker/tyre_quality_classification_local_training.ipynb
+echo "Activating conda env"
+source /home/ec2-user/anaconda3/bin/activate pytorch_p310
+nohup jupyter nbconvert "$NOTEBOOK_FILE" --ExecutePreprocessor.kernel_name=python --execute --to notebook &
+nbconvert_pid=$!
+conda deactivate
+
+# 2. Scheduling a job to shutdown the notebook to save the cost
+PYTHON_DIR='/home/ec2-user/anaconda3/envs/JupyterSystemEnv/bin/python3.10'
+echo "Starting the autostop script in cron"
+(crontab -l 2>/dev/null; echo "*/5 * * * * bash -c 'if ps -p $nbconvert_pid > /dev/null; then echo \"Notebook is still running.\" >> /var/log/jupyter.log; else echo \"Notebook execution completed.\" >> /var/log/jupyter.log; $PYTHON_DIR -c \"import boto3;boto3.client(\'sagemaker\').stop_notebook_instance(NotebookInstanceName=get_notebook_name())\" >> /var/log/jupyter.log; fi'") | crontab -
+EOF
+----
+. 该脚本执行 Jupyter Notebook，用于处理模型的重新训练和重新部署以进行推理。执行完成后，笔记本将在5分钟内自动关机。要了解有关问题陈述和代码实现的更多信息，请参阅link:ai-mlops-fsxn-sagemaker.html["第 2 部分 - 利用Amazon FSx for NetApp ONTAP (FSx ONTAP) 作为 SageMaker 模型训练的数据源"]。
++
+image:mlops-fsxn-cictcd-003.png["创建生命周期配置"]
+
+. 创建后，导航到 Notebook 实例，选择目标实例，然后单击“操作”下拉菜单下的“更新设置”。
++
+image:mlops-fsxn-cictcd-004.png["更新设置下拉菜单"]
+
+. 选择创建的*生命周期配置*，然后单击*更新笔记本实例*。
++
+image:mlops-fsxn-cictcd-005.png["更新笔记本的生命周期配置"]
+
+
+
+
+
+=== AWS Lambda 无服务器函数
+
+如前所述，*AWS Lambda 函数*负责启动 *AWS SageMaker Notebook 实例*。
+
+. 要创建 *AWS Lambda 函数*，请导航到相应的面板，切换到 *函数* 选项卡，然后单击 *创建函数*。
++
+image:mlops-fsxn-cictcd-006.png["AWS lambda 函数欢迎页面"]
+
+. 请在页面上提交所有必需的条目，并记得将运行时切换为 *Python 3.10*。
++
+image:mlops-fsxn-cictcd-007.png["创建 AWS lambda 函数"]
+
+. 请验证指定的角色是否具有所需的权限*AmazonSageMakerFullAccess*，然后单击*创建功能*按钮。
++
+image:mlops-fsxn-cictcd-008.png["选择执行角色"]
+
+. 选择创建的Lambda函数。在代码选项卡中，将以下代码复制并粘贴到文本区域中。此代码启动名为 *fsxn-ontap* 的笔记本实例。
++
+[source, python]
+----
+import boto3
+import logging
+
+def lambda_handler(event, context):
+    client = boto3.client('sagemaker')
+    logging.info('Invoking SageMaker')
+    client.start_notebook_instance(NotebookInstanceName='fsxn-ontap')
+    return {
+        'statusCode': 200,
+        'body': f'Starting notebook instance: {notebook_instance_name}'
+    }
+----
+. 单击“*部署*”按钮以应用此代码更改。
++
+image:mlops-fsxn-cictcd-009.png["部署"]
+
+. 要指定如何触发此 AWS Lambda 函数，请单击添加触发器按钮。
++
+image:mlops-fsxn-cictcd-010.png["添加 AWS 函数触发器"]
+
+. 从下拉菜单中选择 EventBridge，然后单击标有“创建新规则”的单选按钮。在计划表达式字段中，输入 `rate(1 day)`，然后单击添加按钮以创建并将此新的 cron 作业规则应用于 AWS Lambda 函数。
++
+image:mlops-fsxn-cictcd-011.png["完成触发器"]
+
+
+
+完成这两步配置后，每天，*AWS Lambda 函数*都会启动 *SageMaker Notebook*，使用 *FSx ONTAP* 存储库中的数据执行模型重新训练，将更新后的模型重新部署到生产环境，并自动关闭 *SageMaker Notebook 实例*以优化成本。这确保模型保持最新。
+
+开发 MLOps 管道的教程到此结束。

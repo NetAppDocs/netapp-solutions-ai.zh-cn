@@ -1,0 +1,53 @@
+---
+sidebar: sidebar 
+permalink: data-analytics/hdcs-sh-solution-overview.html 
+keywords: tr-4657, tr4657, 4657, hybrid cloud, spark, hadoop, aff, fas 
+summary: 本文档介绍了使用NetApp AFF和FAS存储系统、 NetApp Cloud Volumes ONTAP、 NetApp互联存储以及适用于 Spark 和 Hadoop 的NetApp FlexClone技术的混合云数据解决方案。这些解决方案架构允许客户为其环境选择合适的数据保护解决方案。  NetApp根据与客户及其业务用例的互动设计了这些解决方案。 
+---
+= TR-4657： NetApp混合云数据解决方案 - 基于客户用例的 Spark 和 Hadoop
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+Karthikeyan Nagalingam 和 Sathish Thyagarajan， NetApp
+
+[role="lead"]
+本文档介绍了使用NetApp AFF和FAS存储系统、 NetApp Cloud Volumes ONTAP、 NetApp互联存储以及适用于 Spark 和 Hadoop 的NetApp FlexClone技术的混合云数据解决方案。这些解决方案架构允许客户为其环境选择合适的数据保护解决方案。 NetApp根据与客户及其业务用例的互动设计了这些解决方案。本文档提供以下详细信息：
+
+* 为什么我们需要为 Spark 和 Hadoop 环境提供数据保护以及客户面临的挑战。
+* 由NetApp愿景及其构建块和服务提供支持的数据结构。
+* 如何使用这些构建块来构建灵活的数据保护工作流程。
+* 根据实际客户使用案例分析几种架构的优缺点。每个用例提供以下组件：
++
+** 客户场景
+** 要求和挑战
+** 解决方案
+** 解决方案总结
+
+
+
+
+
+
+== 为什么要进行 Hadoop 数据保护？
+
+在 Hadoop 和 Spark 环境中，必须解决以下问题：
+
+* *软件或人为故障。*在执行 Hadoop 数据操作时，软件更新中的人为错误可能会导致错误行为，从而导致工作出现意外结果。在这种情况下，我们需要保护数据以避免失败或不合理的结果。例如，由于交通信号分析应用程序的软件更新执行不力，导致新功能无法正确分析纯文本形式的交通信号数据。该软件仍然分析JSON和其他非文本文件格式，导致实时交通管制分析系统产生缺少数据点的预测结果。这种情况可能会导致错误输出，从而引发交通信号事故。数据保护可以通过提供快速回滚到以前工作应用程序版本的功能来解决此问题。
+* *尺寸和规模。*由于数据源数量和数据量的不断增加，分析数据的大小也日益增长。社交媒体、移动应用、数据分析和云计算平台是当前大数据市场的主要数据来源，这些数据增长非常迅速，因此需要对数据进行保护，以确保数据操作的准确性。
+* *Hadoop 的原生数据保护。* Hadoop 有一个原生命令来保护数据，但是该命令在备份期间不提供数据的一致性。它仅支持目录级备份。  Hadoop 创建的快照是只读的，不能直接用于重复使用备份数据。
+
+
+
+
+== Hadoop 和 Spark 客户面临的数据保护挑战
+
+Hadoop 和 Spark 客户面临的一个共同挑战是减少备份时间并提高备份可靠性，同时又不会在数据保护期间对生产集群的性能产生负面影响。
+
+客户还需要最大限度地减少恢复点目标 (RPO) 和恢复时间目标 (RTO) 停机时间，并控制其内部部署和基于云的灾难恢复站点，以实现最佳业务连续性。这种控制通常来自于企业级管理工具。
+
+Hadoop 和 Spark 环境非常复杂，因为不仅数据量巨大且不断增长，而且数据到达的速度也在加快。这种情况使得从源数据快速创建高效、最新的 DevTest 和 QA 环境变得困难。  NetApp认识到这些挑战并提供了本文中介绍的解决方案。

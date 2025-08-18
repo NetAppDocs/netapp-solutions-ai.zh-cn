@@ -1,0 +1,23 @@
+---
+sidebar: sidebar 
+permalink: vector-db/ai-vdb-instaclustr-pgvector.html 
+keywords: vector database 
+summary: instaclustr 与 pgvector - Netapp 的矢量数据库解决方案 
+---
+= 使用 PostgreSQL 的 Instaclustr 矢量数据库：pgvector
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+本节讨论 instaclustr 产品如何与NetApp矢量数据库解决方案中的 postgreSQL 的 pgvector 功能集成的具体细节。
+
+
+
+== 使用 PostgreSQL 的 Instaclustr 矢量数据库：pgvector
+
+在本节中，我们将深入探讨 instaclustr 产品如何在 pgvector 功能上与 postgreSQL 集成的具体细节。我们有一个例子“如何使用 PGVector 和 PostgreSQL 提高 LLM 准确性和性能：嵌入简介和 PGVector 的作用”。请检查link:https://www.instaclustr.com/blog/how-to-improve-your-llm-accuracy-and-performance-with-pgvector-and-postgresql-introduction-to-embeddings-and-the-role-of-pgvector/["博客"]以获取更多信息。

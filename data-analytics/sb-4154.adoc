@@ -1,0 +1,19 @@
+---
+sidebar: sidebar 
+permalink: data-analytics/sb-4154.html 
+keywords:  
+summary:  
+---
+= 现代数据分析——针对不同分析策略的不同解决方案
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+本白皮书介绍了NetApp现代数据分析解决方案策略。它包括有关业务成果、客户挑战、技术趋势、竞争遗留架构、现代工作流程、用例、行业、云、技术合作伙伴、数据移动器、 NetApp Active IQ Digital Advisor （也称为Digital Advisor）、 NetApp DataOps Toolkit、Hadoop to Spark、使用NetApp Trident Protect 的软件定义存储、容器、企业数据管理、归档和分层的详细信息，以实现 AI 和分析的目标，以及NetApp和客户如何共同实现其数据架构的现代化。
+
+link:https://www.netapp.com/pdf.html?item=/media/58015-sb-4154.pdf["现代数据分析——针对不同分析策略的不同解决方案"^]

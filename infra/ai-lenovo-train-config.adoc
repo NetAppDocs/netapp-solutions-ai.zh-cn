@@ -1,0 +1,71 @@
+---
+sidebar: sidebar 
+permalink: infra/ai-lenovo-train-config.html 
+keywords: solution architecture, storage controller 
+summary: 本节介绍测试的配置、网络基础设施、SR670 V2 服务器和存储配置详细信息。 
+---
+= 测试配置
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+本节介绍测试的配置、网络基础设施、SR670 V2 服务器和NetApp存储配置详细信息。
+
+
+
+== 解决方案架构
+
+我们使用下表列出的解决方案组件进行此验证。
+
+|===
+| 解决方案组件 | 详细信息 
+
+
+| 联想 ThinkSystem 服务器  a| 
+* 两台 SR670 V2 服务器，每台配备八张NVIDIA A100 80GB GPU 卡
+* 每台服务器包含 2 个 Intel Xeon Platinum 8360Y CPU（28 个物理核心）和 1TB RAM
+
+
+
+
+| Linux（Ubuntu - 20.04，带有 CUDA 11.8） |  
+
+
+| NetApp AFF存储系统（HA 对）  a| 
+* NetApp ONTAP 9.10.1软件
+* 24个960GB SSD
+* NFS 协议
+* 每个控制器 1 个接口组 (ifgrp)，具有四个用于挂载点的逻辑 IP 地址
+
+
+|===
+在本次验证中，我们使用了 ResNet v2.0 和 MLPerf v2.0 指定的 ImageNet 基集。数据集存储在具有 NFS 协议的NetApp AFF存储系统中。  SR670 通过 100GbE 交换机连接到NetApp AFF A400存储系统。
+
+ImageNet 是一个经常使用的图像数据集。它包含近 130 万张图片，总大小为 144GB。平均图像大小为 108KB。
+
+下图描述了测试配置的网络拓扑。
+
+image:a400-thinksystem-007.png["该图描绘了计算层（联想 ThinkSystem SR670 V2）、网络层（联想以太网交换机）和存储层（ NetApp AFF A400存储控制器）。包括所有网络连接。"]
+
+
+
+== 存储控制器
+
+下表列出了存储配置。
+
+|===
+| 控制器 | 聚合 | FlexGroup 卷 | 骨料大小 | 卷大小 | 操作系统挂载点 
+
+
+| Controller1 | Aggr1 | /a400-100克 | 9.9 TB | 19 TB | /a400-100克 
+
+
+| Controller2 | Aggr2 | /a400-100克 | 9.9 TB |  | /a400-100克 
+|===
+
+NOTE: /a400-100g 文件夹包含用于 ResNet 验证的数据集。

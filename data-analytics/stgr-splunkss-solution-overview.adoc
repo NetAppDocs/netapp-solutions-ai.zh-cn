@@ -1,0 +1,49 @@
+---
+sidebar: sidebar 
+permalink: data-analytics/stgr-splunkss-solution-overview.html 
+keywords: storagegrid, splunk enterprise, smartstore, object storage, machine data 
+summary: 本页介绍了完成此解决方案所使用的组件，包括NetApp StorageGRID、Splunk Enterprise 和 Splunk SmartStore。 
+---
+= 解决方案概述
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+本页介绍了完成此解决方案所使用的组件，包括NetApp StorageGRID、Splunk Enterprise 和 Splunk SmartStore。
+
+
+
+== NetAppStorageGRID
+
+NetApp StorageGRID是一个高性能且经济高效的对象存储平台。它使用分布式、基于节点的网格架构提供智能、策略驱动的全球数据管理。它通过其无处不在的全局对象命名空间与复杂的数据管理功能相结合，简化了 PB 级非结构化数据和数十亿个对象的管理。单次调用对象访问可跨站点扩展，并简化高可用性架构，同时确保无论站点或基础设施是否中断，都能持续进行对象访问。
+
+多租户允许多个云和企业非结构化数据应用程序在同一网格内得到安全地服务，从而增加了StorageGRID的投资回报率和用例。可以使用元数据驱动的对象生命周期策略创建多个服务级别，从而优化跨多个地区的耐用性、保护性、性能和局部性。随着需求的变化，用户可以调整策略并且无中断地重新调整数据格局。
+
+SmartStore 利用StorageGRID作为远程存储层，并允许客户部署多个地理分布的站点，以实现强大的可用性和耐用性，并以单个对象命名空间的形式呈现。这使得 Splunk SmartStore 能够利用StorageGRID的高性能、高密度容量以及使用单个 URL 与对象交互扩展到多个物理站点上的数百个节点的能力。此单一 URL 还允许在不中断的情况下进行存储扩展、升级和修复，甚至超越单个站点。  StorageGRID独特的数据管理策略引擎提供了优化的性能和耐用性水平，并符合数据局部性要求。
+
+
+
+== Splunk Enterprise
+
+Splunk 是机器生成数据收集和分析领域的领导者，通过其运营分析功能帮助简化和现代化 IT。它还扩展到商业分析、安全和物联网用例。存储是成功部署 Splunk 软件的关键因素。
+
+机器生成的数据是增长最快的大数据类型。其格式难以预测，并且来自许多不同的来源，通常速率很高且数量巨大。这些工作负载特征通常被称为数字排气。  Splunk SmartStore 有助于理解这些数据并提供智能数据分层，以便在最具成本效益的存储层上优化放置热数据和温数据。
+
+
+
+== Splunk SmartStore
+
+Splunk SmartStore 是一种索引器功能，它使用对象存储（也称为远程存储或远程存储层）例如StorageGRID通过 S3 协议存储热数据。
+
+随着部署的数据量增加，对存储的需求通常会超过对计算机资源的需求。  SmartStore 允许您通过分别扩展计算和存储来经济高效地管理索引器存储和计算资源。
+
+SmartStore 引入了使用 S3 协议的远程存储层和缓存管理器。这些功能允许数据驻留在本地索引器或远程存储上。缓存管理器位于索引器上，负责管理索引器和远程存储层之间的数据移动。数据与存储桶元数据一起存储在存储桶（热和温）中。
+
+使用 SmartStore，您可以将索引器存储占用空间降至最低，并选择 I/O 优化的计算资源，因为大多数数据都驻留在远程存储层上。索引器维护一个本地缓存，代表返回请求和预测结果所需的最少数据量。本地缓存包含热存储桶、参与活动或最近搜索的热存储桶副本以及存储桶元数据。
+
+带有StorageGRID的 Splunk SmartStore 使客户能够通过高性能且经济高效的远程存储逐步扩展环境，同时为整体解决方案提供高度的弹性。这使得客户可以在任何给定时间添加任何给定数量的任何组件（热存储和/或温 S3 存储），无论他们是需要更多索引器、更改数据保留，还是在不造成任何中断的情况下增加摄取率。

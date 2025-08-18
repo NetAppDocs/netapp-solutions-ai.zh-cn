@@ -1,0 +1,58 @@
+---
+indexpage:
+  title: NetApp现代数据分析解决方案
+  summary: NetApp现代数据分析解决方案是一套战略和技术能力，展示了NetApp存储在 AI 领域的能力。
+  lead: 利用 NetApp 针对大数据工作负载的成熟解决方案（包括 Apache Spark、Hadoop、Kafka 以及从边缘扩展到云的现代数据湖架构）转变您的数据分析基础架构。
+  tiles:
+  - title: Apache Kafka 解决方案
+    links:
+    - title: 使用NetApp NFS 存储的 Apache Kafka 工作负载
+      url: kafka-nfs-introduction.html
+    - title: Confluent Kafka 与NetApp ONTAP存储控制器
+      url: kafka-ontap-overview.html
+    - title: Confluent Kafka 的最佳实践
+      url: confluent-kafka-introduction.html
+    - title: 使用 AWS 验证 Kafka 性能
+      url: kafka-nfs-perf-aws-fsxn.html
+    - title: 为什么选择NetApp NFS 来支持 Kafka 工作负载？
+      url: kafka-nfs-why-netapp.html
+  - title: Apache Spark 和 Hadoop 解决方案
+    links:
+    - title: 适用于 Apache Spark 的NetApp存储解决方案
+      url: apache-spark-solution-overview.html
+    - title: 使用NetApp存储部署 Apache Spark 工作负载
+      url: nva-1157-deploy.html
+    - title: 适用于 Spark 和 Hadoop 的NetApp混合云数据解决方案
+      url: hdcs-sh-solution-overview.html
+    - title: 用例和架构
+      url: spark-ai-use-cases.html
+    - title: Apache Spark 测试结果
+      url: apache-spark-testing-results.html
+  - title: 云数据管理和人工智能
+    links:
+    - title: 利用NetApp文件对象二元性和 AWS SageMaker 进行云数据管理
+      url: cdm-fod-solution-overview.html
+    - title: 大数据分析到人工智能
+      url: bda-ai-introduction.html
+    - title: Amazon FSx for NetApp ONTAP （适用于 MLOps）
+      url: "../cloud/ai-mlops-fsxn-intro.html"
+    - title: Apache Spark 混合云解决方案
+      url: spark-hybrid-cloud.html
+  - title: 现代数据湖和分析平台
+    links:
+    - title: NetApp和 Dremio 的下一代混合冰山湖屋解决方案
+      url: dremio-lakehouse-introduction.html
+    - title: NetApp StorageGRID与 Splunk SmartStore
+      url: stgr-splunkss-introduction.html
+    - title: NetApp E系列E5700和Splunk Enterprise
+      url: tr-4623.html
+  - title: 其他资源
+    links:
+    - title: 针对不同分析策略的不同解决方案
+      url: sb-4154.html
+    - title: 博客：Apache Spark 在NetApp数据分析实践中大显身手
+      url: https://www.netapp.com/blog/apache-spark-data-analytics/
+    - title: 博客：使用 XCP 将数据从数据湖和 HPC 迁移到ONTAP NFS
+      url: https://www.netapp.com/blog/data-migration-xcp/
+    - title: NetApp TV：大数据分析播放列表
+      url: https://youtube.com/playlist?list=PLdXI3bZJEw7l8oFkYC_umsBaBX3hqK3Oq

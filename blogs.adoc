@@ -1,0 +1,23 @@
+---
+sidebar: sidebar 
+permalink: blogs.html 
+summary: 阅读 AI/ML 博客，了解行业趋势、创新和实际影响，以及开发人员资源、社区见解和使用NetApp AI 解决方案的实用工具。 
+keywords: netapp, solutions, blogs 
+---
+= 阅读NetApp专家的 AI 解决方案博客
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ./media/
+
+
+[role="lead"]
+阅读 AI/ML 博客，了解行业趋势、创新和实际影响，以及开发人员资源、社区见解和使用NetApp AI 解决方案的实用工具。
+
+.人工智能趋势和行业洞察
+探索各个领域的行业趋势、创新以及现实世界的人工智能影响。link:++https://www.netapp.com/blog/#t=Blogs&sort=%40publish_date_mktg%20descending&layout=card&f:@facet_language_mktg=["英语"] &f:@facet_soultion_mktg=[AI,Analytics,artificial-intelligence]++[在NetApp上阅读 AI 博客^]
+
+.开发者资源和社区
+为 AI/ML 从业者提供技术见解、实用工具和社区驱动的内容。link:https://netapp.io/category/ai-ml/["在 Pub 上阅读 AI 博客"^]

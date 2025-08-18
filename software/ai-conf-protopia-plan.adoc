@@ -1,0 +1,22 @@
+---
+sidebar: sidebar 
+permalink: software/ai-conf-protopia-plan.html 
+keywords: validation scenarios, obfuscation, batch inferencing job 
+summary: 本节概述了此解决方案中验证的三种场景。 
+---
+= 测试和验证计划
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+对于此解决方案设计，验证了以下三种场景：
+
+* 在 JupyterLab 工作区内，使用NetApp DataOps Toolkit for Kubernetes 进行编排的推理任务（有和没有 Protopia 混淆）。
+* 在 Kubernetes 上执行批量推理作业（带和不带 Protopia 混淆），其数据卷是使用NetApp DataOps Toolkit for Kubernetes 进行编排的。
+* 使用NVIDIA Triton 推理服务器实例的推理任务，该实例是通过使用NetApp DataOps Toolkit for Kubernetes 进行编排的。在调用 Triton 推理 API 之前，我们对图像应用了 Protopia 混淆，以模拟任何通过网络传输的数据都必须混淆的常见要求。此工作流程适用于在受信任区域内收集数据但必须传递到该受信任区域之外进行推理的用例。如果没有 Protopia 混淆，就不可能在敏感数据不离开受信任区域的情况下实现这种类型的工作流程。
+

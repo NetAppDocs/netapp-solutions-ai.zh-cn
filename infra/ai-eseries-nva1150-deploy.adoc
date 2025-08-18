@@ -1,0 +1,21 @@
+---
+sidebar: sidebar 
+permalink: infra/ai-eseries-nva1150-deploy.html 
+keywords:  
+summary:  
+---
+= NVA-1150-DEPLOY：Quantum StorNext 与NetApp E 系列系统部署指南
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+NetApp的 Ryan Rodine
+
+[role="lead"]
+本文档详细介绍了如何使用NetApp E 系列存储系统部署 StorNext 并行文件系统解决方案。该解决方案涵盖NetApp EF280 全闪存阵列、 NetApp EF300 全闪存 NVMe 阵列、 NetApp EF600 全闪存 NVMe 阵列和NetApp E5760 混合系统。它提供基于 Frametest 基准测试的性能表征，Frametest 是一种广泛用于媒体和娱乐行业测试的工具。
+
+link:https://www.netapp.com/pdf.html?item=/media/19429-nva-1150-deploy.pdf["NVA-1150-DEPLOY：Quantum StorNext 与NetApp E 系列系统部署指南"^]

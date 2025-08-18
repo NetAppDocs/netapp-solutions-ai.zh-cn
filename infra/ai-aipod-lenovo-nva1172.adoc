@@ -1,0 +1,21 @@
+---
+sidebar: sidebar 
+permalink: infra/ai-aipod-lenovo-nva1172.html 
+keywords:  
+summary:  
+---
+= NVA-1172-DESIGN： NetApp AIPod与联想合作，支持NVIDIA OVX
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+Bobby Oommen、Abhinav Singh、Roney Daniel、 NetApp
+
+[role="lead"]
+该参考架构将搭载NVIDIA L40S GPU 的NVIDIA认证 OVX Lenovo ThinkSystem 服务器与NVIDIA Spectrum 网络配对，以提供优化和部署 LLM（大型语言模型）的最佳基础设施解决方案。本文档旨在提供与 OVX 配置存储相关的指导。该平台适用于各种生成式人工智能工作负载，包括 RAG（检索增强生成）、微调和轻量级模型训练。
+
+link:https://www.netapp.com/pdf.html?item=/media/111933-lenovoaipod-nva-1172-design-v20.pdf["NVA-1172-DESIGN：适用于NVIDIA OVX 的NetApp AIPod与联想设计指南"^]

@@ -1,0 +1,29 @@
+---
+sidebar: sidebar 
+permalink: infra/ai-lenovo-train-arch.html 
+keywords: adjustments 
+summary: 可以调整用于验证的设置以适应其他用例。 
+---
+= 架构调整
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+可以调整用于此验证的设置以适应其他用例。
+
+
+
+== CPU调整
+
+按照联想的推荐，我们使用 Skylake Intel Xeon Platinum 8360Y 处理器进行此验证。我们预计同等的 Cascade Lake CPU（英特尔至强金牌 6330 处理器）将提供类似的性能，因为此工作负载不受 CPU 限制。
+
+
+
+== 增加存储容量
+
+根据您的存储容量需求，您可以按需增加共享存储（NFS 卷），前提是您有额外的磁盘架和控制器型号。您可以以管理员用户身份从 CLI 或存储控制器的NetApp Web 界面执行此操作。

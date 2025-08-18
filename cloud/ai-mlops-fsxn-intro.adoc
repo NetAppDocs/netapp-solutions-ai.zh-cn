@@ -1,0 +1,26 @@
+---
+sidebar: sidebar 
+permalink: cloud/ai-mlops-fsxn-intro.html 
+keywords: FSx ONTAP, FSx ONTAP, AWS S3, SageMaker, MLOps, NetApp ONTAP 
+summary: 这是 FSx ONTAP MLOps 部分的介绍页面。 
+---
+= 适用于 MLOps 的Amazon FSx for NetApp ONTAP (FSx ONTAP)
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+本节深入探讨 AI 基础架构开发的实际应用，提供使用 FSx ONTAP构建 MLOps 管道的端到端演练。它包含三个综合示例，指导您通过这个强大的数据管理平台满足您的 MLOps 需求。
+
+这些文章重点关注：
+
+. link:ai-mlops-fsxn-s3.html["第 1 部分 - 将Amazon FSx for NetApp ONTAP (FSx ONTAP) 作为私有 S3 存储桶集成到 AWS SageMaker"]
+. link:ai-mlops-fsxn-sagemaker.html["第 2 部分 - 利用Amazon FSx for NetApp ONTAP (FSx ONTAP) 作为 SageMaker 模型训练的数据源"]
+. link:ai-mlops-fsxn-cictcd.html["第 3 部分 - 构建简化的 MLOps 管道 (CI/CT/CD)"]
+
+
+到本节结束时，您将对如何使用 FSx ONTAP简化 MLOps 流程有深入的了解。

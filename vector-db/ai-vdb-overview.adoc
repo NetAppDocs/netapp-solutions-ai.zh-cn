@@ -1,0 +1,33 @@
+---
+sidebar: sidebar 
+permalink: vector-db/ai-vdb-overview.html 
+keywords: Solution Overview vector database 
+summary: NetApp 矢量数据库解决方案概述 
+---
+= 解决方案概述
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+本节概述了NetApp矢量数据库解决方案。
+
+
+
+== 解决方案概述
+
+该解决方案展示了NetApp为应对矢量数据库客户面临的挑战所提供的独特优势和功能。通过利用NetApp ONTAP、 StorageGRID、NetApp 的云解决方案和SnapCenter，客户可以为其业务运营增加显著的价值。这些工具不仅解决了现有的问题，还提高了效率和生产力，从而促进了整体业务增长。
+
+
+
+=== 为什么选择NetApp？
+
+* NetApp 的产品（例如ONTAP和StorageGRID）允许分离存储和计算，从而能够根据特定需求实现最佳资源利用率。这种灵活性使客户能够使用NetApp存储解决方案独立扩展其存储。
+* 通过利用 NetApp 的存储控制器，客户可以使用 NFS 和 S3 协议高效地向其矢量数据库提供数据。这些协议方便了客户数据存储和管理矢量数据库索引，从而无需通过文件和对象方法访问多个数据副本。
+* NetApp ONTAP为 AWS、Azure 和 Google Cloud 等领先的云服务提供商提供对 NAS 和对象存储的原生支持。这种广泛的兼容性确保了无缝集成，实现了客户数据移动性、全球可访问性、灾难恢复、动态可扩展性和高性能。
+* 借助 NetApp 强大的数据管理功能，客户可以放心，因为他们的数据受到良好的保护，不会受到潜在风险和威胁。  NetApp优先考虑数据安全，让客户对其宝贵信息的安全性和完整性感到放心。
+

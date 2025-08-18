@@ -1,0 +1,25 @@
+---
+sidebar: sidebar 
+permalink: data-analytics/stgr-splunkss-tiering-savings.html 
+keywords: tiering, scaling, data-access patterns 
+summary: 当客户意识到 Splunk 数据分析的强大功能和易用性时，他们自然希望索引不断增长的数据量。随着数据量的增长，服务数据所需的计算和存储基础设施也在增长。 
+---
+= 智能分层和成本节约
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+当客户意识到 Splunk 数据分析的强大功能和易用性时，他们自然希望索引不断增长的数据量。随着数据量的增长，服务数据所需的计算和存储基础设施也在增长。由于旧数据的引用频率较低，因此投入相同数量的计算资源并消耗昂贵的主存储变得越来越低效。为了大规模运营，客户可以将热数据移动到更具成本效益的层，从而释放热数据的计算和主存储。
+
+带有StorageGRID 的Splunk SmartStore 为组织提供了可扩展、高性能且经济高效的解决方案。由于 SmartStore 具有数据感知能力，它会自动评估数据访问模式，以确定哪些数据需要进行实时分析（热数据），哪些数据应该驻留在低成本的长期存储中（温数据）。  SmartStore 动态且智能地使用行业标准的 AWS S3 API，将数据放置在StorageGRID提供的 S3 存储中。  StorageGRID灵活的横向扩展架构允许热数据层根据需要以经济高效的方式进行增长。  StorageGRID基于节点的架构确保性能和成本要求得到最佳满足。
+
+下图说明了 Splunk 和StorageGRID分层。
+
+image:stgr-splunkss-002.png["该图显示输入/输出对话框或表示书面内容"]
+
+Splunk SmartStore 与NetApp StorageGRID的业界领先组合通过全栈解决方案提供了解耦架构的优势。

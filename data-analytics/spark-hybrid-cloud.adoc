@@ -1,0 +1,37 @@
+---
+sidebar: sidebar 
+permalink: data-analytics/spark-hybrid-cloud.html 
+keywords: hybrid cloud, operating model, netapp private storage, 
+summary: 现代企业数据中心是一种混合云，它通过具有一致操作模式的连续数据管理平面在本地和/或多个公共云中连接多个分布式基础设施环境。为了充分利用混合云，您必须能够在本地和多云环境之间无缝移动数据，而无需进行任何数据转换或应用程序重构。 
+---
+= 混合云解决方案
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+现代企业数据中心是一种混合云，它通过具有一致操作模式的连续数据管理平面在本地和/或多个公共云中连接多个分布式基础设施环境。为了充分利用混合云，您必须能够在本地和多云环境之间无缝移动数据，而无需进行任何数据转换或应用程序重构。
+
+客户表示，他们开始混合云之旅的方法是将二级存储迁移到云端用于数据保护等用例，或者将不太重要的业务工作负载（如应用程序开发和 DevOps）迁移到云端。然后他们转向处理更重要的工作。 Web 和内容托管、DevOps 和应用程序开发、数据库、分析和容器化应用程序是最受欢迎的混合云工作负载。企业 AI 项目的复杂性、成本和风险历来阻碍 AI 从实验阶段走向生产阶段。
+
+借助NetApp混合云解决方案，客户可以通过单一控制面板享受集成的安全性、数据治理和合规性工具，用于跨分布式环境的数据和工作流管理，同时根据其消费情况优化总体拥有成本。下图是一个云服务合作伙伴的示例解决方案，该合作伙伴负责为客户的大数据分析数据提供多云连接。
+
+image:apache-spark-014.png["云服务合作伙伴的示例解决方案。"]
+
+在这种情况下，AWS 从不同来源接收的 IoT 数据存储在NetApp私有存储 (NPS) 的中心位置。 NPS 存储连接到位于 AWS 和 Azure 中的 Spark 或 Hadoop 集群，使在多个云中运行的大数据分析应用程序能够访问相同的数据。此用例的主要要求和挑战包括：
+
+* 客户希望使用多个云对相同数据运行分析作业。
+* 必须通过不同的传感器和集线器从不同来源（例如本地和云环境）接收数据。
+* 该解决方案必须高效且具有成本效益。
+* 主要挑战是构建一个经济高效的解决方案，在不同的内部部署和云环境之间提供混合分析服务。
+
+
+我们的数据保护和多云连接解决方案解决了跨多个超大规模计算平台的云分析应用程序的痛点。如上图所示，来自传感器的数据通过 Kafka 流式传输并输入到 AWS Spark 集群中。数据存储在 NPS 中的 NFS 共享中，NPS 位于 Equinix 数据中心内的云提供商之外。
+
+由于NetApp NPS 分别通过 Direct Connect 和 Express Route 连接连接到 Amazon AWS 和 Microsoft Azure，因此客户可以利用 In-Place Analytics Module 访问来自 Amazon 和 AWS 分析集群的数据。因此，由于本地存储和 NPS 存储都运行ONTAP软件， https://docs.netapp.com/us-en/ontap/data-protection/snapmirror-replication-concept.html["SnapMirror"^]可以将NPS数据镜像到本地集群，提供跨本地和多云的混合云分析。
+
+为了获得最佳性能， NetApp通常建议使用多个网络接口和直接连接或快速路由来访问云实例的数据。我们还有其他数据移动解决方案，包括 https://mysupport.netapp.com/documentation/docweb/index.html?productID=63942&language=en-US["XCP"^]和 https://cloud.netapp.com/cloud-sync-service["BlueXP复制和同步"^]帮助客户构建应用感知、安全且经济高效的混合云 Spark 集群。

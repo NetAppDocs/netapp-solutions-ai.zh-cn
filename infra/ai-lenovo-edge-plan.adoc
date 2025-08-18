@@ -1,0 +1,63 @@
+---
+sidebar: sidebar 
+permalink: infra/ai-lenovo-edge-plan.html 
+keywords: test, plan, mlperf, inference, benchmarks 
+summary: 本文档遵循 MLPerf Inference v0.7 代码、MLPerf Inference v1.1 代码和规则。我们运行了专为边缘推理而设计的基准测试，如本节表格中所定义。 
+---
+= 测试计划
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+本文档遵循 MLPerf Inference v0.7 https://github.com/mlperf/inference_results_v0.7/tree/master/closed/Lenovo["代码"^] ，MLPerf 推理 v1.1 https://github.com/mlcommons/inference_results_v1.1/tree/main/closed/Lenovo["代码"^] ， 和 https://github.com/mlcommons/inference_policies/blob/master/inference_rules.adoc["规则"^]。我们运行了专为边缘推理而设计的 MLPerf 基准，如下表所定义。
+
+|===
+| 区域 | 任务 | 型号 | 数据集 | QSL 大小 | 质量 | 多流延迟约束 
+
+
+| 想象 | 图像分类 | Resnet50v1.5 | 图像网（224x224） | 1024 | FP32 的 99% | 50毫秒 
+
+
+| 想象 | 物体检测（大） | SSD-ResNet34 | 可可 (1200x1200) | 64 | FP32 的 99% | 66毫秒 
+
+
+| 想象 | 物体检测（小） | SSD-MobileNetsv1 | 可可 (300x300) | 256 | FP32 的 99% | 50毫秒 
+
+
+| 想象 | 医学图像分割 | 3D UNET | BraTS 2019（224x224x160） | 16 | FP32 的 99% 和 99.9% | 不适用 
+
+
+| 演讲 | 语音转文本 | RNNT | Librispeech dev-clean | 2513 | FP32 的 99% | 不适用 
+
+
+| 语言 | 语言处理 | BERT | SQuAD v1.1 | 10833 | FP32 的 99% | 不适用 
+|===
+下表列出了 Edge 基准测试场景。
+
+|===
+| 区域 | 任务 | 场景 
+
+
+| 想象 | 图像分类 | 单流、离线、多流 
+
+
+| 想象 | 物体检测（大） | 单流、离线、多流 
+
+
+| 想象 | 物体检测（小） | 单流、离线、多流 
+
+
+| 想象 | 医学图像分割 | 单流、离线 
+
+
+| 演讲 | 语音转文本 | 单流、离线 
+
+
+| 语言 | 语言处理 | 单流、离线 
+|===
+我们使用本次验证中开发的网络存储架构执行了这些基准测试，并将结果与之前提交给 MLPerf 的边缘服务器上的本地运行结果进行了比较。比较是为了确定共享存储对推理性能有多大的影响。

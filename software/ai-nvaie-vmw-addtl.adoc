@@ -1,0 +1,40 @@
+---
+sidebar: sidebar 
+permalink: software/ai-nvaie-vmw-addtl.html 
+keywords: NetApp AI, AI, Artificial Intelligence, ML, Machine Learning, NVIDIA, NVIDIA AI Enterprise, NVAIE, VMware 
+summary: NVIDIA AI Enterprise 与NetApp和 VMware 合作 - 在哪里可以找到更多信息 
+---
+= 如何查找更多信息
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+要了解有关本文档中描述的信息的更多信息，请参阅以下文档和/或网站：
+
+* NetApp ONTAP数据管理软件 — ONTAP信息库
++
+http://mysupport.netapp.com/documentation/productlibrary/index.html?productID=62286["http://mysupport.netapp.com/documentation/productlibrary/index.html?productID=62286"^]
+
+* NetApp DataOps 工具包
++
+https://github.com/NetApp/netapp-dataops-toolkit["https://github.com/NetApp/netapp-dataops-toolkit"^]
+
+* NVIDIA AI Enterprise 与 VMware
++
+https://www.nvidia.com/en-us/data-center/products/ai-enterprise/["https://www.nvidia.com/en-us/data-center/products/ai-enterprise/"^]
+
+
+
+
+
+== 声明
+
+* Bobby Oommen， NetApp高级经理
+* Ramesh Isaac， NetApp系统管理员
+* NetApp技术营销工程师 Roney Daniel
+

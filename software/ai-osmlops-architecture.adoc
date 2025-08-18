@@ -1,0 +1,87 @@
+---
+sidebar: sidebar 
+permalink: software/ai-osmlops-architecture.html 
+keywords: Hardware, Software, Requirements, Trident, DeepOps, ONTAP, Ubuntu 
+summary: NetApp的开源 MLOps - 架构 
+---
+= 架构
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+该解决方案不依赖于特定的硬件。该解决方案与NetApp Trident支持的任何NetApp物理存储设备、软件定义实例或云服务兼容。示例包括NetApp AFF存储系统、 Amazon FSx ONTAP、 Azure NetApp Files、 Google Cloud NetApp Volumes或NetApp Cloud Volumes ONTAP实例。此外，只要所使用的 Kubernetes 版本受到NetApp Trident和正在实施的其他解决方案组件的支持，该解决方案就可以在任何 Kubernetes 集群上实施。有关Trident支持的 Kubernetes 版本列表，请参阅 https://docs.netapp.com/us-en/trident/index.html["Trident文档"^]。有关用于验证此解决方案的各个组件的环境的详细信息，请参阅下表。
+
+
+
+== Apache Airflow 验证环境
+
+|===
+| 软件组件 | 版本 
+
+
+| Apache Airflow | 2.0.1，通过以下方式部署link:https://artifacthub.io/packages/helm/airflow-helm/airflow["Apache Airflow Helm 图表"^]8.0.8 
+
+
+| Kubernetes | 1.18 
+
+
+| NetApp Trident | 21.01 
+|===
+
+
+== JupyterHub 验证环境
+
+|===
+| 软件组件 | 版本 
+
+
+| JupyterHub | 4.1.5，通过部署link:https://hub.jupyter.org/helm-chart/["JupyterHub Helm 图表"^]3.3.7 
+
+
+| Kubernetes | 1.29 
+
+
+| NetApp Trident | 24.02 
+|===
+
+
+== MLflow 验证环境
+
+|===
+| 软件组件 | 版本 
+
+
+| 机器学习流 | 2.14.1，通过部署link:https://artifacthub.io/packages/helm/bitnami/mlflow["MLflow Helm 图表"^]1.4.12 
+
+
+| Kubernetes | 1.29 
+
+
+| NetApp Trident | 24.02 
+|===
+
+
+== Kubeflow 验证环境
+
+|===
+| 软件组件 | 版本 
+
+
+| Kubeflow | 1.7，通过部署link:https://www.deploykf.org["部署KF"^]0.1.1 
+
+
+| Kubernetes | 1.26 
+
+
+| NetApp Trident | 23.07 
+|===
+
+
+== 支持
+
+NetApp不为 Apache Airflow、JupyterHub、MLflow、Kubeflow 或 Kubernetes 提供企业支持。如果您对完全支持的 MLOps 平台感兴趣，link:https://www.netapp.com/us/contact-us/index.aspx?for_cr=us["联系NetApp"^]了解NetApp与合作伙伴联合提供的全面支持的 MLOps 解决方案。

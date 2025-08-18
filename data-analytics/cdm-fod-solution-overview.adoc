@@ -1,0 +1,19 @@
+---
+sidebar: sidebar 
+permalink: data-analytics/cdm-fod-solution-overview.html 
+keywords: tr4967, 4967, introduction, overview 
+summary: 数据科学家和工程师经常需要访问以 NFS 格式存储的数据，但直接从 AWS SageMaker 中的 S3 协议访问这些数据可能具有挑战性，因为 AWS 仅支持 S3 存储桶访问。但是， NetApp ONTAP通过为 NFS 和 S3 启用双协议访问提供了解决方案。通过此解决方案，数据科学家和工程师可以通过NetApp Cloud Volumes ONTAP的 S3 存储桶访问来自 AWS SageMaker 笔记本的 NFS 数据。这种方法可以轻松访问和共享来自 NFS 和 S3 的相同数据，而无需额外的软件。 
+---
+= TR-4967：使用NetApp文件对象二元性和 AWS SageMaker 进行云数据管理
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+Karthikeyan Nagalingam， NetApp
+
+[role="lead"]
+数据科学家和工程师经常需要访问以 NFS 格式存储的数据，但直接从 AWS SageMaker 中的 S3 协议访问这些数据可能具有挑战性，因为 AWS 仅支持 S3 存储桶访问。但是， NetApp ONTAP通过为 NFS 和 S3 启用双协议访问提供了解决方案。通过此解决方案，数据科学家和工程师可以通过NetApp Cloud Volumes ONTAP的 S3 存储桶访问来自 AWS SageMaker 笔记本的 NFS 数据。这种方法可以轻松访问和共享来自 NFS 和 S3 的相同数据，而无需额外的软件。

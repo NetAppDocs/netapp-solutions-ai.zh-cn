@@ -1,0 +1,71 @@
+---
+sidebar: sidebar 
+permalink: data-analytics/bda-ai-introduction.html 
+keywords: tr-4732, tr4732, 4732, introduction, concepts, components 
+summary: 本文提供了使用NetApp XCP 和 NIPAM 将大数据分析数据和 HPC 数据迁移到 AI 的指南。我们还讨论了将数据从大数据和 HPC 转移到 AI 所带来的商业利益。 
+---
+= TR-4732：大数据分析与人工智能
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+Karthikeyan Nagalingam， NetApp
+
+[role="lead"]
+本文档介绍了如何将大数据分析数据和 HPC 数据迁移到 AI。 AI 通过 NFS 导出处理 NFS 数据，而客户通常将其 AI 数据放在大数据分析平台中，例如 HDFS、Blob 或 S3 存储以及 HPC 平台（例如 GPFS）。本文提供了使用NetApp XCP 和 NIPAM 将大数据分析数据和 HPC 数据迁移到 AI 的指南。我们还讨论了将数据从大数据和 HPC 转移到 AI 所带来的商业利益。
+
+
+
+== 概念和组件
+
+
+
+=== 大数据分析存储
+
+大数据分析是HDFS的主要存储提供商。客户经常使用与 Hadoop 兼容的文件系统 (HCFS)，例如 Windows Azure Blob Storage、MapR 文件系统 (MapR-FS) 和 S3 对象存储。
+
+
+
+=== 通用并行文件系统
+
+IBM 的 GPFS 是一个企业文件系统，它提供了 HDFS 的替代方案。  GPFS 为应用程序提供了灵活性，可以决定块大小和复制布局，从而提供良好的性能和效率。
+
+
+
+=== NetApp就地分析模块
+
+NetApp就地分析模块 (NIPAM) 作为 Hadoop 集群访问 NFS 数据的驱动程序。它有四个组件：连接池、NFS 输入流、文件句柄缓存和 NFS 输出流。有关更多信息，请参阅 https://www.netapp.com/pdf.html?item=/media/16351-tr-4382pdf.pdf[] 。
+
+
+
+=== Hadoop分布式复制
+
+Hadoop分布式复制（DistCp）是一个用于大型集群间和集群内复制任务的分布式复制工具。该工具使用 MapReduce 进行数据分发、错误处理和报告。它扩展文件和目录列表并将它们输入到映射任务中以从源列表复制数据。下图展示了 HDFS 和非 HDFS 中的 DistCp 操作。
+
+image:bda-ai-001.png["该图显示输入/输出对话框或表示书面内容"]
+
+Hadoop DistCp 无需使用额外的驱动程序即可在两个 HDFS 系统之间移动数据。 NetApp为非 HDFS 系统提供驱动程序。对于 NFS 目标，NIPAM 提供驱动程序来复制数据，Hadoop DistCp 在复制数据时使用该驱动程序与 NFS 目标进行通信。
+
+
+
+== Google Cloud NetApp Volumes
+
+Google Cloud NetApp Volumes是一种具有极高性能的云原生文件服务。该服务可帮助客户通过快速增加或减少资源以及使用NetApp功能来提高生产力并减少员工停机时间，从而加快产品上市时间。  Google Cloud NetApp Volumes是灾难恢复和备份到云的正确替代方案，因为它减少了整体数据中心的占用空间并消耗了更少的原生公共云存储。
+
+
+
+== NetApp XCP
+
+NetApp XCP 是一款客户端软件，可实现快速可靠的任意到NetApp和NetApp到NetApp数据迁移。该工具旨在将大量非结构化 NAS 数据从任何 NAS 系统复制到NetApp存储控制器。 XCP 迁移工具使用多核、多通道 I/O 流引擎，可以并行处理许多请求，例如数据迁移、文件或目录列表以及空间报告。这是默认的NetApp数据迁移工具。您可以使用 XCP 将数据从 Hadoop 集群和 HPC 复制到NetApp NFS 存储。下图显示了使用 XCP 从 Hadoop 和 HPC 集群到NetApp NFS 卷的数据传输。
+
+image:bda-ai-002.png["该图显示输入/输出对话框或表示书面内容"]
+
+
+
+== NetApp BlueXP复制和同步
+
+NetApp BlueXP Copy and Sync 是一种混合数据复制软件即服务，可在本地存储和云存储之间无缝安全地传输和同步 NFS、S3 和 CIFS 数据。该软件用于数据迁移、存档、协作、分析等。数据传输完成后， BlueXP Copy and Sync 会在源和目标之间持续同步数据。接下来，它会传输增量。它还可以保护您自己的网络、云端或本地的数据。该软件基于现收现付模式，提供经济高效的解决方案，并为您的数据传输提供监控和报告功能。

@@ -1,0 +1,60 @@
+---
+sidebar: sidebar 
+permalink: data-analytics/kafka-sc-solution.html 
+keywords: solution architecture, confluent platform, linux, Fujitsu primergy, intel xenon 
+summary: 本节介绍使用NetApp ONTAP进行分层存储的 Confluent Platform 部署中用于性能验证的硬件和软件。下表涵盖了解决方案架构和基本组件。 
+---
+= 解决方案
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+Confluent 和由ONTAP提供支持的NetApp AFF A900存储控制器是专为数据流设计的分布式系统。两者都具有水平可扩展性和容错性，并且在负载下提供出色的性能。它们在分布式数据流和流处理方面相互补充，通过数据缩减技术最大限度地减少数据占用空间，从而降低存储成本。 AFF A900存储控制器提供出色的性能，同时允许计算和数据存储资源分离。这简化了系统管理并允许独立扩展资源。
+
+image:kafka-sc-003.png["描述解决方案概览的图像。"]
+
+
+
+== 解决方案架构细节
+
+本节介绍使用NetApp ONTAP进行分层存储的 Confluent Platform 部署中用于性能验证的硬件和软件。下表涵盖了解决方案架构和基本组件。
+
+|===
+| 平台组件 | 环境配置 
+
+
+| Confluent 平台版本 6.2  a| 
+* 3名动物园管理员
+* 8 个经纪服务器
+* 5 个工具服务器
+* 1 个 Grafana
+* 1 x 控制中心
+
+
+
+
+| 所有节点上的操作系统 | Linux（Ubuntu 18.04） 
+
+
+| NetApp ONTAP用于热存储桶  a| 
+* 1 个AFF A900高可用性 (HA) 对
+* 4 x 24 x 800 SSD
+* S3 协议
+* 100GbE
+
+
+
+
+| 15台富士通PRIMERGY RX2540服务器  a| 
+* 2 个 CPU；总共 16 个物理核心
+* 英特尔至强
+* 256GB物理内存
+* 100GbE 双端口
+
+
+|===

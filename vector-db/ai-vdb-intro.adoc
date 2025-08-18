@@ -1,0 +1,36 @@
+---
+sidebar: sidebar 
+permalink: vector-db/ai-vdb-intro.html 
+keywords: vector database 
+summary: NetApp矢量数据库解决方案介绍 
+---
+= 简介
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+本节介绍NetApp的矢量数据库解决方案。
+
+
+
+== 简介
+
+向量数据库有效地解决了旨在处理大型语言模型 (LLM) 和生成人工智能 (AI) 中的语义搜索复杂性的挑战。与传统的数据管理系统不同，矢量数据库能够使用数据本身的内容而不是标签或标记来处理和搜索各种类型的数据，包括图像、视频、文本、音频和其他形式的非结构化数据。
+
+关系数据库管理系统 (RDBMS) 的局限性是有据可查的，尤其是它们在处理人工智能应用中常见的高维数据表示和非结构化数据时遇到的困难。 RDBMS 通常需要将数据扁平化为更易于管理的结构，这一过程既耗时又容易出错，从而导致搜索延迟和效率低下。矢量数据库的出现解决了这些问题，为复杂高维数据的管理和搜索提供了更高效、更准确的解决方案，从而促进了人工智能应用的发展。
+
+本文档为当前正在使用或计划使用向量数据库的客户提供全面的指南，详细介绍了在NetApp ONTAP、 NetApp StorageGRID、 Amazon FSx ONTAP for NetApp ONTAP和SnapCenter等平台上使用向量数据库的最佳实践。本文提供的内容涵盖了一系列主题：
+
+* NetApp存储通过NetApp ONTAP和StorageGRID对象存储为 Milvus 等矢量数据库提供基础设施指南。
+* 通过文件和对象存储验证 AWS FSx ONTAP中的 Milvus 数据库。
+* 深入研究 NetApp 的文件对象二元性，展示其对矢量数据库以及其他应用程序中的数据的实用性。
+* NetApp 的数据保护管理产品SnapCenter如何为矢量数据库数据提供备份和恢复功能。
+* NetApp 的混合云如何在本地和云环境中提供数据复制和保护。
+* 提供有关NetApp ONTAP上 Milvus 和 pgvector 等矢量数据库的性能验证的见解。
+* 两个具体的用例：具有大型语言模型 (LLM) 的检索增强生成 (RAG) 和NetApp IT 团队的 ChatAI，从而提供所概述的概念和实践的实际示例。
+

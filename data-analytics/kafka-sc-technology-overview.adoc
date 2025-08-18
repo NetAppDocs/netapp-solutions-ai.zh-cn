@@ -1,0 +1,155 @@
+---
+sidebar: sidebar 
+permalink: data-analytics/kafka-sc-technology-overview.html 
+keywords: ONTAP, storage controller, primary use cases, Native s3 applications, fabricpool endpoints, System Manager, event streaming, enterprise 
+summary: 本页介绍了此解决方案中使用的技术。 
+---
+= 技术概述
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+本节介绍此解决方案所使用的技术。
+
+
+
+== NetApp ONTAP存储控制器
+
+NetApp ONTAP是一款高性能企业级存储操作系统。
+
+NetApp ONTAP 9.8 引入了对 Amazon Simple Storage Service (S3) API 的支持。  ONTAP支持 Amazon Web Services (AWS) S3 API 操作的子集，并允许将数据表示为跨云提供商（AWS、Azure 和 GCP）和本地的基于ONTAP的系统中的对象。
+
+NetApp StorageGRID软件是NetApp 的旗舰对象存储解决方案。  ONTAP通过在边缘提供摄取和预处理点、扩展由NetApp支持的对象数据数据结构以及增加NetApp产品组合的价值来补充StorageGRID 。
+
+通过授权用户和客户端应用程序可以访问 S3 存储桶。下图显示了应用程序访问 S3 存储桶的情况。
+
+image:kafka-sc-004.png["此图显示了访问 S3 存储桶的应用程序。"]
+
+
+
+== 主要用例
+
+支持 S3 API 的主要目的是提供ONTAP上的对象访问。  ONTAP统一存储架构现在支持文件（NFS 和 SMB）、块（FC 和 iSCSI）和对象（S3）。
+
+
+
+== 原生 S3 应用程序
+
+越来越多的应用程序能够利用ONTAP支持通过 S3 进行对象访问。尽管非常适合高容量存档工作负载，但对原生 S3 应用程序的高性能需求正在快速增长，包括：
+
+* 分析
+* 人工智能
+* 从边缘到核心的采集
+* 机器学习
+
+
+客户现在可以使用熟悉的管理工具（例如ONTAP系统管理器）来快速配置用于ONTAP中的开发和操作的高性能对象存储，同时充分利用ONTAP存储的效率和安全性。
+
+
+
+== FabricPool端点
+
+从ONTAP 9.8 开始， FabricPool支持对ONTAP中的存储桶进行分层，从而允许ONTAP到ONTAP分层。对于希望将现有FAS基础设施重新用作对象存储端点的客户来说，这是一个绝佳的选择。
+
+FabricPool通过两种方式支持分层到ONTAP ：
+
+* 本地集群分层。使用集群 LIF 将非活动数据分层到位于本地集群上的存储桶中。
+* 远程集群分层。非活动数据以类似于传统FabricPool云层的方式分层到位于远程集群上的存储桶中，使用FabricPool客户端上的 IC LIF 和ONTAP对象存储上的数据 LIF。
+
+
+如果您希望在现有集群上使用 S3 功能而无需额外的硬件和管理，则ONTAP S3 是合适的。对于大于 300TB 的部署， NetApp StorageGRID软件仍然是NetApp对象存储的旗舰解决方案。使用ONTAP或StorageGRID作为云层时不需要FabricPool许可证。
+
+
+
+=== NetApp ONTAP for Confluent 分层存储
+
+每个数据中心都需要保持关键业务应用程序的运行以及重要数据的可用和安全。全新NetApp AFF A900系统采用ONTAP Enterprise Edition 软件和高弹性设计。我们全新的闪电般快速的 NVMe 存储系统可消除对关键任务操作的中断、最大限度地减少性能调整并保护您的数据免受勒索软件攻击。
+
+从初始部署到扩展 Confluent 集群，您的环境需要快速适应对您的关键业务应用程序无干扰的变化。  ONTAP企业数据管理、服务质量 (QoS) 和性能使您能够规划和适应您的环境。
+
+将NetApp ONTAP与 Confluent 分层存储结合使用，可以利用ONTAP作为横向扩展存储目标，从而简化 Apache Kafka 集群的管理，并支持 Confluent 计算和存储资源的独立扩展。
+
+ONTAP S3 服务器建立在ONTAP成熟的横向扩展存储功能之上。通过扩展 S3 存储桶以使用新添加到ONTAP集群的节点，可以无缝地扩展ONTAP集群。
+
+
+
+=== 使用ONTAP系统管理器进行简单管理
+
+ONTAP系统管理器是一个基于浏览器的图形界面，可让您在单一管理平台中配置、管理和监控全球分布位置的ONTAP存储控制器。
+
+image:kafka-sc-005.png["此图显示了ONTAP系统管理器工作区。"]
+
+您可以使用系统管理器和ONTAP CLI 配置和管理ONTAP S3。当您使用系统管理器启用 S3 并创建存储桶时， ONTAP会提供最佳实践默认设置以简化配置。如果您从 CLI 配置 S3 服务器和存储桶，您仍然可以根据需要使用系统管理器管理它们，反之亦然。
+
+当您使用系统管理器创建 S3 存储桶时， ONTAP会配置系统上可用的最高默认性能服务级别。例如，在AFF系统上，默认设置是 Extreme。性能服务级别是预定义的自适应 QoS 策略组。您可以指定自定义 QoS 策略组或不指定策略组，而不是指定默认服务级别之一。
+
+预定义的自适应 QoS 策略组包括以下内容：
+
+* *极端。*用于需要最低延迟和最高性能的应用程序。
+* *表现。*适用于具有中等性能需求和延迟的应用程序。
+* *价值。*用于吞吐量和容量比延迟更重要的应用程序。
+* *风俗。*指定自定义 QoS 策略或不指定 QoS 策略。
+
+
+如果选择“用于分层”，则不会选择任何性能服务级别，系统会尝试为分层数据选择具有最佳性能的低成本媒体。
+
+ONTAP尝试在具有最合适磁盘的本地层上配置此存储桶，以满足所选的服务级别。但是，如果您需要指定要包含在存储桶中的磁盘，请考虑通过指定本地层（聚合）从 CLI 配置 S3 对象存储。如果您从 CLI 配置 S3 服务器，您仍然可以根据需要使用系统管理器进行管理。
+
+如果您希望能够指定用于存储桶的聚合，则只能使用 CLI 来实现。
+
+
+
+== 汇合
+
+Confluent 平台是一个全方位的数据流平台，使您能够轻松地以连续的实时流形式访问、存储和管理数据。 Confluent 由 Apache Kafka 的原始创建者构建，它通过企业级功能扩展了 Kafka 的优势，同时消除了 Kafka 管理或监控的负担。如今，财富 100 强企业中超过 80% 都采用数据流技术，其中大多数都使用 Confluent。
+
+
+
+=== 为什么选择 Confluent？
+
+通过将历史数据和实时数据集成到单一的中央事实来源，Confluent 可以轻松构建全新类别的现代事件驱动应用程序，获得通用数据管道，并解锁具有完全可扩展性、性能和可靠性的强大新用例。
+
+
+
+=== Confluent 的用途是什么？
+
+Confluent 平台让您专注于如何从数据中获取商业价值，而不必担心底层机制，例如如何在不同的系统之间传输或集成数据。具体来说，Confluent Platform 简化了数据源与 Kafka 的连接、流应用程序的构建以及 Kafka 基础设施的保护、监控和管理。如今，Confluent 平台已广泛应用于众多行业，从金融服务、全渠道零售、自动驾驶汽车到欺诈检测、微服务和物联网。
+
+下图展示了 Confluent Platform 的组件。
+
+image:kafka-sc-006.png["该图显示了 Confluent 平台的组件。"]
+
+
+
+=== Confluent 事件流技术概述
+
+Confluent 平台的核心是 https://kafka.apache.org/["卡夫卡"^]，最受欢迎的开源分布式流媒体平台。  Kafka 的主要功能包括：
+
+* 发布和订阅记录流。
+* 以容错的方式存储记录流。
+* 处理记录流。
+
+
+开箱即用的 Confluent Platform 还包括 Schema Registry、REST Proxy、总共 100 多个预构建的 Kafka 连接器和 ksqlDB。
+
+
+
+=== Confluent 平台企业功能概述
+
+* *汇合控制中心。*用于管理和监控 Kafka 的基于 UI 的系统。它允许您轻松管理 Kafka Connect 以及创建、编辑和管理与其他系统的连接。
+* *适用于 Kubernetes 的 Confluent。*  Confluent for Kubernetes 是一个 Kubernetes 操作员。 Kubernetes 操作员通过为特定平台应用程序提供独特的功能和要求来扩展 Kubernetes 的编排功能。对于 Confluent 平台，这包括大大简化 Kafka 在 Kubernetes 上的部署过程，并自动执行典型的基础设施生命周期任务。
+* Kafka Connect 连接器。连接器使用 Kafka Connect API 将 Kafka 连接到其他系统，例如数据库、键值存储、搜索索引和文件系统。 Confluent Hub 具有适用于最流行的数据源和接收器的可下载连接器，包括使用 Confluent Platform 对这些连接器进行全面测试和支持的版本。更多详情请见 https://docs.confluent.io/home/connect/userguide.html["此处"^]。
+* *自平衡集群。*提供自动负载平衡、故障检测和自我修复。它还支持根据需要添加或停用代理，无需手动调整。
+* *汇合簇连接。*直接将集群连接在一起，并通过链接桥将主题从一个集群镜像到另一个集群。集群链接简化了多数据中心、多集群和混合云部署的设置。
+* *汇合自动数据平衡器。*监控集群中的代理数量、分区大小、分区数量以及集群内的领导者数量。它允许您转移数据以在整个集群中创建均匀的工作负载，同时限制重新平衡流量以最大限度地减少重新平衡时对生产工作负载的影响。
+* *汇合复制器。*使得在多个数据中心维护多个 Kafka 集群变得比以往更加简单。
+* *分层存储。*提供使用您最喜欢的云提供商存储大量 Kafka 数据的选项，从而减少运营负担和成本。通过分层存储，您可以将数据保存在经济高效的对象存储中，并且仅在需要更多计算资源时才扩展代理。
+* Confluent JMS 客户端。 Confluent Platform 包含一个与 JMS 兼容的 Kafka 客户端。该 Kafka 客户端实现了 JMS 1.1 标准 API，使用 Kafka 代理作为后端。如果您有使用 JMS 的遗留应用程序并且想要用 Kafka 替换现有的 JMS 消息代理，这将非常有用。
+* *Confluent MQTT 代理。*提供一种从 MQTT 设备和网关直接向 Kafka 发布数据的方法，无需中间的 MQTT 代理。
+* *Confluent 安全插件。* Confluent 安全插件用于为各种 Confluent 平台工具和产品添加安全功能。目前，有一个可用于 Confluent REST 代理的插件，可帮助验证传入的请求并将经过验证的主体传播到对 Kafka 的请求。这使得 Confluent REST 代理客户端能够利用 Kafka 代理的多租户安全功能。
+

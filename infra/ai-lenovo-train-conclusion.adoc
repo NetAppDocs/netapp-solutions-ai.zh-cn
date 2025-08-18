@@ -1,0 +1,65 @@
+---
+sidebar: sidebar 
+permalink: infra/ai-lenovo-train-conclusion.html 
+keywords: acknowledgements, additional information 
+summary: NetApp和联想的解决方案是一种灵活的横向扩展架构，非常适合进入中型企业 AI。  NetApp存储提供与本地 SSD 存储相同或更好的性能，并为数据科学家、数据工程师和 IT 决策者提供以下优势。 
+---
+= 结束语
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+这里验证的NetApp和联想解决方案是一种灵活的横向扩展架构，非常适合进入中型企业 AI。
+
+NetApp存储提供与本地 SSD 存储相同或更好的性能，并为数据科学家、数据工程师和 IT 决策者提供以下优势：
+
+* 在人工智能系统、分析系统和其他关键业务系统之间轻松共享数据。这种数据共享减少了基础设施开销，提高了性能，并简化了整个企业的数据管理。
+* 独立可扩展的计算和存储，以最大限度地降低成本并提高资源利用率。
+* 使用集成快照和克隆来简化开发和部署工作流程，以实现即时且节省空间的用户工作区、集成版本控制和自动部署。
+* 用于灾难恢复和业务连续性的企业级数据保护。
+
+
+
+
+== 声明
+
+* Karthikeyan Nagalingam， NetApp技术营销工程师
+* Jarrett Upton，联想人工智能实验室系统管理员
+
+
+
+
+== 在哪里可以找到更多信息
+
+要了解有关本文档中描述的信息的更多信息，请参阅以下文档和/或网站：
+
+* NetApp全闪存阵列产品页面
++
+https://www.netapp.com/us/products/storage-systems/all-flash-array/aff-a-series.aspx["https://www.netapp.com/us/products/storage-systems/all-flash-array/aff-a-series.aspx"^]
+
+* NetApp AFF A400页面
++
+https://docs.netapp.com/us-en/ontap-systems/a400/index.html["https://docs.netapp.com/us-en/ontap-systems/a400/index.html"]
+
+* NetApp ONTAP数据管理软件产品页面
++
+http://www.netapp.com/us/products/data-management-software/ontap.aspx["http://www.netapp.com/us/products/data-management-software/ontap.aspx"^]
+
+* MLPerf
++
+https://mlperf.org/["https://mlperf.org"^]
+
+* TensorFlow 基准测试
++
+https://github.com/tensorflow/benchmarks["https://github.com/tensorflow/benchmarks"^]
+
+* NVIDIA SMI（nvidia-smi）
++
+https://developer.nvidia.com/nvidia-system-management-interface["https://developer.nvidia.com/nvidia-system-management-interface"]
+
+
