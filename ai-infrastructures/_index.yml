@@ -10,6 +10,10 @@ indexpage:
     links:
     - title: 搭载NVIDIA DGX 系统的NetApp AIPod
       url: "../infra/ai-aipod-nv-intro.html"
+    - title: 搭载NVIDIA DGX SuperPOD 的NetApp AFF A90存储系统 - 设计
+      url: "../infra/ai-dgx-superpod-nva1175-design.html"
+    - title: 搭载NVIDIA DGX SuperPOD 的NetApp AFF A90存储系统 - 部署
+      url: "../infra/ai-dgx-superpod-nva1175-deploy.html"
     - title: NetApp AIPod与联想携手为NVIDIA OVX 提供支持
       url: "../infra/ai-aipod-lenovo-nva1172.html"
     - title: AIPod架构

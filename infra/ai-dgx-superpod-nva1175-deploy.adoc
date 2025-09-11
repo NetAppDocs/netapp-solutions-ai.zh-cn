@@ -1,0 +1,765 @@
+---
+sidebar: sidebar 
+permalink: infra/ai-dgx-superpod-nva1175-deploy.html 
+keywords: NetApp AI, AI, Artificial Intelligence, ML, Machine Learning, NVIDIA, NVIDIA AI Enterprise, NVIDIA SuperPOD, NVIDIA DGX 
+summary: 搭载NetApp AFF A90 的NVIDIA DGX SuperPOD 
+---
+= 搭载NVIDIA DGX SuperPOD 的NetApp AFF A90存储系统
+:allow-uri-read: 
+
+
+
+
+== NVA 部署
+
+[role="lead"]
+搭载NetApp AFF A90存储系统的NVIDIA DGX SuperPOD将NVIDIA DGX 系统的世界一流计算性能与NetApp云连接存储系统相结合，为机器学习 (ML)、人工智能 (AI) 和高性能技术计算 (HPC) 提供数据驱动的工作流程。本文档介绍了将AFF A90存储系统集成到 DGX SuperPOD 架构的配置和部署细节。
+
+image:nvidialogo.png["nvidia 标志"]
+
+NetApp的 David Arnette
+
+
+
+== 项目摘要
+
+NVIDIA DGX SuperPOD™ 为组织提供交钥匙 AI 数据中心解决方案，无缝提供世界一流的计算、软件工具、专业知识和持续创新。 DGX SuperPOD 可为客户提供部署 AI/ML 和 HPC 工作负载所需的一切，同时最大程度地缩短设置时间并提高生产力。图 1 显示了 DGX SuperPOD 的高级组件。
+
+图 1) 带有NetApp AFF A90存储系统的NVIDIA DGX SuperPOD 。
+
+image:ai-superpod-a90-005.png["600,600"]
+
+DGX SuperPOD 具有以下优势：
+
+* 经过验证的 AI/ML 和 HPC 工作负载性能
+* 从基础设施管理和监控到预先构建的深度学习模型和工具的集成硬件和软件堆栈。
+* 从安装和基础设施管理到扩展工作负载和简化生产 AI 的专用服务。
+
+
+
+
+== 解决方案概述
+
+随着各组织采用人工智能 (AI) 和机器学习 (ML) 计划，对强大、可扩展且高效的基础设施解决方案的需求从未如此强烈。这些举措的核心在于管理和训练日益复杂的人工智能模型，同时确保数据安全、可访问性和资源优化。 
+
+该解决方案具有以下主要优势：
+
+* 可扩展性
+* *数据管理和访问*
+* *安全*
+
+
+
+
+=== 解决方案技术
+
+NVIDIA DGX SuperPOD包含必要的服务器、网络和存储，可为要求苛刻的 AI 工作负载提供经过验证的性能。 NVIDIA DGX™ H200 和 B200 系统提供世界一流的计算能力， NVIDIA Quantum InfiniBand 和 Spectrum™ 以太网网络交换机提供超低延迟和业界领先的网络性能。借助NetApp ONTAP存储业界领先的数据管理和性能功能，客户可以更快地实现 AI/ML 计划，并减少数据迁移和管理开销。有关此解决方案中特定组件的更多信息，请参阅https://www.netapp.com/pdf.html?item=/media/125003-nva-1175-design-superpod-a90.pdf["NVA-1175 设计指南"]和 https://docs.nvidia.com/dgx-superpod/reference-architecture-scalable-infrastructure-b200/latest/index.html["+++ NVIDIA DGX SuperPOD参考架构+++"]文档。
+
+
+
+=== 用例摘要
+
+NVIDIA DGX SuperPOD旨在满足最苛刻的工作负载的性能和规模要求。
+
+此解决方案适用于以下用例：
+
+* 使用传统分析工具进行大规模机器学习。
+* 针对大型语言模型、计算机视觉/图像分类、欺诈检测和无数其他用例的人工智能模型训练。
+* 高性能计算，如地震分析、计算流体动力学和大规模可视化。
+
+
+
+
+== 技术要求
+
+DGX SuperPOD 基于可扩展单元 (SU) 的概念，它包含提供所需连接和性能以及消除基础设施中任何瓶颈所需的所有组件。客户可以从一个或多个 SU 开始，然后根据需要添加其他 SU 来满足其要求。更多信息请参阅 https://docs.nvidia.com/dgx-superpod/reference-architecture-scalable-infrastructure-b200/latest/index.html["+++ NVIDIA DGX SuperPOD参考架构+++"]。本文档介绍了单个 SU 的存储组件和配置。
+
+
+
+=== 硬件要求
+
+表 1 列出了实现 1SU 存储组件所需的硬件组件。有关 1-4 个可扩展单元的具体零件和数量，请参阅附录 A。
+
+表 1) 硬件要求。
+
+[cols="50%,50%"]
+|===
+| 硬件 | 数量 
+
+
+| NetApp AFF A90存储系统 | 4 
+
+
+| NetApp存储集群互连交换机 | 2 
+
+
+| NVIDIA 800GB -> 4x 200Gb 分离器电缆 | 12 
+|===
+
+
+=== 软件要求
+
+表 2 列出了将AFF A90存储系统与 DGX SuperPOD 集成所需的最低软件组件和版本。 DGX SuperPOD 还涉及此处未列出的其他软件组件。请参阅https://docs.nvidia.com/dgx-superpod/release-notes/latest/10-24-11.html["+++DGX SuperPOD 发行说明+++"]了解完整详情。
+
+表 2) 软件要求。
+
+[cols="50%,50%"]
+|===
+| 软件 | 版本 
+
+
+| NetApp ONTAP | 9.16.1 或更高版本 
+
+
+| NVIDIA BaseCommand 管理器 | 10.24.11 或更高版本 
+
+
+| NVIDIA DGX 操作系统 | 6.3.1 或以上 
+
+
+| NVIDIA OFED 驱动程序 | MLNX_OFED_LINUX-23.10.3.2.0 LTS 或更高版本 
+
+
+| NVIDIA Cumulus 操作系统 | 5.10或以上 
+|===
+
+
+== 部署过程
+
+将NetApp ONTAP存储与 DGX SuperPOD 集成涉及以下任务：
+
+* 带有 RoCE 的NetApp AFF A90存储系统的网络配置
+* 存储系统的安装和配置
+* 使用NVIDIA Base Command™ Manager 进行 DGX 客户端配置
+
+
+
+
+=== 存储系统的安装和配置
+
+
+
+==== 场地准备和基本安装
+
+作为标准部署服务的一部分， NetApp专业服务将为所有 DGX SuperPOD 部署执行AFF A90存储集群的场地准备和基本安装。 NetApp PS 将确认现场条件是否适合安装，并将硬件安装在指定的机架中。他们还将连接 OOB 网络连接并使用客户提供的网络信息完成基本集群设置。附录 A – 物料清单和机架立面图包括标准机架立面图以供参考。有关 A90 安装的更多信息，请参阅 https://docs.netapp.com/us-en/ontap-systems/a70-90/install-overview.html["+++ AFF A90硬件安装文档+++"]。
+
+标准部署完成后， NetApp PS 将使用以下步骤完成存储解决方案的高级配置，包括与 Base Command Manager 集成以实现客户端连接和调整。
+
+
+
+==== 将存储系统布线到 DGX SuperPOD 存储结构
+
+AFF A90存储系统使用每个控制器四个 200Gb 以太网端口连接到存储结构叶交换机，每个交换机有两个连接。 NVIDIA Spectrum SN5600 交换机上的 800Gb 交换机端口使用附录 A 中列出的适当 DAC 或光分路器配置分成 4 个 200Gb 端口。每个交换机端口的各个端口分布在存储控制器上，以消除单点故障。下面的图 2 显示了存储结构连接的布线：
+
+图 2) 存储网络布线。
+
+image:ai-superpod-a90-006.png["600,600"]
+
+
+
+==== 将存储系统布线到 DGX SuperPOD 带内网络
+
+NetApp ONTAP包含业界领先的多租户功能，使其既可以作为 DGX SuperPOD 架构中的高性能存储系统运行，又可以支持主目录、组文件共享和基本命令管理器集群工件。为了在带内网络上使用，每个AFF A90控制器都连接到带内网络交换机，每个控制器有一个 200Gb 以太网连接，并且端口配置为 LACP MLAG 配置。下面的图 3 显示了存储系统到带内和 OOB 网络的布线。
+
+图 3) 带内和 OOB 网络布线。
+
+image:ai-superpod-a90-007.png["600,600"]
+
+
+
+==== 为 DGX SuperPOD 配置ONTAP
+
+该解决方案利用多个存储虚拟机 (SVM) 来托管卷，以实现高性能存储访问以及管理 SVM 上的用户主目录和其他集群工件。每个 SVM 都配置了存储或带内网络上的网络接口，以及用于数据存储的FlexGroup卷。为了确保数据 SVM 的性能，实施了存储 QoS 策略。有关 FlexGroups、存储虚拟机和ONTAP QoS 功能的更多信息，请参阅 https://docs.netapp.com/us-en/ontap/index.html["+++ ONTAP文档+++"]。
+
+
+
+===== 配置基本存储
+
+
+
+====== 在每个控制器上配置单个聚合
+
+[source, cli]
+----
+aggr create -node <node> -aggregate <node>_data01 -diskcount <47> -maxraidsize 24
+----
+对集群中的每个节点重复上述步骤。
+
+
+
+====== 在每个控制器上配置 ifgrps 以实现带内网络
+
+[source, cli]
+----
+net port ifgrp create -node <node> -ifgrp a1a -mode multimode
+-distr-function port
+
+net port ifgrp add-port -node <node> -ifgrp a1a -ports
+<node>:e2a,<node>:e2b
+----
+对集群中的每个节点重复上述步骤。
+
+
+
+====== 为 RoCE 配置物理端口
+
+启用 NFS over RDMA 需要进行配置以确保网络流量在客户端和服务器上都被适当标记，然后由网络使用 RDMA over Converged Ethernet (RoCE) 进行适当处理。这包括配置优先流量控制 (PFC) 和配置要使用的 PFC CoS 队列。执行以下命令时， NetApp ONTAP还会自动配置 DSCP 代码 26 以与网络 QoS 配置保持一致。
+
+[source, cli]
+----
+network port modify -node * -port e6* -flowcontrol-admin pfc
+-pfc-queues-admin 3
+
+network port modify -node * -port e11* -flowcontrol-admin pfc
+-pfc-queues-admin 3
+----
+
+
+====== 创建广播域
+
+[source, cli]
+----
+broadcast-domain create -broadcast-domain in-band -mtu 9000 -ports
+ntapa90_spod-01:a1a,ntapa90_spod-02:a1a,ntapa90_spod-03:a1a,ntapa90_spod-04:a1a,ntapa90_spod-05:a1a,
+ntapa90_spod-06:a1a,ntapa90_spod-07:a1a,ntapa90_spod-08:a1a
+
+broadcast-domain create -broadcast-domain vlan401 -mtu 9000 -ports
+ntapa90_spod-01:e6a,ntapa90_spod-01:e6b,ntapa90_spod-02:e6a,ntapa90_spod-02:e6b,ntapa90_spod-03:e6a,ntapa90_spod-03:e6b,ntapa90_spod-04:e6a,ntapa90_spod-04:e6b,ntapa90_spod-05:e6a,ntapa90_spod-05:e6b,ntapa90_spod-06:e6a,ntapa90_spod-06:e6b,ntapa90_spod-07:e6a,ntapa90_spod-07:e6b,ntapa90_spod-08:e6a,ntapa90_spod-08:e6b
+
+broadcast-domain create -broadcast-domain vlan402 -mtu 9000 -ports
+ntapa90_spod-01:e11a,ntapa90_spod-01:e11b,ntapa90_spod-02:e11a,ntapa90_spod-02:e11b,ntapa90_spod-03:e11a,ntapa90_spod-03:e11b,ntapa90_spod-04:e11a,ntapa90_spod-04:e11b,ntapa90_spod-05:e11a,ntapa90_spod-05:e11b,ntapa90_spod-06:e11a,ntapa90_spod-06:e11b,ntapa90_spod-07:e11a,ntapa90_spod-07:e11b,ntapa90_spod-08:e11a,ntapa90_spod-08:e11b
+
+----
+
+
+===== 创建管理 SVM
+
+
+
+====== 创建并配置管理 SVM
+
+[source, cli]
+----
+vserver create -vserver spod_mgmt
+
+vserver modify -vserver spod_mgmt -aggr-list
+ntapa90_spod-01_data01,ntapa90_spod-02_data01,
+ntapa90_spod-03_data01,ntapa90_spod-04_data01,
+ntapa90_spod-05_data01,ntapa90_spod-06_data01,
+ntapa90_spod-07_data01,ntapa90_spod-08_data01
+----
+
+
+====== 在管理 SVM 上配置 NFS 服务
+
+[source, cli]
+----
+nfs create -vserver spod_mgmt -v3 enabled -v4.1 enabled -v4.1-pnfs
+enabled -tcp-max-xfer-size 262144 -v4.1-trunking enabled
+
+set advanced
+
+nfs modify -vserver spod_mgmt -v3-64bit-identifiers enabled
+-v4.x-session-num-slots 1024
+----
+
+
+====== 为带内网络接口创建 IP 子网
+
+[source, cli]
+----
+network subnet create -subnet-name inband -broadcast-domain in-band
+-subnet xxx.xxx.xxx.0/24 -gateway xxx.xxx.xxx.x -ip-ranges
+xxx.xxx.xxx.xx-xxx.xxx.xxx.xxx
+----
+*注意：*客户需在部署时提供 IP 子网信息，以便集成到现有客户网络中。
+
+
+
+====== 在每个节点上为带内 SVM 创建网络接口
+
+[source, cli]
+----
+net int create -vserver spod_mgmt -lif inband_lif1 -home-node
+ntapa90_spod-01 -home-port a1a -subnet_name inband
+----
+对集群中的每个节点重复上述步骤。
+
+
+
+====== 为管理 SVM 创建FlexGroup卷
+
+[source, cli]
+----
+vol create -vserver spod_mgmt -volume home -size 10T -auto-provision-as
+flexgroup -junction-path /home
+
+vol create -vserver spod_mgmt -volume cm -size 10T -auto-provision-as
+flexgroup -junction-path /cm
+
+----
+
+
+====== 为管理 SVM 创建导出策略
+
+[source, cli]
+----
+export-policy rule create -vserver spod_mgmt -policy default
+-client-match XXX.XXX.XXX.XXX -rorule sys -rwrule sys -superuser sys
+----
+*注意：*客户需在部署时提供 IP 子网信息，以便集成到现有客户网络中。
+
+
+
+===== 创建数据 SVM
+
+
+
+====== 创建并配置数据 SVM
+
+[source, cli]
+----
+vserver create -vserver spod_data
+vserver modify -vserver spod_data -aggr-list
+ntapa90_spod-01_data01,ntapa90_spod-02_data01,
+ntapa90_spod-03_data01,ntapa90_spod-04_data01,
+ntapa90_spod-05_data01,ntapa90_spod-06_data01,
+ntapa90_spod-07_data01,ntapa90_spod-08_data01
+----
+
+
+====== 在启用 RDMA 的数据 SVM 上配置 NFS 服务
+
+[source, cli]
+----
+nfs create -vserver spod_data -v3 enabled -v4.1 enabled -v4.1-pnfs
+enabled -tcp-max-xfer-size 262144 -v4.1-trunking enabled -rdma enabled
+
+set advanced
+
+nfs modify -vserver spod_data -v3-64bit-identifiers enabled
+-v4.x-session-num-slots 1024
+----
+
+
+====== 为 Data SVM 网络接口创建 IP 子网
+
+[source, cli]
+----
+network subnet create -subnet-name vlan401 -broadcast-domain vlan401
+-subnet 100.127.124.0/24 -ip-ranges 100.127.124.4-100.127.124.254
+
+network subnet create -subnet-name vlan402 -broadcast-domain vlan402
+-subnet 100.127.252.0/24 -ip-ranges 100.127.252.4-100.127.252.254
+----
+
+
+====== 在每个节点上为 Data SVM 创建网络接口
+
+[source, cli]
+----
+net int create -vserver spod_data -lif data_lif1 -home-node
+ntapa90_spod-01 -home-port e6a -subnet_name vlan401 -failover-policy
+sfo-partner-only
+
+net int create -vserver spod_data -lif data_lif2 -home-node
+ntapa90_spod-01 -home-port e6b -subnet_name vlan401
+
+net int create -vserver spod_data -lif data_lif3 -home-node
+ntapa90_spod-01 -home-port e11a -subnet_name vlan402
+
+net int create -vserver spod_data -lif data_lif4 -home-node
+ntapa90_spod-01 -home-port e11b -subnet_name vlan402
+
+----
+对集群中的每个节点重复上述步骤。
+
+
+
+====== 为 RDMA 配置数据 SVM 网络接口
+
+[source, cli]
+----
+net int modify -vserver spod_data -lif * -rdma-protocols roce
+----
+
+
+====== 在数据 SVM 上创建导出策略
+
+[source, cli]
+----
+export-policy rule create -vserver spod_data -policy default
+-client-match 100.127.0.0/16 -rorule sys -rwrule sys -superuser sys
+----
+
+
+====== 在数据 SVM 上创建静态路由
+
+[source, cli]
+----
+route add -vserver spod_data -destination 100.127.0.0/17 -gateway
+100.127.124.1 -metric 20
+
+route add -vserver spod_data -destination 100.127.0.0/17 -gateway
+100.127.252.1 -metric 30
+
+route add -vserver spod_data -destination 100.127.128.0/17 -gateway
+100.127.252.1 -metric 20
+
+route add -vserver spod_data -destination 100.127.128.0/17 -gateway
+100.127.124.1 -metric 30
+----
+
+
+====== 使用 GDD 为数据 SVM 创建FlexGroup卷
+
+粒度数据分布 (GDD) 支持将大型数据文件分布在多个FlexGroup组成卷和控制器上，以实现单文件工作负载的最高性能。  NetApp建议在所有 DGX SuperPOD 部署的数据卷上启用 GDD。
+
+[source, cli]
+----
+set adv
+
+vol create -vserver spod-data -volume spod_data -size 100T -aggr-list
+ntapa90_spod-01_data01,ntapa90_spod-02_data01,
+ntapa90_spod-03_data01,ntapa90_spod-04_data01,
+ntapa90_spod-05_data01,ntapa90_spod-06_data01,
+ntapa90_spod-07_data01,ntapa90_spod-08_data01 -aggr-multiplier 16
+-granular-data advanced -junction-path /spod_data  
+----
+
+
+====== 禁用主数据卷的存储效率
+
+卷效率关闭-vserver spod_data-volume spod_data
+
+
+
+====== 为数据 SVM 创建 QoS 最小策略
+
+[source, cli]
+----
+qos policy-group create -policy-group spod_qos -vserver spod_data
+-min-throughput 62GB/s -is-shared true
+----
+
+
+====== 为数据 SVM 应用 QoS 策略
+
+[source, cli]
+----
+Volume modify -vserver spod_data -volume spod_data -qos-policy-group
+spod_qos
+----
+
+
+=== 使用NVIDIA Base Command Manager 配置 DGX 服务器
+
+要准备 DGX 客户端使用AFF A90存储系统，请完成以下任务。此过程假定已在 DGX 系统节点上配置了存储结构的网络接口和静态路由。以下任务将由NetApp专业服务作为高级配置过程的一部分完成。
+
+
+
+==== 使用所需的内核参数和其他设置配置 DGX 服务器映像
+
+NetApp ONTAP使用行业标准 NFS 协议，不需要在 DGX 系统上安装任何其他软件。为了使客户端系统获得最佳性能，需要对 DGX 系统映像进行一些修改。使用以下命令进入 BCM 映像 chroot 模式后执行以下两个步骤：
+
+[source, cli]
+----
+cm-chroot-sw-img /cm/images/<image>
+----
+
+
+===== 在 /etc/sysctl.conf 中配置系统虚拟内存设置
+
+默认的 Linux 系统配置提供的虚拟内存设置不一定能提供最佳性能。对于具有 2TB RAM 的 DGX B200 系统，默认设置允许 40GB 的缓冲区空间，这会创建不一致的 I/O 模式，并允许客户端在刷新缓冲区时使存储系统过载。以下设置将客户端缓冲区空间限制为 5GB，并强制更频繁地刷新以创建不会使存储系统过载的一致 I/O 流。
+
+进入镜像chroot模式后，编辑/etc/sysctl.s/90-cm-sysctl.conf文件，添加以下几行：
+
+[source, cli]
+----
+vm.dirty_ratio=0 #controls max host RAM used for buffering as a
+percentage of total RAM, when this limit is reached all applications
+must flush buffers to continue
+
+vm.dirty_background_ratio=0 #controls low-watermark threshold to start
+background flushing as a percentage of total RAM
+
+vm.dirty_bytes=5368709120 #controls max host RAM used for buffering as
+an absolute value (note _ratio above only accepts integers and the value
+we need is <1% of total RAM (2TB))
+
+vm.dirty_background_bytes=2147483648 #controls low-watermark threshold
+to start background flushing as an absolute value
+
+vm.dirty_expire_centisecs = 300 #controls how long data remains in
+buffer pages before being marked dirty
+
+vm.dirty_writeback_centisecs = 100 #controls how frequently the flushing
+process wakes up to flush dirty buffers
+----
+保存并关闭 /etc/sysctl.conf 文件。
+
+
+
+===== 使用重启后执行的脚本配置其他系统设置
+
+某些设置需要操作系统完全在线才能执行，并且在重启后不会持久。要在 Base Command Manager 环境中执行这些设置，请创建文件 /root/ntap_dgx_config.sh 并输入以下行：
+
+[source, cli]
+----
+#!/bin/bash
+
+##The commands below are platform-specific based.
+
+##For H100/H200 systems use the following variables
+
+## NIC1_ethname= enp170s0f0np0
+
+## NIC1_pciname=aa:00.0
+
+## NCI1_mlxname=mlx5_7
+
+## NIC1_ethname= enp41s0f0np0
+
+## NIC1_pciname=29:00.0
+
+## NCI1_mlxname=mlx5_1
+
+##For B200 systems use the following variables
+
+NIC1_ethname=enp170s0f0np0
+
+NIC1_pciname=aa:00.0
+
+NCI1_mlxname=mlx5_11
+
+NIC2_ethname=enp41s0f0np0
+
+NIC2_pciname=29:00.0
+
+NCI2_mlxname=mlx5_5
+
+mstconfig -y -d $\{NIC1_pciname} set ADVANCED_PCI_SETTINGS=1
+NUM_OF_VFS=0
+
+mstconfig -y -d $\{NIC2_pciname} set ADVANCED_PCI_SETTINGS=1
+NUM_OF_VFS=0
+
+setpci -s $\{NIC1_pciname} 68.W=5957
+
+setpci -s $\{NIC2_pciname} 68.W=5957
+
+ethtool -G $\{NIC1_ethname} rx 8192 tx 8192
+
+ethtool -G $\{NIC2_ethname} rx 8192 tx 8192
+
+mlnx_qos -i $\{NIC1_ethname} --pfc 0,0,0,1,0,0,0,0 --trust=dscp
+
+mlnx_qos -i $\{NIC2_ethname} --pfc 0,0,0,1,0,0,0,0 --trust=dscp
+
+echo 106 > /sys/class/infiniband/$\{NIC1_mlxname}/tc/1/traffic_class
+
+echo 106 > /sys/class/infiniband/$\{NIC2_mlxname}/tc/1/traffic_class
+----
+*保存并关闭文件。更改文件的权限，使其可执行：*
+
+[source, cli]
+----
+chmod 755 /root/ntap_dgx_config.sh
+----
+通过编辑以下行，创建由 root 在启动时执行的 cron 作业：
+
+[source, cli]
+----
+@reboot /root/ntap_dgx_config.sh
+----
+请参阅下面的示例 crontab 文件：
+
+[source, cli]
+----
+# Edit this file to introduce tasks to be run by cron.
+
+#
+
+# Each task to run has to be defined through a single line
+
+# indicating with different fields when the task will be run
+
+# and what command to run for the task
+
+#
+
+# To define the time you can provide concrete values for
+
+# minute (m), hour (h), day of month (dom), month (mon),
+
+# and day of week (dow) or use '*' in these fields (for 'any').
+
+#
+
+# Notice that tasks will be started based on the cron's system
+
+# daemon's notion of time and timezones.
+
+#
+
+# Output of the crontab jobs (including errors) is sent through
+
+# email to the user the crontab file belongs to (unless redirected).
+
+#
+
+# For example, you can run a backup of all your user accounts
+
+# at 5 a.m every week with:
+
+# 0 5 * * 1 tar -zcf /var/backups/home.tgz /home/
+
+#
+
+# For more information see the manual pages of crontab(5) and cron(8)
+
+#
+
+# m h dom mon dow command
+
+@reboot /home/ntap_dgx_config.sh
+----
+输入 exit 或 Ctrl-D 退出 BCM 图像 chroot 模式。
+
+
+
+==== 为客户端挂载点配置 BaseCommand Manager DGX 类别
+
+要配置 DGX 客户端安装AFF A90存储系统，应修改 DGX 系统使用的 BCM 客户端类别以包含相关信息和选项。以下步骤描述如何配置 NFS 挂载点。
+
+[source, cli]
+----
+cmsh
+
+category ; use category <category>; fsmounts
+
+add superpod
+
+set device 100.127.124.4:/superpod
+
+set mountpoint /mnt/superpod
+
+set filesystem nfs
+
+set mountoptions
+vers=4.1,proto=rdma,max_connect=16,write=eager,rsize=262144,wsize=262144
+
+commit
+----
+
+
+== 结束语
+
+搭载NetApp * AFF A90存储系统* 的NVIDIA DGX SuperPOD代表了 AI 基础设施解决方案的重大进步。通过解决安全性、数据管理、资源利用率和可扩展性方面的关键挑战，它使组织能够加速其人工智能计划，同时保持运营效率、数据保护和协作。该解决方案的集成方法消除了人工智能开发流程中的常见瓶颈，使数据科学家和工程师能够专注于创新而不是基础设施管理。
+
+
+
+== 在哪里可以找到更多信息
+
+要了解有关本文档中描述的信息的更多信息，请查看以下文档和/或网站：
+
+* https://www.netapp.com/pdf.html?item=/media/125003-nva-1175-design-superpod-a90.pdf["NVA-1175 NVIDIA DGX SuperPOD与NetApp AFF A90存储系统设计指南"]
+* https://docs.nvidia.com/dgx-superpod/reference-architecture-scalable-infrastructure-b200/latest/index.html["NVIDIA DGX B200 SuperPOD 参考架构"]
+* https://docs.nvidia.com/dgx-superpod/reference-architecture/scalable-infrastructure-h200/latest/index.html["+++ NVIDIA DGX H200 SuperPOD 参考架构+++"]
+* https://docs.nvidia.com/base-command-manager/index.html#product-manuals["+++ NVIDIA BaseCommand 软件+++"]
+* https://nvdam.widen.net/s/mmvbnpk8qk/networking-ethernet-switches-sn5000-datasheet-us["+++ NVIDIA Spectrum SN5600 以太网交换机+++"]
+* https://docs.nvidia.com/dgx-superpod/release-notes/latest/10-24-11.html["+++ NVIDIA DGX SuperPOD发行说明+++"]
+* https://docs.netapp.com/us-en/ontap-systems/a70-90/install-overview.html["+++ NetApp AFF A90安装+++"]
+* https://docs.netapp.com/us-en/netapp-solutions/ai/index.html["+++ NetApp AI 解决方案文档+++"]
+* https://docs.netapp.com/us-en/ontap/index.html["+++ NetApp ONTAP软件+++"]
+* https://docs.netapp.com/us-en/ontap-systems/aff-aseries/index.html["+++ NetApp安装和维护AFF存储系统+++"]
+* https://docs.netapp.com/us-en/ontap/nfs-rdma/index.html["基于 RDMA 的 NFS"]
+* https://www.netapp.com/media/19761-tr-4063.pdf["+++什么是 pNFS+++"]（包含大量 pNFS 信息的旧文档）
+
+
+
+
+== 附录 A：物料清单和机架立面图
+
+
+
+=== 物料清单
+
+表 3 显示了部署一个、两个、三个和四个可扩展单元的存储所需的NetApp组件的部件号和数量。
+
+表 3) NetApp 1、2、3 和 4 SU 的 BOM。
+
+[cols="20%,32%,12%,12%,12%,12%"]
+|===
+| 部分 ＃ | 物品 | 1SU 数量 | 2SU 数量 | 3SU 数量 | 4SU 数量 
+
+
+| AFF-A90A-100-C | AFF A90存储系统 | 4 | 8 | 12 | 16 
+
+
+| X4025A-2-A-C | 2x7.6TB 驱动器组 | 48 | 96 | 144 | 192 
+
+
+| X50131A-C | IO 模块，2PT，100/200/400GbE | 24 | 48 | 96 | 128 
+
+
+| X50130A-C | IO 模块，2PT，100GbE | 16 | 32 | 48 | 64 
+
+
+| X-02659-00 | 套件，4 柱，方孔或圆孔，24 英寸 - 32 英寸导轨 | 4 | 8 | 12 | 16 
+
+
+| X1558A-R6 | 电源线，机柜内，48 英寸，+ C13-C14，10A/250V | 20 | 40 | 60 | 80 
+
+
+| X190200-CS | 集群交换机，N9336C 36Pt PTSX10/25/40/100G | 2 | 4 | 6 | 8 
+
+
+| X66211A-2 | 电缆，100GbE，QSFP28-QSFP28，铜，2米 | 16 | 32 | 48 | 64 
+
+
+| X66211A-05 | 电缆，100GbE，QSFP28-QSFP28，铜，0.5米 | 4 | 8 | 12 | 16 
+
+
+| X6561-R6 | 以太网电缆，CAT6，RJ45，5米 | 18 | 34 | 50 | 66 
+|===
+表 4 显示了将AFF A90存储系统连接到高性能存储和带内网络中的 SN5600 交换机所需的NVIDIA电缆的零件编号和数量。
+
+表 4) 将AFF A90存储系统连接到高性能存储和带内网络中的 SN5600 交换机所需的NVIDIA电缆。
+
+[cols="20%,32%,12%,12%,12%,12%"]
+|===
+| 部分 ＃ | 物品 | 1SU 数量 | 2SU 数量 | 3SU 数量 | 4SU 数量 
+
+
+| MCP7Y40-N003 | DAC 3m 26ga 2x400G 至 4x200G OSFP 至 4xQSFP112 | 12 | 24 | 36 | 48 
+
+
+| 或 |  |  |  |  |  
+
+
+| MMS4X00-NS | 双端口 OSFP 2x400G 2xSR4 多模收发器双 MPO-12/APC | 12 | 24 | 36 | 48 
+
+
+| MFP7E20-N0XX | 多模光纤分路器 400G-> 2x200G XX = 03、05、07、10、15、20、30、40、50) 米 | 24 | 48 | 96 | 128 
+
+
+| MMA1Z00-NS400 | 单端口 400G SR4 多模 QSFP112 收发器单 MPO-12/APC | 48 | 96 | 144 | 192 
+|===
+
+
+=== 机架高度
+
+图 4-6 显示了 1-4 SU 的示例机架立面。
+
+图 4) 1 SU 和 2 SU 的机架高度。
+
+image:ai-superpod-a90-008.png["600,600"]
+
+图 5) 3 SU 的机架立面图。
+
+image:ai-superpod-a90-009.png["600,600"]
+
+图 6) 4 SU 的机架立面图。
+
+image:ai-superpod-a90-010.png["600,600"]

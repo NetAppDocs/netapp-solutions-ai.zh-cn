@@ -24,6 +24,10 @@ indexpage:
       url: "/infra/ai-aipod-lenovo-nva1172.html"
     - title: E系列的BeeGFS并行文件系统
       url: "/infra/ai-eseries-beegfs.html"
+    - title: 搭载NVIDIA DGX SuperPOD 的NetApp AFF A90存储系统 - 设计
+      url: "/infra/ai-dgx-superpod-nva1175-design.html"
+    - title: 搭载NVIDIA DGX SuperPOD 的NetApp AFF A90存储系统 - 部署
+      url: "/infra/ai-dgx-superpod-nva1175-deploy.html"
   - title: 人工智能用例和应用
     links:
     - title: 用于 RAG 推理的AIPod Mini

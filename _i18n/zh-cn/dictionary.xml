@@ -5093,4 +5093,318 @@
   <block id="74916818f2584b32e727fdc509b2f992" category="cell">P4X-GNR6980P-SRPL2-UCC</block>
   <block id="abaa679b5e80256d8e1d4fd65296a270" category="cell">英特尔至强 6980P 2P 128C 2G 504M 500W SGX512</block>
   <block id="22f22b60e3e496fa07e67cfbf53cb70e" category="cell">RPL-E 6369P IP 8C/16T 3.3G 24MB 95W 1700 BO</block>
+  <block id="fe1394c0024b947430d8383108eb2177" category="summary">搭载NetApp AFF A90 的NVIDIA DGX SuperPOD</block>
+  <block id="bf8899c5267692573fb1304655fb765a" category="doc">搭载NVIDIA DGX SuperPOD 的NetApp AFF A90存储系统</block>
+  <block id="7fa0ca2a0d7f53f3c8e59fc6c3e9ed2e" category="section-title">NVA 部署</block>
+  <block id="8be806d9daf2bc32156e83bc0d005ec1" category="paragraph">搭载NetApp AFF A90存储系统的NVIDIA DGX SuperPOD将NVIDIA DGX 系统的世界一流计算性能与NetApp云连接存储系统相结合，为机器学习 (ML)、人工智能 (AI) 和高性能技术计算 (HPC) 提供数据驱动的工作流程。本文档介绍了将AFF A90存储系统集成到 DGX SuperPOD 架构的配置和部署细节。</block>
+  <block id="9b418007fd18dc2176e46adcd30db45f" category="inline-image-macro">nvidia 标志</block>
+  <block id="c94ba3511d0db1d6babbf53090c19530" category="paragraph"><block ref="c94ba3511d0db1d6babbf53090c19530" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="6091ca16495cdce90805252a1c12f4e6" category="section-title">项目摘要</block>
+  <block id="c6f9b4ccfaf7da44e6c0c60854f0949d" category="paragraph">NVIDIA DGX SuperPOD™ 为组织提供交钥匙 AI 数据中心解决方案，无缝提供世界一流的计算、软件工具、专业知识和持续创新。 DGX SuperPOD 可为客户提供部署 AI/ML 和 HPC 工作负载所需的一切，同时最大程度地缩短设置时间并提高生产力。图 1 显示了 DGX SuperPOD 的高级组件。</block>
+  <block id="d144add61531a9bfe79e667824356b40" category="paragraph">图 1) 带有NetApp AFF A90存储系统的NVIDIA DGX SuperPOD 。</block>
+  <block id="bbd4822469057d9beafe8509a7ebee14" category="paragraph"><block ref="bbd4822469057d9beafe8509a7ebee14" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="283d31c0198ed7454a249b3e2b6eb174" category="paragraph">DGX SuperPOD 具有以下优势：</block>
+  <block id="3ff8aa027f2fe1f296899270ebbb43fd" category="list-text">经过验证的 AI/ML 和 HPC 工作负载性能</block>
+  <block id="ca127ea10cbbac4cda1fefa3e946e9ba" category="list-text">从基础设施管理和监控到预先构建的深度学习模型和工具的集成硬件和软件堆栈。</block>
+  <block id="a4cb23a9ac5d711552fe29021242bf26" category="list-text">从安装和基础设施管理到扩展工作负载和简化生产 AI 的专用服务。</block>
+  <block id="96cffe8fd08355ee862ba83cb15407d9" category="paragraph">随着各组织采用人工智能 (AI) 和机器学习 (ML) 计划，对强大、可扩展且高效的基础设施解决方案的需求从未如此强烈。这些举措的核心在于管理和训练日益复杂的人工智能模型，同时确保数据安全、可访问性和资源优化。 </block>
+  <block id="61b865c697c4f21886d14a618df70f6d" category="paragraph">该解决方案具有以下主要优势：</block>
+  <block id="aa88ccfa825dadd9cbb9acc84e508b2c" category="list-text">可扩展性</block>
+  <block id="4738ea23a01f5635ce1c45dabb47da5c" category="list-text">*数据管理和访问*</block>
+  <block id="1e1fe2d30ed5bb9c5276dddb65f4ce65" category="list-text">*安全*</block>
+  <block id="3c858853158f1a99c39a781718ec762c" category="inline-link">NVA-1175 设计指南</block>
+  <block id="bc3456dcc61fc69ddf5057eb2521a503" category="inline-link">+++ NVIDIA DGX SuperPOD参考架构+++</block>
+  <block id="0db7341d4a6ac5f5ae439217ea22f2cf" category="paragraph">NVIDIA DGX SuperPOD包含必要的服务器、网络和存储，可为要求苛刻的 AI 工作负载提供经过验证的性能。 NVIDIA DGX™ H200 和 B200 系统提供世界一流的计算能力， NVIDIA Quantum InfiniBand 和 Spectrum™ 以太网网络交换机提供超低延迟和业界领先的网络性能。借助NetApp ONTAP存储业界领先的数据管理和性能功能，客户可以更快地实现 AI/ML 计划，并减少数据迁移和管理开销。有关此解决方案中特定组件的更多信息，请参阅<block ref="a5c1176c129a896b2b922e5580efc58f" category="inline-link-rx"></block>和<block ref="1910ffa640b224c818fe3ba99c94129a" category="inline-link-rx"></block>文档。</block>
+  <block id="c18232c17d0f8ffeae2d726834c91f89" category="paragraph">NVIDIA DGX SuperPOD旨在满足最苛刻的工作负载的性能和规模要求。</block>
+  <block id="36ff5f6df178e197d3123e478db8410b" category="list-text">使用传统分析工具进行大规模机器学习。</block>
+  <block id="2d12f254287ce40df1f66968734498ba" category="list-text">针对大型语言模型、计算机视觉/图像分类、欺诈检测和无数其他用例的人工智能模型训练。</block>
+  <block id="d8f31668d0cecb0b54a6d01e2f76c6cf" category="list-text">高性能计算，如地震分析、计算流体动力学和大规模可视化。</block>
+  <block id="f0414b39a05dd4079562350e267bf1b3" category="inline-link">+++ NVIDIA DGX SuperPOD参考架构+++</block>
+  <block id="5f5d88c3d3b4a5616e3937b4fe349866" category="paragraph">DGX SuperPOD 基于可扩展单元 (SU) 的概念，它包含提供所需连接和性能以及消除基础设施中任何瓶颈所需的所有组件。客户可以从一个或多个 SU 开始，然后根据需要添加其他 SU 来满足其要求。更多信息请参阅<block ref="b3bda9bcc3402290297547b224b66efa" category="inline-link-rx"></block>。本文档介绍了单个 SU 的存储组件和配置。</block>
+  <block id="353fc344c9bee691edbf50c13067653c" category="paragraph">表 1 列出了实现 1SU 存储组件所需的硬件组件。有关 1-4 个可扩展单元的具体零件和数量，请参阅附录 A。</block>
+  <block id="6cef63cf1d59b401d88755cbea01a416" category="paragraph">表 1) 硬件要求。</block>
+  <block id="46f0306a597ab13c222e7d6551ce9f96" category="cell">NetApp AFF A90存储系统</block>
+  <block id="c28cb49992003622546cc5f9509cfcff" category="cell">NetApp存储集群互连交换机</block>
+  <block id="9097f0013a59ba655e2c83bd26ae1ce7" category="cell">NVIDIA 800GB -&gt; 4x 200Gb 分离器电缆</block>
+  <block id="aec453803363ab0e5ca6f6df8d465def" category="inline-link">+++DGX SuperPOD 发行说明+++</block>
+  <block id="b6ffed0f516d3b52a4910321a2a889ba" category="paragraph">表 2 列出了将AFF A90存储系统与 DGX SuperPOD 集成所需的最低软件组件和版本。 DGX SuperPOD 还涉及此处未列出的其他软件组件。请参阅<block ref="2523a697ed64d9038adf903273ea5150" category="inline-link-rx"></block>了解完整详情。</block>
+  <block id="c50cf4cacfaa91c82ab6a24e939cbaca" category="paragraph">表 2) 软件要求。</block>
+  <block id="518f98e82df6bde3bef11b7aa885a289" category="cell">9.16.1 或更高版本</block>
+  <block id="df6c5bc905afa2504396faf036b87927" category="cell">NVIDIA BaseCommand 管理器</block>
+  <block id="6fe49606da6092b118e02ef2d0ef0d6c" category="cell">10.24.11 或更高版本</block>
+  <block id="a62649c559be1634e22dd7df0b58ad32" category="cell">NVIDIA DGX 操作系统</block>
+  <block id="ba2b41c4ccfe23325bd590218a62fa8a" category="cell">6.3.1 或以上</block>
+  <block id="be49cc02b8372e6202cf52fbe8204ead" category="cell">NVIDIA OFED 驱动程序</block>
+  <block id="cf439b0da4b623c11f90db3c956758b1" category="cell">MLNX_OFED_LINUX-23.10.3.2.0 LTS 或更高版本</block>
+  <block id="c220bcc9beaaaf29d1905f9819577f0b" category="cell">NVIDIA Cumulus 操作系统</block>
+  <block id="f7bfb037c565dcf0f80631851ee87307" category="cell">5.10或以上</block>
+  <block id="ea1eee49815915fc6500c0bfc1fcef31" category="paragraph">将NetApp ONTAP存储与 DGX SuperPOD 集成涉及以下任务：</block>
+  <block id="dc8a828d28f4f811808cdb82b54453ec" category="list-text">带有 RoCE 的NetApp AFF A90存储系统的网络配置</block>
+  <block id="37c6bfb67043d31447903c4665d6ed11" category="list-text">存储系统的安装和配置</block>
+  <block id="4cafd7b33984b4cb34f95fe4314e4a49" category="list-text">使用NVIDIA Base Command™ Manager 进行 DGX 客户端配置</block>
+  <block id="b8088d3f2b3972d6f986cf0a37543617" category="section-title">场地准备和基本安装</block>
+  <block id="bf0615788eed920e4e9f1a96749cfb34" category="inline-link">+++ AFF A90硬件安装文档+++</block>
+  <block id="e1006e935ca66a5f59a3fd40689fff46" category="paragraph">作为标准部署服务的一部分， NetApp专业服务将为所有 DGX SuperPOD 部署执行AFF A90存储集群的场地准备和基本安装。 NetApp PS 将确认现场条件是否适合安装，并将硬件安装在指定的机架中。他们还将连接 OOB 网络连接并使用客户提供的网络信息完成基本集群设置。附录 A – 物料清单和机架立面图包括标准机架立面图以供参考。有关 A90 安装的更多信息，请参阅<block ref="7ddd605a062e7b77012eccf1c4bcffd7" category="inline-link-rx"></block>。</block>
+  <block id="321c92980ad0e1d922d02a2f704ca782" category="paragraph">标准部署完成后， NetApp PS 将使用以下步骤完成存储解决方案的高级配置，包括与 Base Command Manager 集成以实现客户端连接和调整。</block>
+  <block id="00720789d4f50564af280240dfe0c1a0" category="section-title">将存储系统布线到 DGX SuperPOD 存储结构</block>
+  <block id="93f38c7fefe0798b27b29ac2727c9aff" category="paragraph">AFF A90存储系统使用每个控制器四个 200Gb 以太网端口连接到存储结构叶交换机，每个交换机有两个连接。 NVIDIA Spectrum SN5600 交换机上的 800Gb 交换机端口使用附录 A 中列出的适当 DAC 或光分路器配置分成 4 个 200Gb 端口。每个交换机端口的各个端口分布在存储控制器上，以消除单点故障。下面的图 2 显示了存储结构连接的布线：</block>
+  <block id="428c881d379aed620164886a529bf2ac" category="paragraph">图 2) 存储网络布线。</block>
+  <block id="e97080670de5db4003a6abdd37d81eb5" category="paragraph"><block ref="e97080670de5db4003a6abdd37d81eb5" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="fb83bbea93dbe46008125af94bc508be" category="section-title">将存储系统布线到 DGX SuperPOD 带内网络</block>
+  <block id="3c4e3bd6ddc8a3cd692e2866674ec982" category="paragraph">NetApp ONTAP包含业界领先的多租户功能，使其既可以作为 DGX SuperPOD 架构中的高性能存储系统运行，又可以支持主目录、组文件共享和基本命令管理器集群工件。为了在带内网络上使用，每个AFF A90控制器都连接到带内网络交换机，每个控制器有一个 200Gb 以太网连接，并且端口配置为 LACP MLAG 配置。下面的图 3 显示了存储系统到带内和 OOB 网络的布线。</block>
+  <block id="651c2d0bd757128b4d9ed91fc5026a3d" category="paragraph">图 3) 带内和 OOB 网络布线。</block>
+  <block id="92bf4c084f930281026def79beae3794" category="paragraph"><block ref="92bf4c084f930281026def79beae3794" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="76edc3dadc8deca645fd525182eaad33" category="section-title">为 DGX SuperPOD 配置ONTAP</block>
+  <block id="41905234b7d34b88a1559733c741d5aa" category="inline-link">+++ ONTAP文档+++</block>
+  <block id="d4b2d66f490475665ea833d8f89c2cfd" category="paragraph">该解决方案利用多个存储虚拟机 (SVM) 来托管卷，以实现高性能存储访问以及管理 SVM 上的用户主目录和其他集群工件。每个 SVM 都配置了存储或带内网络上的网络接口，以及用于数据存储的FlexGroup卷。为了确保数据 SVM 的性能，实施了存储 QoS 策略。有关 FlexGroups、存储虚拟机和ONTAP QoS 功能的更多信息，请参阅<block ref="619babf0e51393513dd3986ae0aee969" category="inline-link-rx"></block>。</block>
+  <block id="fec48034cdf04f518f58b4f727f55543" category="section-title">配置基本存储</block>
+  <block id="7e4b30d10f60fcb3bdf4c3382d601615" category="section-title">在每个控制器上配置单个聚合</block>
+  <block id="3c6858e020c27b4eb574d124f73c04d3" category="paragraph">对集群中的每个节点重复上述步骤。</block>
+  <block id="241ba9d616774bbadf9c9f28ee386505" category="section-title">在每个控制器上配置 ifgrps 以实现带内网络</block>
+  <block id="610c7975125c56dc62b000999926f4d8" category="section-title">为 RoCE 配置物理端口</block>
+  <block id="ff00a412cfca01b43041104775ac8460" category="paragraph">启用 NFS over RDMA 需要进行配置以确保网络流量在客户端和服务器上都被适当标记，然后由网络使用 RDMA over Converged Ethernet (RoCE) 进行适当处理。这包括配置优先流量控制 (PFC) 和配置要使用的 PFC CoS 队列。执行以下命令时， NetApp ONTAP还会自动配置 DSCP 代码 26 以与网络 QoS 配置保持一致。</block>
+  <block id="e9dc479a2f60169b39fb74cc86d13a43" category="section-title">创建管理 SVM</block>
+  <block id="ce25292d4b04b878f74951ed7b5fb173" category="section-title">创建并配置管理 SVM</block>
+  <block id="c110d2ffde8993db523c41f0c524e68e" category="section-title">在管理 SVM 上配置 NFS 服务</block>
+  <block id="5441effcbbef51defcc1340e745e28ad" category="section-title">为带内网络接口创建 IP 子网</block>
+  <block id="919d6feabfd1e5f5f04bedfd487f50c8" category="paragraph">*注意：*客户需在部署时提供 IP 子网信息，以便集成到现有客户网络中。</block>
+  <block id="2bc9e41900e064c3368d9eca2dba546c" category="section-title">在每个节点上为带内 SVM 创建网络接口</block>
+  <block id="44db41cf8b74978388680587aa8b7d55" category="section-title">为管理 SVM 创建FlexGroup卷</block>
+  <block id="20d5f1ad8803160edb381217d776701e" category="section-title">为管理 SVM 创建导出策略</block>
+  <block id="1624c693fdd8f06e52c87d0b2b576a19" category="section-title">创建数据 SVM</block>
+  <block id="9ff068915b90e059d15444fe8dc13aaa" category="section-title">创建并配置数据 SVM</block>
+  <block id="cb7d25e4139e72b33ef687ed8a0ae945" category="section-title">在启用 RDMA 的数据 SVM 上配置 NFS 服务</block>
+  <block id="ca1f913932acc2aad423357d56f86ea7" category="section-title">为 Data SVM 网络接口创建 IP 子网</block>
+  <block id="3c2060cdeb230d3f42a725b2a9ca7e23" category="section-title">在每个节点上为 Data SVM 创建网络接口</block>
+  <block id="ca648b8fb4bf1f54cbf7a626468eada3" category="section-title">为 RDMA 配置数据 SVM 网络接口</block>
+  <block id="afb51d28a404c42df2a054df2c6da14b" category="section-title">在数据 SVM 上创建导出策略</block>
+  <block id="d9a6b253dd081b231d9d1a14cec7a227" category="section-title">在数据 SVM 上创建静态路由</block>
+  <block id="4f3e59209435398e52c0df85d0034275" category="section-title">使用 GDD 为数据 SVM 创建FlexGroup卷</block>
+  <block id="08ec3810f1dcb452442911f8d8173b1a" category="paragraph">粒度数据分布 (GDD) 支持将大型数据文件分布在多个FlexGroup组成卷和控制器上，以实现单文件工作负载的最高性能。  NetApp建议在所有 DGX SuperPOD 部署的数据卷上启用 GDD。</block>
+  <block id="7eb2bd842a06eb48d9bbfe4f644731d9" category="section-title">禁用主数据卷的存储效率</block>
+  <block id="8a0cdebf4e36c1af6ac542485413a77b" category="paragraph">卷效率关闭-vserver spod_data-volume spod_data</block>
+  <block id="46e5a2d41b69706b3dcd5e89c34e7c5e" category="section-title">为数据 SVM 创建 QoS 最小策略</block>
+  <block id="065d35d3d9a4319f54773a754b2c0e6c" category="section-title">为数据 SVM 应用 QoS 策略</block>
+  <block id="2cc5056a61a5f1643bf387d49d197728" category="section-title">使用NVIDIA Base Command Manager 配置 DGX 服务器</block>
+  <block id="e546e9d0da56999b5973de8a7ad71572" category="paragraph">要准备 DGX 客户端使用AFF A90存储系统，请完成以下任务。此过程假定已在 DGX 系统节点上配置了存储结构的网络接口和静态路由。以下任务将由NetApp专业服务作为高级配置过程的一部分完成。</block>
+  <block id="f9a9381a56f728d139ee191de307ef5f" category="section-title">使用所需的内核参数和其他设置配置 DGX 服务器映像</block>
+  <block id="256b6f56d994f129832d2b7567bb951f" category="paragraph">NetApp ONTAP使用行业标准 NFS 协议，不需要在 DGX 系统上安装任何其他软件。为了使客户端系统获得最佳性能，需要对 DGX 系统映像进行一些修改。使用以下命令进入 BCM 映像 chroot 模式后执行以下两个步骤：</block>
+  <block id="45fb2f19f77fc1d9d4dfdd092f805b42" category="section-title">在 /etc/sysctl.conf 中配置系统虚拟内存设置</block>
+  <block id="13b4c0be439ee4875352c0ff2a039c13" category="paragraph">默认的 Linux 系统配置提供的虚拟内存设置不一定能提供最佳性能。对于具有 2TB RAM 的 DGX B200 系统，默认设置允许 40GB 的缓冲区空间，这会创建不一致的 I/O 模式，并允许客户端在刷新缓冲区时使存储系统过载。以下设置将客户端缓冲区空间限制为 5GB，并强制更频繁地刷新以创建不会使存储系统过载的一致 I/O 流。</block>
+  <block id="c35419f49457a55135a16f4a73d4fb6b" category="paragraph">进入镜像chroot模式后，编辑/etc/sysctl.s/90-cm-sysctl.conf文件，添加以下几行：</block>
+  <block id="4caebde52be0001b1e59098dd149b653" category="paragraph">保存并关闭 /etc/sysctl.conf 文件。</block>
+  <block id="d05565dbb5b9175c4df06e8d9d029a18" category="section-title">使用重启后执行的脚本配置其他系统设置</block>
+  <block id="4e1ff13d493c47a47dde7cb5a24aceeb" category="paragraph">某些设置需要操作系统完全在线才能执行，并且在重启后不会持久。要在 Base Command Manager 环境中执行这些设置，请创建文件 /root/ntap_dgx_config.sh 并输入以下行：</block>
+  <block id="191be9d79602632b279bc3126e49847d" category="paragraph">*保存并关闭文件。更改文件的权限，使其可执行：*</block>
+  <block id="13036c88d00af2d37c1d8e1ae332f79e" category="paragraph">通过编辑以下行，创建由 root 在启动时执行的 cron 作业：</block>
+  <block id="a4d911dee959cadc8c53c92d6361fc05" category="paragraph">请参阅下面的示例 crontab 文件：</block>
+  <block id="e813523727c040149e1ecad0358d60b8" category="paragraph">输入 exit 或 Ctrl-D 退出 BCM 图像 chroot 模式。</block>
+  <block id="70f4c658a41ea1900dd94027c0ffa103" category="section-title">为客户端挂载点配置 BaseCommand Manager DGX 类别</block>
+  <block id="9df3dcf41d131b1d0097435f6b290ba4" category="paragraph">要配置 DGX 客户端安装AFF A90存储系统，应修改 DGX 系统使用的 BCM 客户端类别以包含相关信息和选项。以下步骤描述如何配置 NFS 挂载点。</block>
+  <block id="dcde3a7bf8f0a03f480df9078bfa9297" category="paragraph">搭载NetApp * AFF A90存储系统* 的NVIDIA DGX SuperPOD代表了 AI 基础设施解决方案的重大进步。通过解决安全性、数据管理、资源利用率和可扩展性方面的关键挑战，它使组织能够加速其人工智能计划，同时保持运营效率、数据保护和协作。该解决方案的集成方法消除了人工智能开发流程中的常见瓶颈，使数据科学家和工程师能够专注于创新而不是基础设施管理。</block>
+  <block id="77b69988a6b247bd3829a8e03ff332a6" category="inline-link">NVA-1175 NVIDIA DGX SuperPOD与NetApp AFF A90存储系统设计指南</block>
+  <block id="78200c657113173ee4bd06de792e86af" category="list-text"><block ref="78200c657113173ee4bd06de792e86af" category="inline-link-rx"></block></block>
+  <block id="4b70410b9d727a1fc1d60d4483d86325" category="inline-link">NVIDIA DGX B200 SuperPOD 参考架构</block>
+  <block id="54dbc563049b479cfef99d1d872020e4" category="list-text"><block ref="54dbc563049b479cfef99d1d872020e4" category="inline-link-rx"></block></block>
+  <block id="d5023dae85155f754c6bfd520cbdc150" category="inline-link">+++ NVIDIA DGX H200 SuperPOD 参考架构+++</block>
+  <block id="5d4678ba7793147c6b3109fcdbe3294f" category="list-text"><block ref="5d4678ba7793147c6b3109fcdbe3294f" category="inline-link-rx"></block></block>
+  <block id="0018465bd63e2711758aea9e68126f6d" category="inline-link">+++ NVIDIA BaseCommand 软件+++</block>
+  <block id="dd2a70a6cd8d74ddbed24590bf9efd37" category="list-text"><block ref="dd2a70a6cd8d74ddbed24590bf9efd37" category="inline-link-rx"></block></block>
+  <block id="a2433670a2f11bda41782875f82e4c0e" category="inline-link">+++ NVIDIA Spectrum SN5600 以太网交换机+++</block>
+  <block id="197d7b18bb595fa0c4339f599bb57c70" category="list-text"><block ref="197d7b18bb595fa0c4339f599bb57c70" category="inline-link-rx"></block></block>
+  <block id="61345f1959bf0e90ce956f7fe87b97e6" category="inline-link">+++ NVIDIA DGX SuperPOD发行说明+++</block>
+  <block id="a42d326cc55152a32997b9b244e9e4ea" category="list-text"><block ref="a42d326cc55152a32997b9b244e9e4ea" category="inline-link-rx"></block></block>
+  <block id="18b5a5e73e5f66fb20d8f46f70d0c0ba" category="inline-link">+++ NetApp AFF A90安装+++</block>
+  <block id="cc99b2a6b638db71f55772efa9ae5a44" category="list-text"><block ref="cc99b2a6b638db71f55772efa9ae5a44" category="inline-link-rx"></block></block>
+  <block id="326b3ec244c0b719f75faee5d63eda19" category="inline-link">+++ NetApp AI 解决方案文档+++</block>
+  <block id="2a6b527a76b4dd02f63188fa855840f7" category="list-text"><block ref="2a6b527a76b4dd02f63188fa855840f7" category="inline-link-rx"></block></block>
+  <block id="7d3cb5a08ca45610a4bc66221efd1e06" category="inline-link">+++ NetApp ONTAP软件+++</block>
+  <block id="7de45c9a3f46892f98b68ddb83483727" category="list-text"><block ref="7de45c9a3f46892f98b68ddb83483727" category="inline-link-rx"></block></block>
+  <block id="b20609bf792bc04f91d5af3f95c34249" category="inline-link">+++ NetApp安装和维护AFF存储系统+++</block>
+  <block id="f4f8a0ca5a3908b7ff3dc9977384172c" category="list-text"><block ref="f4f8a0ca5a3908b7ff3dc9977384172c" category="inline-link-rx"></block></block>
+  <block id="784cd7f14efdcfe6b12e47d3ac14c2ea" category="list-text"><block ref="784cd7f14efdcfe6b12e47d3ac14c2ea" category="inline-link-rx"></block></block>
+  <block id="2af6b6d1a0f9284afbd220786019c104" category="inline-link">+++什么是 pNFS+++</block>
+  <block id="40b22abaae26a9e924653fdf64192dd5" category="list-text"><block ref="0b4edeca10dea88e1e3ff87f6aece04a" category="inline-link-rx"></block>（包含大量 pNFS 信息的旧文档）</block>
+  <block id="8b609f2b56884902c05d97d442f1d533" category="section-title">附录 A：物料清单和机架立面图</block>
+  <block id="97ac09ecf630c90bdc4eae789d1cb26e" category="paragraph">表 3 显示了部署一个、两个、三个和四个可扩展单元的存储所需的NetApp组件的部件号和数量。</block>
+  <block id="a399f4735d9b76eb2c734ce8b23a4051" category="paragraph">表 3) NetApp 1、2、3 和 4 SU 的 BOM。</block>
+  <block id="12671d03ae10ac5096ddbf709e44e260" category="cell">部分 ＃</block>
+  <block id="7d74f3b92b19da5e606d737d339a9679" category="cell">物品</block>
+  <block id="4b35db9f95e91ac3ce4b119c8d590dc3" category="cell">1SU 数量</block>
+  <block id="10ae8487d40b09fd13a32fd5b761dff2" category="cell">2SU 数量</block>
+  <block id="4f4a383868a5c8f1aff4d21e301cf77d" category="cell">3SU 数量</block>
+  <block id="7e3f2097d4da066bf518435f0d22d629" category="cell">4SU 数量</block>
+  <block id="a9eadd771f7974cbfb4a0f82da15155e" category="cell">AFF-A90A-100-C</block>
+  <block id="a5b8692ce33078554d4df65b88479996" category="cell">AFF A90存储系统</block>
+  <block id="c9f0f895fb98ab9159f51fd0297e236d" category="cell">8</block>
+  <block id="109799441719d48125200028617a078c" category="cell">X4025A-2-A-C</block>
+  <block id="ae1ffcee034fa197d7e6a3d49392ad1b" category="cell">2x7.6TB 驱动器组</block>
+  <block id="0a09c8844ba8f0936c20bd791130d6b6" category="cell">144</block>
+  <block id="58a2fc6ed39fd083f55d4182bf88826d" category="cell">192</block>
+  <block id="01fc28c75297fac48aca3e18491846a8" category="cell">X50131A-C</block>
+  <block id="ef52c5c3e61828c1957bb235e48b9aaf" category="cell">IO 模块，2PT，100/200/400GbE</block>
+  <block id="76dc611d6ebaafc66cc0879c71b5db5c" category="cell">128</block>
+  <block id="da07ac8264b7cdb99a4eb96ab4d91111" category="cell">X50130A-C</block>
+  <block id="02104e3c4b3f8d428381d1c68b10320d" category="cell">IO 模块，2PT，100GbE</block>
+  <block id="90d67d58a9628ba253eee43c6dbc9559" category="cell">X-02659-00</block>
+  <block id="eaba4c24f91259319d86e2dc6a375c2c" category="cell">套件，4 柱，方孔或圆孔，24 英寸 - 32 英寸导轨</block>
+  <block id="a08f2932fed05b33c4945eca514134dc" category="cell">X1558A-R6</block>
+  <block id="3229af69927999e5df543d1f9fb22eb5" category="cell">电源线，机柜内，48 英寸，+ C13-C14，10A/250V</block>
+  <block id="98f13708210194c475687be6106a3b84" category="cell">20</block>
+  <block id="d645920e395fedad7bbbed0eca3fe2e0" category="cell">40</block>
+  <block id="f033ab37c30201f73f142449d037028d" category="cell">80</block>
+  <block id="e6aa165cded1f8e32159470ff027af2f" category="cell">X190200-CS</block>
+  <block id="7e011d9eef19544d7078d2a70563144a" category="cell">集群交换机，N9336C 36Pt PTSX10/25/40/100G</block>
+  <block id="76dedba1bf45af402ab07ddd57ff749e" category="cell">X66211A-2</block>
+  <block id="2a1aeb324c9e886af32f12ad5049c6f7" category="cell">电缆，100GbE，QSFP28-QSFP28，铜，2米</block>
+  <block id="e2fd227baa44b6632aa7c2fef9002b8a" category="cell">X66211A-05</block>
+  <block id="0dff9249f8d94512b43527f1f5b044c9" category="cell">电缆，100GbE，QSFP28-QSFP28，铜，0.5米</block>
+  <block id="6e421f2c1b8bf174d208a91d7f5dc0ae" category="cell">X6561-R6</block>
+  <block id="95c7e45248e11b15430ec3c5d1d3dcc1" category="cell">以太网电缆，CAT6，RJ45，5米</block>
+  <block id="e369853df766fa44e1ed0ff613f563bd" category="cell">34</block>
+  <block id="3295c76acbf4caaed33c36b1b5fc2cb1" category="cell">66</block>
+  <block id="2a108c75662ccb5a38e6db46a016aa40" category="paragraph">表 4 显示了将AFF A90存储系统连接到高性能存储和带内网络中的 SN5600 交换机所需的NVIDIA电缆的零件编号和数量。</block>
+  <block id="c71399ea2a367ce779897d49ca77b4a0" category="paragraph">表 4) 将AFF A90存储系统连接到高性能存储和带内网络中的 SN5600 交换机所需的NVIDIA电缆。</block>
+  <block id="5557f1218ab08d91639048aab26f1de0" category="cell">MCP7Y40-N003</block>
+  <block id="2b11e18cd1f4ae786c28a6a1bce455ed" category="cell">DAC 3m 26ga 2x400G 至 4x200G OSFP 至 4xQSFP112</block>
+  <block id="19ca14e7ea6328a42e0eb13d585e4c22" category="cell">36</block>
+  <block id="1d00e7dce692e8dc3f6877f035e3a616" category="cell">或</block>
+  <block id="84686a1d557f4fefd53eaff2d691796d" category="cell">MMS4X00-NS</block>
+  <block id="e67c53a2100e086542158b7496d248a7" category="cell">双端口 OSFP 2x400G 2xSR4 多模收发器双 MPO-12/APC</block>
+  <block id="bbf6b7b52739d4479aae0bd6508ac746" category="cell">MFP7E20-N0XX</block>
+  <block id="718b622b69fc995a4d3738ecaf2953b0" category="cell">多模光纤分路器 400G-&gt; 2x200G XX = 03、05、07、10、15、20、30、40、50) 米</block>
+  <block id="7b55b9077a4e94ce71aba3fbb4b1ebcd" category="cell">MMA1Z00-NS400</block>
+  <block id="1d1c4e0c3b72af208b18fbbfbf63c17b" category="cell">单端口 400G SR4 多模 QSFP112 收发器单 MPO-12/APC</block>
+  <block id="098103233c14421a2092214651f99ac3" category="section-title">机架高度</block>
+  <block id="64441b5a3bcfb8a874107dfe4766feb6" category="paragraph">图 4-6 显示了 1-4 SU 的示例机架立面。</block>
+  <block id="c22e6da1b1ce3c83fb3004d53e804737" category="paragraph">图 4) 1 SU 和 2 SU 的机架高度。</block>
+  <block id="7ef24ed03ec40ae9ef02f5c904953418" category="paragraph"><block ref="7ef24ed03ec40ae9ef02f5c904953418" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="64769808ba101c666bcd29615cc1e9d3" category="paragraph">图 5) 3 SU 的机架立面图。</block>
+  <block id="02a5df2de00e7145cadd3753d42d3dc1" category="paragraph"><block ref="02a5df2de00e7145cadd3753d42d3dc1" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="d8d7011e8983f361d68e382e119c1819" category="paragraph">图 6) 4 SU 的机架立面图。</block>
+  <block id="381008e8bad1425034ca5fa30cd57133" category="paragraph"><block ref="381008e8bad1425034ca5fa30cd57133" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="9376ca935750f1ee987d9b2ce256bfbf" category="paragraph">搭配NetApp AFF A90 存储系统的NVIDIA DGX SuperPOD ™ 将NVIDIA DGX 系统的世界一流计算性能与NetApp云连接存储系统相结合，为机器学习 (ML)、人工智能 (AI) 和高性能技术计算 (HPC) 提供数据驱动的工作流程。本文档介绍了使用带有以太网存储结构的NetApp AFF A90存储系统的 DGX SuperPOD 解决方案的高级架构。</block>
+  <block id="180ea794b48cd487087e5b1dd21023f0" category="paragraph">凭借NVIDIA DGX SuperPOD经过验证的计算性能以及 NetApp 业界领先的数据安全、数据治理和多租户功能，客户可以为下一代工作负载部署最高效、最敏捷的基础架构。本文档介绍了可帮助客户加快 AI/ML 计划的上市时间和投资回报的高级架构和关键功能。</block>
+  <block id="98e7b017fa4951d28f1516c0bee63969" category="section-title">项目摘要</block>
+  <block id="0e7a454160d4f81e5b82fe865851c0b5" category="paragraph">NVIDIA DGX SuperPOD为组织提供交钥匙 AI 数据中心解决方案，无缝提供世界一流的计算、软件工具、专业知识和持续创新。 DGX SuperPOD 可为客户提供部署 AI/ML 和 HPC 工作负载所需的一切，同时最大程度地缩短设置时间并提高生产力。图 1 显示了 DGX SuperPOD 的高级组件。</block>
+  <block id="0df8fda8ee1a402c3eb7dc7582d3a710" category="paragraph"><block ref="0df8fda8ee1a402c3eb7dc7582d3a710" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="d91208793b9a449dbecfd553707c79d6" category="list-text">从基础设施管理和监控到预先构建的深度学习模型和工具的集成硬件和软件堆栈。</block>
+  <block id="84245e1cf723377c5a2991885cd57409" category="list-text">从安装和基础设施管理到扩展工作负载和简化生产 AI 的专用服务</block>
+  <block id="5d8430a9387a385c7ee9a8b83ff28b12" category="paragraph">随着各组织采用人工智能 (AI) 和机器学习 (ML) 计划，对强大、可扩展且高效的基础设施解决方案的需求从未如此强烈。这些举措的核心在于管理和训练日益复杂的人工智能模型，同时确保数据安全、可访问性和资源优化。代理人工智能的发展和复杂的模型训练要求对计算和存储基础设施提出了前所未有的需求。组织现在必须处理海量数据集、支持多个并发训练工作负载并维护高性能计算环境，同时确保数据保护和法规遵从性。传统的基础设施解决方案往往难以满足这些需求，导致运营效率低下和人工智能项目价值实现时间延迟。该解决方案具有以下主要优势：</block>
+  <block id="1844a1480427b3b276783fd66fc58226" category="list-text">*可扩展性*采用NetApp AFF A90存储系统的NVIDIA DGX SuperPOD通过其模块化架构和灵活的扩展功能提供无与伦比的可扩展性。组织可以通过添加 DGX 计算节点和AFF A90存储系统来无缝扩展其 AI 基础架构，而不会中断现有工作负载或需要复杂的重新配置。</block>
+  <block id="02a63d3f709e7b79dac689e7724d8821" category="list-text">*数据管理和访问。*搭载NetApp AFF A90存储系统的NVIDIA DGX SuperPOD基于NetApp ONTAP ，通过其全面的企业级功能套件在数据管理方面表现出色。使用 ONTAP 的快照和FlexClone功能，团队可以立即创建数据集和矢量数据库的节省空间的副本，以进行并行开发和测试。  FlexCache和 Snapmirror 复制技术支持从整个企业的数据源实现精简、节省空间和自动化的数据管道，而使用 NAS 和对象协议的多协议数据访问支持针对摄取和数据工程任务优化的新工作流程。</block>
+  <block id="3b5ce4caaf6acea212e6608eb826a52c" category="list-text">*安全。* NetApp AFF A90存储系统通过多层保护提供企业级安全性。在基础设施层面，该解决方案实现了强大的访问控制机制，包括基于角色的访问控制（RBAC）、多因素身份验证和详细的审计日志记录功能。该平台的综合加密框架可保护静态和传输中的数据，利用行业标准协议和算法来保护知识产权并保持符合监管要求。集成的安全监控工具可实时查看潜在的安全威胁，而自动响应机制则有助于在风险影响运营之前降低风险。</block>
+  <block id="d2374eb265fd2592ef7b4b817140ba67" category="paragraph">该解决方案适用于具有 HPC 和 AI/ML 工作负载的组织，这些工作负载需要更深入地集成到广泛的数据资产和传统 IT 基础设施工具和流程中。</block>
+  <block id="549c608b9fe93192110cc2552d28da22" category="paragraph">解决方案的目标受众包括以下群体：</block>
+  <block id="f79b8cf1009178e9a2fd45c1f4ae4ef7" category="list-text">IT 和业务决策者正在规划最高效的基础设施，以最快的上市时间和投资回报来实现 AI/ML 计划。</block>
+  <block id="c328ed7f0a74043c4e73f7ea491b4eb7" category="list-text">数据科学家和数据工程师有兴趣最大程度地提高 AI/ML 工作流程中以关键数据为中心的部分的效率。</block>
+  <block id="fa7b81174ad3677e1ed9da1ea8185c4d" category="list-text">IT 架构师和工程师需要提供可靠、安全的基础架构，以实现自动化数据工作流并符合现有的数据和流程治理标准。</block>
+  <block id="dad37ea926873ef3d5ee869827ddc40c" category="paragraph">NVIDIA DGX SuperPOD包含必要的服务器、网络和存储，可为要求苛刻的 AI 工作负载提供经过验证的性能。 NVIDIA DGX™ H200 和NVIDIA DGX B200 系统提供世界一流的计算能力， NVIDIA Quantum 和 Spectrum™ InfiniBand 网络交换机提供超低延迟和业界领先的网络性能。借助NetApp ONTAP存储业界领先的数据管理和性能功能，客户可以更快地实现 AI/ML 计划，并减少数据迁移和管理开销。以下部分介绍了带有AFF A90存储系统的 DGX SuperPOD 的存储组件。</block>
+  <block id="4caba5452d50c27473615492a421d0b7" category="section-title">搭载NetApp ONTAP 的NetApp AFF A90存储系统</block>
+  <block id="5b01f10375ddf0fa7a318292fb1ab544" category="paragraph">由NetApp ONTAP数据管理软件提供支持的NetApp AFF A90提供内置数据保护、反勒索软件功能以及支持最关键业务工作负载所需的高性能、可扩展性和弹性。它消除了对关键任务操作的中断，最大限度地减少了性能调整，并保护您的数据免受勒索软件攻击。  NetApp AFF A90系统提供-</block>
+  <block id="5f443413f7f04549bcfdd089e04a0c3a" category="list-text">*表现。*AFF A90可轻松管理深度学习、人工智能和高速分析等下一代工作负载以及 Oracle、SAP HANA、Microsoft SQL Server 和虚拟化应用程序等传统企业数据库。借助 NFS over RDMA、pNFS 和会话中继，客户可以使用现有的数据中心网络基础设施和行业标准协议（无需专有软件）实现下一代应用程序所需的高水平网络性能。粒度数据分布使单个文件能够分布在存储集群中的每个节点上，并且与 pNFS 结合使用时可以对单个大文件中包含的数据集进行高性能并行访问。</block>
+  <block id="ae299319707718bf9587df62a89ca873" category="list-text">*智力。*利用基于数据驱动智能、面向未来的基础架构以及与NVIDIA和 MLOps 生态系统的深度集成构建的 AI 就绪生态系统来加速数字化转型。使用 ONTAP 的快照和FlexClone功能，团队可以立即创建节省空间的数据集副本，以进行并行开发和测试。 FlexCache和 Snapmirror 复制技术可实现整个企业内数据源的简化、节省空间和自动化的数据管道。使用 NAS 和对象协议进行多协议数据访问可以实现针对摄取和数据工程任务优化的新工作流程。数据和训练检查点可以分层到成本较低的存储，以避免填满主存储。客户可以通过单一存储操作系统和业界最丰富的数据服务套件，以最低的成本跨混合云无缝地管理、保护和调动数据。</block>
+  <block id="3a6d4fa926afe309c404561a18033103" category="list-text">*安全。*搭载NetApp ONTAP存储的NVIDIA DGX SuperPOD通过多层保护提供企业级安全性。在基础设施层面，该解决方案实现了强大的访问控制机制，包括基于角色的访问控制（RBAC）、多因素身份验证和详细的审计日志记录功能。该平台的综合加密框架可保护静态和传输中的数据，利用行业标准协议和算法来保护知识产权并保持符合监管要求。集成的安全监控工具可实时查看潜在的安全威胁，而自动响应机制则有助于在风险影响运营之前降低风险。  NetApp ONTAP是唯一经过验证可以存储绝密数据的强化企业存储。</block>
+  <block id="5a79514564c762f34f82d2f86ba269f6" category="list-text">*多租户*。 NetApp ONTAP提供最广泛的功能，支持多租户安全地使用存储资源。存储虚拟机通过 RBAC 控制提供基于租户的管理委派，全面的 QoS 控制可保证关键工作负载的性能，同时实现最大利用率，而用于卷级加密的租户管理密钥等安全功能可保证共享存储介质上的数据安全。</block>
+  <block id="234fe3186330a0015f240eaa46026f52" category="inline-link">+++ ONTAP RASS 白皮书+++</block>
+  <block id="aa2c50d70660a4e07e28a4a1e62cbbeb" category="list-text">*可靠性。* NetApp通过先进的可靠性、可用性、可维护性和可管理性 (RASM) 功能消除了关键任务操作的中断，从而提供了最高的正常运行时间。更多信息请参见<block ref="06c9743ea9b1147ff9ba8b6afddf02b3" category="inline-link-rx"></block>。此外，还可以通过Active IQ和Data Infrastructure Insights提供的基于 AI 的预测分析来优化系统健康状况。</block>
+  <block id="dbefda683c705de53408671cbbab4e34" category="section-title">NVIDIA DGX B200 系统</block>
+  <block id="c2e6165182afeb3c2d3013f3389087b6" category="inline-link">+++NVIDIA+++</block>
+  <block id="2ed6f2103f37f8b4eec016533f493515" category="inline-link">+++NVLink(™)+++</block>
+  <block id="1697b07c98d5b223a74b615c776f0b65" category="inline-link">+++ NVIDIA Blackwell+++</block>
+  <block id="5e923560ec7f11fe71232bd344d8d81a" category="inline-link">+++建筑+++</block>
+  <block id="f7be9a2901218b858c97cd4113fbc2aa" category="paragraph">NVIDIA DGX™ B200 是一个统一的 AI 平台，适用于任何规模、处于 AI 旅程任何阶段的企业的开发到部署流程。配备八个NVIDIA Blackwell GPU，与第五代<block ref="8d33a92989a52a298d52379f9acef95c" category="inline-link-rx"></block><block ref="66ff52a072f2c292b9f50112a8543358" category="inline-link-rx"></block>DGX B200 提供领先的性能，提供比前几代产品高 3 倍的训练性能和高 15 倍的推理性能。利用<block ref="113af14b044c5bd4dc15be4b6100b100" category="inline-link-rx"></block><block ref="adaec91c8092748fe326913de2b3a1f0" category="inline-link-rx"></block>DGX B200 可以处理各种工作负载，包括大型语言模型、推荐系统和聊天机器人，使其成为希望加速 AI 转型的企业的理想选择。</block>
+  <block id="f94ad1ea1a52dd514a5e42a7eec71e94" category="section-title">NVIDIA Spectrum SN5600 以太网交换机</block>
+  <block id="a1bd19971bc35fdd30c6a0b2eee21865" category="paragraph">SN5600 智能叶、主干和超级主干交换机在密集的 2U 外形中提供 64 个 800GbE 端口。  SN5600 支持带有架顶式 (ToR) 交换机的标准叶子/主干设计以及行末式 (EoR) 拓扑。  SN5600 提供 1 至 800GbE 组合的多样化连接，并拥有业界领先的 51.2Tb/s 总吞吐量。</block>
+  <block id="ffe61852985d936bb555e1c150a3feca" category="section-title">NVIDIA Base Command 软件</block>
+  <block id="040380b5657454a9d0ce1064c83dd667" category="paragraph">NVIDIA Base Command™ 为NVIDIA DGX 平台提供支持，使组织能够充分利用NVIDIA AI 创新。有了它，每个组织都可以通过一个经过验证的平台充分发挥其 DGX 基础架构的潜力，该平台包括 AI 工作流管理、企业级集群管理、加速计算、存储和网络基础架构的库以及针对运行 AI 工作负载优化的系统软件。图 2 显示了NVIDIA Base Command 软件堆栈。</block>
+  <block id="9620c8c92a535942ede6a202c5bf5b0d" category="paragraph">图 2) NVIDIA基本命令软件。</block>
+  <block id="2e15a851530c5d474531243cfd838752" category="paragraph"><block ref="2e15a851530c5d474531243cfd838752" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="651beb53a2e8224545ff56fc0d0efd02" category="paragraph">NVIDIA Base Command Manager 为边缘、数据中心以及多云和混合云环境中的异构 AI 和高性能计算 (HPC) 集群提供快速部署和端到端管理。它可以自动配置和管理从几个节点到数十万个节点大小的集群，支持NVIDIA GPU 加速和其他系统，并支持与 Kubernetes 的编排。将NetApp AFF A90存储系统与 DGX SuperPOD 集成需要对 Base Command Manager 进行最少的配置，以调整系统并安装参数以获得最佳性能，但不需要额外的软件即可在 DGX 系统和AFF A90存储系统之间提供高可用性多路径访问。</block>
+  <block id="24f67e93854c90d735466339a375c002" category="paragraph">NVIDIA DGX SuperPOD旨在满足最大规模、最苛刻的工作负载的性能要求。</block>
+  <block id="cfc814162b41538ad397b897a24c4937" category="list-text">针对大型语言模型、计算机视觉/图像分类、欺诈检测和无数其他用例的人工智能模型训练。</block>
+  <block id="607aa89216cc994d4e20cfce8695d306" category="list-text">高性能计算，如地震分析、计算流体动力学和大规模可视化。</block>
+  <block id="9f6302143996033ebb94d536b860acc3" category="section-title">解决方案架构</block>
+  <block id="d0eadc16af6d6df8893f37be51ed2bc6" category="paragraph">DGX SuperPOD 基于可扩展单元 (SU) 的概念，其中包括 32 个 DGX B200 系统以及提供所需连接和消除基础设施中任何性能瓶颈所需的所有其他组件。客户可以从一个或多个 SU 开始，然后根据需要添加其他 SU 来满足其要求。本文档介绍了单个 SU 的存储配置，表 1 显示了更大配置所需的组件。</block>
+  <block id="2a4a6621abe5b6f39b1534ead593f20a" category="inline-link">+++ NVIDIA DGX SuperPOD参考架构+++</block>
+  <block id="60696b15e8be9fd24231177ac611836f" category="paragraph">DGX SuperPOD 参考架构包含多个网络， AFF A90存储系统连接到其中的几个网络。有关 DGX SuperPOD 网络的更多信息，请参阅<block ref="562b92094dd1a3e9b7e68b6a6fb7de81" category="inline-link-rx"></block>。</block>
+  <block id="fdd68d018aab06584c6bc4e8351fa72b" category="paragraph">对于此解决方案，高性能存储结构是基于NVIDIA Spectrum SN5600 交换机的以太网网络，具有 Spine/Leaf 配置中的 64 个 800Gb 端口。带内网络为用户提供对其他功能（例如主目录和常规文件共享）的访问，并且也基于 SN5600 交换机，而带外 (OOB) 网络用于使用 SN2201 交换机的设备级系统管理员访问。</block>
+  <block id="3a812cac2db0a2d9638c3b252cc24b8e" category="paragraph">存储结构是一种叶脊架构，其中 DGX 系统连接到一对叶交换机，存储系统连接到另一对叶交换机。多个 800Gb 端口用于将每个叶交换机连接到一对主干交换机，从而通过网络创建多个高带宽路径，以实现聚合性能和冗余。为了连接到AFF A90存储系统，每个 800Gb 端口使用适当的铜缆或光纤分支电缆分成四个 200Gb 端口。为了支持客户端使用 NFS over RDMA 安装存储系统，存储结构配置为融合以太网上的 RDMA (RoCE)，这可保证网络中的无损数据包传输。图3展示了该方案的存储网络拓扑。</block>
+  <block id="6a53d316acbe58b01a749e96481412aa" category="paragraph">图 3) 存储结构拓扑。</block>
+  <block id="00031e516cb8c09c104ebdb164264d7f" category="paragraph"><block ref="00031e516cb8c09c104ebdb164264d7f" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="316d243b972562ec3f8d06fcd980b1d6" category="paragraph">NetApp AFF A90存储系统是一个 4RU 机箱，包含 2 个控制器，它们彼此作为高可用性伙伴 (HA 对) 运行，最多可配备 48 个 2.5 英寸固态磁盘 (SSD)。每个控制器使用四个 200Gb 以太网连接连接到两个 SN5600 存储叶交换机，并且每个物理端口上有 2 个逻辑 IP 接口。存储集群支持具有并行 NFS (pNFS) 的 NFS v4.1，使客户端能够直接与集群中的每个控制器建立连接。此外，会话中继将多个物理接口的性能组合到单个会话中，即使是单线程工作负载也能访问比传统以太网绑定更多的网络带宽。将所有这些功能与 RDMA 相结合，使AFF A90存储系统能够提供低延迟和高吞吐量，并可利用NVIDIA GPUDirect Storage™ 线性扩展工作负载。</block>
+  <block id="2ecf799238706280879a7218f5c9384f" category="paragraph">为了连接到带内网络，AFF A90控制器在 LACP 接口组中配置了额外的 200Gb 以太网接口，可提供通用 NFS v3 和 v4 服务以及对共享文件系统的 S3 访问（如果需要）。所有控制器和存储集群交换机都连接到 OOB 网络，以实现远程管理访问。</block>
+  <block id="242354762ac710a9d168daccad8ea40d" category="paragraph">为了实现高性能和可扩展性，存储控制器形成一个存储集群，该集群可以将集群节点的整个性能和容量组合到一个名为FlexGroup的命名空间中，数据分布在集群中每个节点的磁盘上。借助ONTAP 9.16.1 中发布的全新粒度数据分布功能，单个文件被分离并分布在FlexGroup中，从而为单文件工作负载提供最高级别的性能。下面的图 4 显示了 pNFS 和 NFS 会话中继如何与 FlexGroups 和 GDD 协同工作，以利用存储系统中的每个网络接口和磁盘实现对大文件的并行访问。</block>
+  <block id="c3c4a8bbb2b351b3bf984cb2d6864b94" category="paragraph">图 4) pNFS、会话中继、FlexGroups 和 GDD。</block>
+  <block id="4f30b88a042ae485248ebaa1099b4a91" category="paragraph"><block ref="4f30b88a042ae485248ebaa1099b4a91" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="7ac50512926081a099344a18f27b3818" category="paragraph">该解决方案利用多个存储虚拟机 (SVM) 来托管卷，以实现高性能存储访问以及管理 SVM 上的用户主目录和其他集群工件。每个 SVM 都配置了网络接口和FlexGroup卷，并实施 QoS 策略以确保数据 SVM 的性能。有关 FlexGroups、存储虚拟机和ONTAP QoS 功能的更多信息，请参阅<block ref="619babf0e51393513dd3986ae0aee969" category="inline-link-rx"></block>。</block>
+  <block id="2a57ec7828afba5c513d03e967cb3884" category="section-title">解决方案硬件要求</block>
+  <block id="b761a63ce0a1bd27710c7207a50b8577" category="paragraph">表 1 列出了实现一个、两个、四个或八个可扩展单元所需的存储硬件组件。有关服务器和网络的详细硬件要求，请参阅<block ref="b8ab7d3cc54802757d9a49bb252840ab" category="inline-link-rx"></block>。</block>
+  <block id="a7504f8a3068ecf26f816d83dfcae5a8" category="cell">SU 大小</block>
+  <block id="eb94f28ae18769ccde6259223dde0683" category="cell">AFF A90 系统</block>
+  <block id="258b220fa2ed31020ab102479476e757" category="cell">存储集群互连交换机</block>
+  <block id="9254819941449b706e4282e2f2e6a7b9" category="cell">可用容量（典型值：3.8TB SSD）</block>
+  <block id="eb17bb52c3b173b3911725d1c9a194f0" category="cell">最大可用容量（配备 15.3TB NVMe SSD）</block>
+  <block id="c9d196f41b3911fefebc23e6efbc32f4" category="cell">RU（典型值）</block>
+  <block id="1fec42eb0945f00ee2125c78858d7366" category="cell">功率（典型值）</block>
+  <block id="f04a7a4ef42eb207cec5a3d7fcc9d3fa" category="cell">555 TB</block>
+  <block id="104bf07415681a49e985f5dd5895d4d6" category="cell">13.75PB</block>
+  <block id="4f10ff6d954a760dbf5b59fb54597722" category="cell">7,300 瓦</block>
+  <block id="830daef3058bf009b39d03050f58f3f4" category="cell">27.5PB</block>
+  <block id="62aa76bddc36c76968deb0ae09c8063f" category="cell">14,600 瓦</block>
+  <block id="76a4dd9b098f9a8877b8b79d0c80c5d3" category="cell">2PB</block>
+  <block id="3b07c527868f20c47db7e08e0e02ced5" category="cell">55PB</block>
+  <block id="f4680500c767e37e35c38315af80e9f9" category="cell">29,200瓦</block>
+  <block id="e79a79f20fe06b0beb657745cf11949a" category="cell">4PB</block>
+  <block id="1609fc8f39b0baac216cbb19fb420ef2" category="cell">110PB</block>
+  <block id="ec8956637a99787bd197eacd77acce5e" category="cell">102</block>
+  <block id="bc6012118a1ec87da87af67c6b3a0f74" category="cell">58,400瓦</block>
+  <block id="0f37a7e60b292d864a5ac969ec04cc27" category="paragraph">*注意：* NetApp建议每个AFF A90 HA 对至少配备 24 个驱动器，以实现最佳性能。额外的内部驱动器、更大容量的驱动器和外部扩展驱动器架可实现更高的总容量，而不会影响系统性能。</block>
+  <block id="d3469c07f7acce56e0d039ec0b164141" category="paragraph">表 2 列出了将AFF A90存储系统与 DGX SuperPOD 集成所需的软件组件和版本。 DGX SuperPOD 还涉及此处未列出的其他软件组件。请参阅<block ref="2523a697ed64d9038adf903273ea5150" category="inline-link-rx"></block>了解完整详情。</block>
+  <block id="0bd0e673df4c14cae45a11fac30c530b" category="cell">9.16.1</block>
+  <block id="dbc8a3aaafc47a649eed1dcc0bc5155e" category="cell">10.24.11</block>
+  <block id="c6d4f54ff5f7e221a70cdd46daa396b3" category="cell">6.3.1</block>
+  <block id="09e619b353cb3d3ca08701e294bb9047" category="cell">MLNX_OFED_LINUX-23.10.3.2.0 LTS</block>
+  <block id="51eed8fde1839744a1b920b0dacb0a0a" category="cell">5.10</block>
+  <block id="f11a60eea5a7abfd75bb28890eaef1ec" category="paragraph">该存储解决方案经过NetApp和NVIDIA的多阶段验证，确保性能和可扩展性满足NVIDIA DGX SuperPOD的要求。该配置通过结合合成工作负载和真实 ML/DL 工作负载进行验证，以验证最大性能和应用程序互操作性。下表 3 提供了 DGX SuperPOD 部署中常见的典型工作负载及其数据要求的示例。</block>
+  <block id="e203df30cd7f31417aee170026e44f70" category="paragraph">表 3) SuperPOD 工作负载示例。</block>
+  <block id="a0db49ba470c1c9ae2128c3470339153" category="cell">级别</block>
+  <block id="0ba48588b95eb9052082d27db3380801" category="cell">工作描述</block>
+  <block id="c8ceada943dc5d58578660bf60d0762a" category="cell">数据集大小</block>
+  <block id="eb6d8ae6f20283755b339c0dc273988b" category="cell">标准</block>
+  <block id="c7f0dd1953999823199f993b956164f6" category="cell">多个并发的 LLM 或微调训练作业和定期检查点，其中计算需求显著地主导了数据 I/O 需求。</block>
+  <block id="f2db8117278a7bff3e0e0bff0571726d" category="cell">大多数数据集在训练期间都可以放入本地计算系统的内存缓存中。数据集是单一模态的，模型有数百万个参数。</block>
+  <block id="53123044b4b65d0ad1b7ed0cfa4c3480" category="cell">增强型</block>
+  <block id="c9e72abf53e870d36e47df81d7f139bf" category="cell">多个并发的多模式训练作业和定期检查点，其中数据 I/O 性能是端到端训练时间的重要因素。</block>
+  <block id="981d20fc47284a9be8695e715a3d1d47" category="cell">数据集太大，无法放入本地计算系统的内存缓存，在训练期间需要更多的 I/O，不足以消除频繁 I/O 的需要。数据集具有多种模式，模型具有数十亿（或更多）个参数。</block>
+  <block id="255eebee8e38299d9f7282ffa8b76db3" category="paragraph">表 4 显示了上述示例工作负载的性能指南。这些值表示在理想条件下这些工作负载可以产生的存储吞吐量。</block>
+  <block id="fe54d8f94c652ba49e4aba03f3107a9c" category="paragraph">表 4) DGX SuperPOD 性能指南。</block>
+  <block id="f5bab93f6f25cd702dcbcb4aad615260" category="cell">性能特点</block>
+  <block id="94f3edd272dbb778616c50e083536c63" category="cell">标准 (GBps)</block>
+  <block id="abaf1dc2e3d5bf424c74cd4566b0f1a3" category="cell">增强型 (GBps)</block>
+  <block id="c5b9e837f1006565fbb01cd3b64d3df7" category="cell">单SU聚合系统读取</block>
+  <block id="3def184ad8f4755ff269862ea77393dd" category="cell">125</block>
+  <block id="8eb042782ea4dd597d037482af02c144" category="cell">单SU聚合系统写入</block>
+  <block id="44f683a84163b3523afe57c2e008bc8c" category="cell">62</block>
+  <block id="f53ce0357707bf3db713c9d71337529d" category="cell">4 SU 聚合系统读取</block>
+  <block id="b73ce398c39f506af761d2277d853a92" category="cell">160</block>
+  <block id="cee631121c2ec9232f3a2f028ad5c89b" category="cell">500</block>
+  <block id="bc96df788d872dc23329bae80cc02619" category="cell">4 SU 聚合系统写入</block>
+  <block id="6c9882bbac1c7093bd25041881277658" category="cell">250</block>
+  <block id="ef6f2913d5f1e19a1aa781a5d72d6caa" category="inline-link">NVA-1175 NVIDIA DGX SuperPOD与NetApp AFF A90存储系统部署指南</block>
+  <block id="6f8af77cdc63a21a3e7b99a2511ed006" category="list-text"><block ref="6f8af77cdc63a21a3e7b99a2511ed006" category="inline-link-rx"></block></block>
+  <block id="4498f6091821057a5b12bbe00bad6fb7" category="inline-link">NVIDIA DGX B200 SuperPOD 参考架构</block>
+  <block id="e0ef89706b7f0268557664ed42040243" category="list-text"><block ref="e0ef89706b7f0268557664ed42040243" category="inline-link-rx"></block></block>
+  <block id="076218ee0774bfaae3fcf92a3241a9fe" category="inline-link">NVIDIA DGX H200 SuperPOD 参考架构</block>
+  <block id="b02d06e7da163e15a51f5a0277a72641" category="list-text"><block ref="b02d06e7da163e15a51f5a0277a72641" category="inline-link-rx"></block></block>
+  <block id="e9cc843bc2157ef28fd2c0657e05a6f0" category="inline-link">NVIDIA BaseCommand 软件</block>
+  <block id="5b147f17197401088429ad2165ca94db" category="list-text"><block ref="5b147f17197401088429ad2165ca94db" category="inline-link-rx"></block></block>
+  <block id="f6f89e67f0d14eefc85ee96a3de66d60" category="list-text"><block ref="f6f89e67f0d14eefc85ee96a3de66d60" category="inline-link-rx"></block></block>
+  <block id="8365b73ca224de7f689b1708ed448af9" category="inline-link">+++ NetApp AI 解决方案文档+++</block>
+  <block id="aed2dde7ddb9cf045a1de05c19aa6fe6" category="list-text"><block ref="aed2dde7ddb9cf045a1de05c19aa6fe6" category="inline-link-rx"></block></block>
+  <block id="4245faba305e62f6fdc30b1ce8bf8ac3" category="inline-link">+++ NetApp安装和维护AFF存储系统+++</block>
+  <block id="bf45808f34c6dcc540de81441ed8372a" category="list-text"><block ref="bf45808f34c6dcc540de81441ed8372a" category="inline-link-rx"></block></block>
+  <block id="51af5c28c5aeade3eeee8efe1cf0c265" category="list-text"><block ref="0b4edeca10dea88e1e3ff87f6aece04a" category="inline-link-rx"></block>（包含大量 pNFS 信息的旧文档）</block>
+  <block id="e84f1067b5e0c62707fee9cec31ec6e6" category="sidebar">搭载NVIDIA DGX SuperPOD 的NetApp AFF A90存储系统 - 设计</block>
+  <block id="ebe830dbdb267fd10b3f4000455f19f2" category="sidebar">搭载NVIDIA DGX SuperPOD 的NetApp AFF A90存储系统 - 部署</block>
 </blocks>
