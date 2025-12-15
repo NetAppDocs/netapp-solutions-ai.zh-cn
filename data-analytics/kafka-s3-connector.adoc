@@ -305,3 +305,9 @@ root@stlrx2540m1-108:~# java -jar /usr/src/avro-tools-1.11.0.1.jar tojson tes.av
 root@stlrx2540m1-108:~#
 ....
 
+
+
+
+== Instaclustr Kafka Connect 连接器
+
+Instaclustr 支持 Kafka Connect 连接器及其详细信息 - link:https://github.com/instaclustr/kafka-connect-connectors["更多详细信息"]。Instaclustr 提供额外的连接器 link:https://www.instaclustr.com/support/documentation/kafka-connect/bundled-kafka-connect-plugins/["他们的详细信息"]

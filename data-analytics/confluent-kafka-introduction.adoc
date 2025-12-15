@@ -31,6 +31,8 @@ Apache Kafka 是一个社区分布式事件流平台，每天能够处理数万�
 
 Confluent 已成为许多应用程序的默认实时流媒体平台，尤其是对于大数据、分析和流媒体工作负载。分层存储使用户能够在 Confluent 平台中将计算与存储分开。它使存储数据更具成本效益，使您能够存储几乎无限量的数据并按需扩大（或缩小）工作负载，并使数据和租户重新平衡等管理任务更加容易。 S3 兼容存储系统可以利用所有这些功能，将所有事件集中在一个地方，实现数据民主化，从而无需复杂的数据工程。有关为什么应该为 Kafka 使用分层存储的更多信息，请查看link:https://docs.confluent.io/platform/current/kafka/tiered-storage.html#netapp-object-storage["本文由 Confluent 撰写"^]。
 
+NetApp instaclustr 从 3.8.1 版本开始也支持 Kafka 分层存储。请点击此处查看更多详情 link:https://www.instaclustr.com/support/documentation/kafka-add-ons/using-kafka-tiered-storage/["使用 Kafka 分层存储的 Instaclust"]
+
 
 
 == 为什么选择NetApp StorageGRID进行分层存储？
