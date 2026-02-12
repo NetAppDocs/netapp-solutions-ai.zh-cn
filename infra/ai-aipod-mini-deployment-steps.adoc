@@ -1,0 +1,429 @@
+---
+sidebar: sidebar 
+permalink: infra/ai-aipod-mini-deployment-steps.html 
+keywords: netapp, aipod, RAG, ai solution, design, deployment, installation 
+summary: '本文为部署 NetApp AIPod Mini for Enterprise RAG (ERAG) 2.0 提供了全面的分步指南。它涵盖了所有核心组件的端到端安装和配置，包括 Kubernetes 平台、用于存储编排的 NetApp Trident 以及使用 ansible playbooks 的 ERAG 2.0 堆栈。除了部署工作流程之外，该文档还包括一个专用的故障排除指南，该指南捕获了安装过程中遇到的常见问题、其根本原因以及建议的解决方案，以支持顺利可靠的部署体验。' 
+---
+= NetApp AIPod Mini for ERAG - 部署步骤
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+本文为部署 NetApp AIPod Mini for Enterprise RAG(ERAG) 2.0 提供了全面的分步指南。它涵盖了所有核心组件的端到端安装和配置，包括 Kubernetes 平台、用于存储编排的 NetApp Trident 以及使用 ansible playbooks 的 ERAG 2.0 堆栈。除了部署工作流程之外，该文档还包括一个专门的故障排除指南，其中捕获了安装过程中遇到的常见问题、其根本原因以及建议的解决方案，以支持顺利可靠的部署体验。
+
+image:aipod-mini-001.png["英特尔徽标"]
+
+Sathish Thyagarajan、Michael Oglesby、Arpita Mahajan NetApp
+
+
+
+== 假设：
+
+* 部署用户有足够的权限来创建命名空间和安装 Helm 图表。
+* Xeon 服务器运行 Ubuntu 22.04。
+* 在所有 Xeon 服务器上配置相同的用户名。
+* DNS 管理访问可用。
+* 使用为 S3 访问配置的 SVM 部署的 ONTAP 9.16。
+* S3 存储桶已创建并配置。
+
+
+
+
+== 前提条件
+
+安装 Git、Python3.11 和 pip for Python3.11
+
+在 Ubuntu 22.04 上：
+
+[source, cli]
+----
+add-apt-repository ppa:deadsnakes/ppa
+apt update
+apt upgrade
+apt install python3.11
+python3.11 --version
+apt install python3.11-pip
+python3.11 -m pip --version
+----
+
+
+== ERAG 2.0/2.0.1 部署步骤
+
+
+
+=== 1.从 GitHub 拉取 Enterprise RAG 2.0 版本
+
+[source, cli]
+----
+git clone https://github.com/opea-project/Enterprise-RAG.git
+cd Enterprise-RAG/
+git checkout tags/release-2.0.0
+----
+对于 ERAG 2.0.1，使用以下命令
+
+[source, cli]
+----
+git checkout tags/release-2.0.1
+----
+
+
+=== 2.安装先决条件
+
+[source, cli]
+----
+cd deployment/
+sudo apt-get install python3.11-venv
+python3 -m venv erag-venv
+source erag-venv/bin/activate
+pip install --upgrade pip
+pip install -r requirements.txt
+ansible-galaxy collection install -r requirements.yaml --upgrade
+----
+
+
+=== 3.创建库存文件
+
+[source, cli]
+----
+cp -a inventory/sample inventory/<cluster-name>
+vi inventory/<cluster-name>/inventory.ini
+# Control plane nodes
+kube-3 ansible_host=<control_node_ip_address>
+
+# Worker nodes
+kube-1 ansible_host=<worker_node1_ip_address>
+kube-2 ansible_host=<worker_node2_ip_address>
+
+# Define node groups
+[kube_control_plane]
+kube-1
+kube-2
+kube-3
+
+[kube_node]
+kube-1
+kube-2
+
+[etcd:children]
+kube_control_plane
+
+[k8s_cluster:children]
+kube_control_plane
+kube_node
+
+# Vars
+[k8s_cluster:vars]
+ansible_become=true
+ansible_user=<ssh_username>
+ansible_connection=ssh
+----
+
+
+=== 4.为每个节点设置无密码 SSH
+
+[source, cli]
+----
+ssh-copy-id REMOTE_USER@MACHINE_IP
+----
+注意：如果部署节点用于部署 ERAG，请确保在部署节点上也配置了无密码 SSH。
+
+
+
+=== 5.验证连接
+
+[source, cli]
+----
+ansible all -i inventory/<cluster-name>/inventory.ini -m ping
+----
+注意：如果您的节点上未设置无密码 sudo，则需要在此命令中添加 --ask-become-pass 到此命令。使用 --ask-become-pass 时，ssh 用户必须在每个节点上使用相同的密码。
+
+
+
+=== 6.编辑  `config.yaml` 文件
+
+通过编辑  `inventory/<cluster-name>/config.yaml` 来准备部署，以反映您的环境具体情况。
+
+[source, cli]
+----
+vi inventory/<cluster-name>/config.yaml
+----
+
+
+==== 示例代码段：
+
+[source, cli]
+----
+…
+deploy_k8s: true
+…
+install_csi: "netapp-trident"
+…
+local_registry: false
+…
+trident_operator_version: "2510.0"    # Trident operator version (becomes 100.2506.0 in Helm chart)
+trident_namespace: "trident"          # Kubernetes namespace for Trident
+trident_storage_class: "netapp-trident" # StorageClass name for Trident
+trident_backend_name: "ontap-nas"     # Backend configuration name
+…
+ontap_management_lif: "<ontap_mgmt_lif>"              # ONTAP management LIF IP address
+ontap_data_lif: "<ontap_nfs_data_lif>"                    # ONTAP data LIF IP address
+ontap_svm: "<ontap_svm>"                         # Storage Virtual Machine (SVM) name
+ontap_username: "<ontap_username>"                    # ONTAP username with admin privileges
+ontap_password: "<redacted>"                    # ONTAP password
+ontap_aggregate: "<ontap_aggr>"                   # ONTAP aggregate name for volume creation
+…
+kubeconfig: "<repository path>/deployment/inventory/<cluster-name>/artifacts/admin.conf"
+…
+----
+
+
+=== 7.部署 K8s 集群（使用 Trident）
+
+使用 configure 和 install 标签执行 ansible-playbook playbooks/infrastructure.yaml 以部署集群和 Trident CSI。
+
+[source, cli]
+----
+ansible-playbook playbooks/infrastructure.yaml --tags configure,install -i inventory/<cluster-name>/inventory.ini -e @inventory/<cluster-name>/config.yaml
+----
+注意：- 如果您的节点上未设置无密码 sudo，则需要将 `--ask-become-pass`添加到此命令中。使用 `--ask-become-pass`时，ssh 用户在每个节点上必须使用相同的密码，这一点至关重要。- 有关详细信息，请参阅 https://github.com/opea-project/Enterprise-RAG/blob/main/deployment/roles/infrastructure/netapp_trident_csi_setup/netapp_trident_integration.md["NetApp Trident CSI 集成用于企业 RAG"^]。有关更多详细信息，请参阅 https://docs.netapp.com/us-en/trident/trident-get-started/kubernetes-deploy.html["Trident安装文档"^]。
+
+
+
+=== 8.更改 iwatch 打开描述符的数量
+
+请参见 https://github.com/opea-project/Enterprise-RAG/blob/release-2.0.0/docs/application_deployment_guide.md#change-number-of-iwatch-open-descriptors["iwatch 打开描述符"^]了解详细信息。
+
+
+
+=== 9.安装 kubectl
+
+如果尚未安装，请参阅  https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/["安装 Kubectl"]。从  `<repository path>/deployment/inventory/<cluster-name>/artifacts/admin.conf` 检索 kubeconfig 文件。
+
+
+
+=== 10.在 Kubernetes 集群中安装 MetalLB
+
+在 Kubernetes 集群上使用 helm 安装 MetalLB。
+
+[source, cli]
+----
+helm repo add metallb https://metallb.github.io/metallb
+helm -n metallb-system install metallb metallb/metallb --create-namespace
+----
+请参见  https://metallb.io/installation/["MetalLB 安装"] 了解详细信息。
+
+
+
+=== 11.配置 MetalLB
+
+MetalLB 配置为第 2 层模式，所需的 IPAddressPool 和 L2Advertisement 资源根据文档化配置指南创建。
+
+[source, cli]
+----
+vi metallb-ipaddrpool-l2adv.yaml
+kubectl apply -f metallb-ipaddrpool-l2adv.yaml
+----
+
+
+==== 示例代码段：
+
+[source, cli]
+----
+vi metallb-ipaddrpool-l2adv.yaml
+---
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: erag
+  namespace: metallb-system
+spec:
+  addresses:
+  - <IPAddressPool>
+---
+apiVersion: metallb.io/v1beta1
+kind: L2Advertisement
+metadata:
+  name: metallb-l2adv
+  namespace: metallb-system
+----
+注意：- 使用  `metallb-system` 作为 MetalLB IPAddressPool 和 L2Advertisement 的命名空间。- IP 地址池可能包括与 Kubernetes 节点位于同一子网内的任何未使用的 IP。ERAG 只需要一个 IP 地址。- 详情请参阅  https://metallb.io/configuration/#layer-2-configuration["MetalLB Layer2 配置"]。
+
+
+
+=== 12.使用 FQDN、卷访问模式、ingress 和 S3 详细信息更新 config.yaml。
+
+修改位于  `inventory/<cluster-name>/config.yaml` 的 config.yaml 文件，以定义部署 FQDN，设置卷访问模式，配置入口曝光，并集成 ONTAP S3。
+
+编辑  `config.yaml` 并应用以下配置更改：
+
+* FQDN：指定用于访问部署的完全限定域名。
+* 卷访问模式：在 gmc.pvc 部分下，设置 `accessMode: ReadWriteMany`以支持跨多个 pod 并发访问模型卷。
+* 入口配置：将入口 service_type 配置为 LoadBalancer 以启用对应用程序的外部访问。
+* S3 存储详细信息：将 storageType 设置为 s3compatible 并配置 ONTAP S3 参数，包括区域、访问凭据、内部和外部端点。
+* SSL 证书验证：仅当 ONTAP S3 配置了自签名证书时，才将 edpInternalCertVerify 和 edpExternalCertVerify 设置为 false。如果证书由公开可信的 CA 颁发，这些参数应保持启用状态。
+
+
+
+
+==== 示例代码段：
+
+[source, cli]
+----
+vi inventory/<cluster-name>/config.yaml
+…
+FQDN: "<FQDN>" # Provide the FQDN for the deployment
+…
+gmc:
+  enabled: true
+  pvc:
+    accessMode: ReadWriteMany # AccessMode
+    models:
+      modelLlm:
+        name: model-volume-llm
+        storage: 100Gi
+      modelEmbedding:
+        name: model-volume-embedding
+        storage: 20Gi
+      modelReranker:
+        name: model-volume-reranker
+        storage: 10Gi
+…
+ingress:
+  …
+  service_type: LoadBalancer
+  …
+edp:
+  …
+  storageType: s3compatible
+  …
+  s3compatible:
+    region: "us-east-1"
+    accessKeyId: "<your_access_key>"
+    secretAccessKey: "<your_secret_key>"
+    internalUrl: "https://<IP-address>"
+    externalUrl: "https://<IP-address>"
+    bucketNameRegexFilter: ".*"
+    edpExternalCertVerify: false
+    edpInternalCertVerify: false
+  …
+----
+注意：- 默认情况下，Intel® AI for Enterprise RAG 应用程序将从 SVM 中的所有现有存储桶中获取数据。如果 SVM 中有多个存储桶，则可以修改  `bucketNameRegexFilter` 字段，以便仅从某些存储桶中摄取数据。- 有关详细信息，请参阅  https://github.com/opea-project/Enterprise-RAG/blob/release-2.0.0/deployment/README.md["Intel® AI for Enterprise RAG 部署"^] 文档。
+
+
+
+=== 13.配置计划同步设置
+
+在安装 OPEA for Intel® AI for Enterprise RAG 应用程序时，启用 `scheduledSync`以使应用程序自动从您的 S3 存储桶中摄取新的或更新的文件。
+
+什么时候 `scheduledSync`启用后，应用程序会自动检查源 S3 存储桶中是否有新文件或更新的文件。在此同步过程中发现的任何新文件或更新文件都会自动提取并添加到 RAG 知识库中。应用程序根据预设的时间间隔检查您的源存储桶。默认时间间隔为 60 秒，这意味着应用程序每 60 秒检查一次更改。您可能希望更改此间隔以满足您的特定需求。
+
+要启用 `scheduledSync`和设置同步间隔，请在 `deployment/components/edp/values.yaml`中设置以下值：
+
+[source, cli]
+----
+vi components/edp/values.yaml
+…
+presignedUrlCredentialsSystemFallback: "true"
+…
+celery:
+  …
+  config:
+    …
+    scheduledSync:
+      enabled: true
+      syncPeriodSeconds: "60"
+…
+----
+
+
+=== 14.部署企业 RAG 2.0/2.0.1
+
+在安装之前，请按照 link:https://github.com/opea-project/Enterprise-RAG/blob/main/docs/application_deployment_guide.md["Intel® AI for Enterprise RAG 应用程序部署指南"] 中概述的程序验证基础设施的就绪性。此步骤可确保正确配置基础架构，并满足成功安装企业 RAG 应用程序所需的所有先决条件。
+
+运行安装时使用：
+
+[source, cli]
+----
+ansible-playbook -u $USER playbooks/application.yaml --tags configure,install -e @inventory/<cluster-name>/config.yaml
+----
+注意：如果未在部署节点（运行 ansible-playbook 命令的笔记本电脑或跳转主机）上设置无密码 sudo，则需要将 `--ask-become-pass`添加到此命令。使用 `--ask-become-pass`时，ssh 用户必须在每个节点上使用相同的密码。
+
+
+
+=== 15.创建 DNS 条目
+
+在 DNS 服务器中为 Enterprise RAG Web 仪表板创建 DNS 条目。要继续，请检索分配给 Enterprise RAG 入口 LoadBalancer 的外部 IP 地址：
+
+[source, cli]
+----
+kubectl -n ingress-nginx get svc ingress-nginx-controller
+----
+为您在步骤 12 中使用的 FQDN 创建指向此 IP 地址的 DNS 条目。
+
+注意： - 用于 DNS 条目的 FQDN 必须与配置文件中的 FQDN 匹配。
+
+
+
+=== 16.访问企业 RAG UI
+
+通过在浏览器中导航到该 FQDN 来访问 Enterprise RAG UI。注意：您可以从 cat ansible-logs/default_credentials.txt 中检索默认 UI 凭据
+
+
+
+== 故障排除指南
+
+
+
+=== 1.问题：Keycloak Helm 安装冲突
+
+场景：部署 ERAG 时，Keycloak 安装可能失败并出现以下错误：
+
+[source, cli]
+----
+FAILED - RETRYING: [localhost]: Install Keycloak Helm chart (5 retries left).
+Failure when executing Helm command. Exited 1.
+    stdout:
+    stderr: Error: UPGRADE FAILED: another operation (install/upgrade/rollback) is in progress
+----
+操作：如果重试后失败仍然存在 – 卸载 ERAG 部署，使用以下命令删除现有 auth 命名空间并重新运行部署。
+
+[source, cli]
+----
+ansible-playbook playbooks/application.yaml --tags uninstall -e @inventory/<cluster-name>/config.yaml
+
+helm -n auth uninstall keycloak
+kubectl -n auth get pvc # confirm all PVCs are gone; if any are left, delete them
+kubectl delete ns auth
+----
+注：过时的 Helm 发布状态可能会阻止后续安装或升级操作。
+
+
+
+=== 2.问题：未找到 Trident Operator Helm Chart 版本
+
+场景：在 ERAG 部署期间，由于 Helm 图表版本不匹配，Trident 操作员安装可能会失败。可以观察到以下错误：
+
+[source, cli]
+----
+TASK [netapp_trident_csi_setup : Install Trident operator via Helm]
+fatal: [localhost]: FAILED! => changed=false
+  command: /usr/local/bin/helm --version=100.2510.0 show chart 'netapp-trident/trident-operator'
+  msg: |-
+    Failure when executing Helm command. Exited 1.
+    stdout:
+    stderr: Error: chart "trident-operator" matching 100.2510.0 not found in netapp-trident index.
+            (try 'helm repo update'): no chart version found for trident-operator-100.2510.0
+----
+操作：如果发生此错误，请更新 Helm 存储库索引并重新运行部署手册。
+
+[source, cli]
+----
+helm repo update
+ansible-playbook playbooks/application.yaml -e @inventory/<cluster-name>/config.yaml
+----
+注意：这是 ERAG 2.0 版中的一个已知问题。已提交修复，并将包含在未来版本中。
