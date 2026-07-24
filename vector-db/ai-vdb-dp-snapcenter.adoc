@@ -18,6 +18,7 @@ summary: 使用 Snapcenter 进行矢量数据库保护 - NetApp 的矢量数据�
 
 
 
+[[vector-database-protection-using-netapp-snapcenter]]
 == 使用NetApp SnapCenter进行矢量数据库保护。
 
 例如，在电影制作行业，客户通常拥有关键的嵌入式数据，如视频和音频文件。由于硬盘故障等问题而导致的数据丢失可能会对其运营产生重大影响，甚至可能危及价值数百万美元的企业。我们曾遇到过宝贵内容丢失的情况，造成严重的混乱和经济损失。因此，确保这些重要数据的安全性和完整性对该行业至关重要。在本节中，我们将深入探讨SnapCenter如何保护驻留在ONTAP中的矢量数据库数据和 Milvus 数据。在此示例中，我们使用了从 NFS ONTAP卷 (vol1) 派生的 NAS 存储桶 (milvusdbvol1) 来存储客户数据，并使用了单独的 NFS 卷 (vectordbpv) 来存储 Milvus 集群配置数据。请查看link:https://docs.netapp.com/us-en/snapcenter-47/protect-sco/backup-workflow.html["此处"]Snapcenter 备份工作流程

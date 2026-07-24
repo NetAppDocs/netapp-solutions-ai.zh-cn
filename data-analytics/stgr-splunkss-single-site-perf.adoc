@@ -24,6 +24,7 @@ image:stgr-splunkss-011.png["该图显示输入/输出对话框或表示书面�
 
 
 
+[[configuration]]
 == 配置
 
 下表列出了用于 SmartStorage 性能验证的硬件。
@@ -51,6 +52,7 @@ image:stgr-splunkss-011.png["该图显示输入/输出对话框或表示书面�
 |===
 
 
+[[smartstore-remote-store-performance-validation]]
 == SmartStore远程商店性能验证
 
 在本次性能验证中，我们在所有索引器的本地存储中配置了 SmartStore 缓存，以保存 10 天的数据。我们启用了 `maxDataSize=auto`（750MB 存储桶大小）在 Splunk 集群管理器中并将更改推送到所有索引器。为了测量上传性能，我们在 10 天内每天摄取 10TB 的数据，并同时将所有热存储桶转为热存储桶，并从 SmartStore 监控控制台仪表板捕获每个实例和整个部署的峰值和平均吞吐量。
@@ -152,6 +154,7 @@ image:stgr-splunkss-015.png["该图显示输入/输出对话框或表示书面�
 
 
 
+[[storagegrid-performance]]
 == StorageGRID性能
 
 SmartStore 的性能基于从大量数据中搜索特定的模式和字符串。在此验证中，事件是使用 https://github.com/splunk/eventgen["事件生成"^]通过搜索头在特定的 Splunk 索引（eventgen-test）上进行搜索，并且请求对于大多数查询转到StorageGRID 。下图显示了查询数据的命中和未命中情况。命中数据来自本地磁盘，未命中数据来自StorageGRID控制器。
@@ -167,6 +170,7 @@ image:stgr-splunkss-017.png["该图显示输入/输出对话框或表示书面�
 
 
 
+[[storagegrid-hardware-usage]]
 == StorageGRID硬件使用情况
 
 StorageGRID实例有一个负载均衡器和三个StorageGRID控制器。所有三个控制器的 CPU 利用率均为 75% 至 100%。
@@ -175,6 +179,7 @@ image:stgr-splunkss-018.png["该图显示输入/输出对话框或表示书面�
 
 
 
+[[smartstore-with-netapp-storage-controller-benefits-for-the-customer]]
 == 采用NetApp存储控制器的 SmartStore - 为客户带来好处
 
 * *将计算和存储分离。*  Splunk SmartStore 将计算和存储分离，帮助您独立扩展它们。

@@ -18,6 +18,7 @@ summary: NetApp的开源 MLOps - Trident操作示例
 
 
 
+[[import-an-existing-volume]]
 == 导入现有卷
 
 如果您的NetApp存储系统/平台上存在现有卷，并且您想要将其安装在 Kubernetes 集群内的容器上，但这些卷未与集群中的 PVC 绑定，则必须导入这些卷。您可以使用Trident卷导入功能来导入这些卷。
@@ -56,12 +57,14 @@ pb-fg-all-iface1     Bound    default-pb-fg-all-iface1-7d9f1     10995116277760 
 ....
 
 
+[[provision-a-new-volume]]
 == 提供新卷
 
 您可以使用Trident在NetApp存储系统或平台上配置新卷。
 
 
 
+[[provision-a-new-volume-using-kubectl]]
 === 使用 kubectl 配置新卷
 
 以下示例命令显示使用 kubectl 配置新的FlexVol volume。
@@ -91,6 +94,7 @@ tensorflow-results                Bound     default-tensorflow-results-2fd60   1
 ....
 
 
+[[provision-a-new-volume-using-the-netapp-dataops-toolkit]]
 === 使用NetApp DataOps 工具包配置新卷
 
 您还可以使用NetApp DataOps Toolkit for Kubernetes 在NetApp存储系统或平台上配置新卷。 NetApp DataOps Toolkit for Kubernetes 利用Trident来配置卷，但简化了用户的流程。请参阅link:https://github.com/NetApp/netapp-dataops-toolkit/blob/main/netapp_dataops_k8s/docs/volume_management.md["文档"]了解详情。

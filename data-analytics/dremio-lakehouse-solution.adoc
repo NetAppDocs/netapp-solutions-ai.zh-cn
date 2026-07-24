@@ -18,6 +18,7 @@ summary: 本节介绍用于 dremio 认证的硬件和软件。此信息适用于
 
 
 
+[[netapp-overview]]
 == NetApp概述
 
 * NetApp 的产品（例如ONTAP和StorageGRID）可实现存储和计算的分离，从而根据特定需求实现最佳资源利用率。这种灵活性使客户能够使用NetApp存储解决方案独立扩展其存储
@@ -27,6 +28,7 @@ summary: 本节介绍用于 dremio 认证的硬件和软件。此信息适用于
 
 
 
+[[storagegrid]]
 === StorageGRID
 
 我们行业领先的对象存储 storageGRID 提供了强大的策略引擎，用于自动放置数据、灵活的部署选项以及通过分层擦除编码实现的无与伦比的耐用性。它具有可扩展的架构，可在单个命名空间中支持数十亿个对象和 PB 级数据。该解决方案支持混合云集成，允许数据分层到主要云平台。它在 2019 年 IDC Marketscape 全球基于对象的供应商评估中被评为领导者。
@@ -37,6 +39,7 @@ summary: 本节介绍用于 dremio 认证的硬件和软件。此信息适用于
 
 
 
+[[netapp-ontap]]
 === NetApp ONTAP
 
 NetApp ONTAP是一款强大的存储解决方案，可提供广泛的企业功能。它包括快照，可提供应用程序一致且防篡改的即时备份。 SnapRestore支持按需近乎即时地恢复备份，而SnapMirror提供集成的远程备份和灾难恢复功能。该解决方案还采用了自主勒索软件保护 (ARP)，通过多管理员验证、具有 FIPS 认证的静态数据加密、传输中数据加密、多因素身份验证 (MFA) 和基于角色的访问控制 (RBAC) 等功能确保数据安全。全面的日志记录、审计、板载和外部密钥管理、安全清除以及多租户安全管理进一步增强了数据安全性和合规性。
@@ -49,6 +52,7 @@ NetApp ONTAP支持各种协议，包括 NVMe/FC、FC、NVMe/TCP、iSCSI、NFS、
 
 
 
+[[dremio-overview]]
 == Dremio 概述
 
 Dremio 是用于自助分析和人工智能的统一 Lakehouse 平台。  Dremio 统一分析平台凭借 Lakehouse 的灵活性、可扩展性和性能，让用户更接近数据，而成本仅为传统数据仓库解决方案的一小部分。  Dremio 支持“左移”分析，以消除复杂且昂贵的数据集成和 ETL，提供无需数据移动的无缝企业级分析。  Dremio 还具有以下特点：
@@ -60,6 +64,7 @@ Dremio 是用于自助分析和人工智能的统一 Lakehouse 平台。  Dremio
 
 
 
+[[what-value-does-the-dremio-and-netapp-hybrid-iceberg-lakehouse-solution-deliver-to-customers]]
 == Dremio 和NetApp混合 Iceberg Lakehouse 解决方案为客户带来什么价值？
 
 * *改进的数据管理和可访问性*：Dremio 以其数据湖平台而闻名，该平台使组织能够直接从其数据湖中高速查询数据。另一方面， NetApp是云数据服务和数据存储解决方案的领先提供商。该联合产品为客户提供了一套全面的解决方案，用于高效地存储、管理、访问和分析其企业的数据。

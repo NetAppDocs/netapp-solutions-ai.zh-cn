@@ -18,6 +18,7 @@ summary: 本文档概述了 NetApp AIPod Mini for Enterprise RAG 的综合基础
 
 
 
+[[business-use-case-readiness]]
 == 业务和用例就绪性
 
 * 解决方案是否与业务线结果一致（例如，生产力、客户服务、法律、医疗保健、制造业、公共部门）？
@@ -29,6 +30,7 @@ summary: 本文档概述了 NetApp AIPod Mini for Enterprise RAG 的综合基础
 
 
 
+[[technical-infrastructure-requirements]]
 == 技术和基础设施要求
 
 * 您的数据管道准备好了吗（数据准备、ETL、安全提取到矢量数据库中）？
@@ -41,6 +43,7 @@ summary: 本文档概述了 NetApp AIPod Mini for Enterprise RAG 的综合基础
 
 
 
+[[software-ecosystem-alignment]]
 == 软件和生态系统协调
 
 * 您的容器化应用程序是否与提供的 Kubernetes & Helm 图表兼容？
@@ -52,6 +55,7 @@ summary: 本文档概述了 NetApp AIPod Mini for Enterprise RAG 的综合基础
 
 
 
+[[data-governance-security]]
 == 数据治理与安全
 
 * 您是否在 Kubernetes 中启用了基于角色的访问控制 (RBAC)？
@@ -62,6 +66,7 @@ summary: 本文档概述了 NetApp AIPod Mini for Enterprise RAG 的综合基础
 
 
 
+[[operational-support-considerations]]
 == 运营和支持注意事项
 
 * 管理员是否接受过 Kubernetes、Trident CSI 和 OPEA 堆栈部署方面的培训/启用？
@@ -72,6 +77,7 @@ summary: 本文档概述了 NetApp AIPod Mini for Enterprise RAG 的综合基础
 
 
 
+[[commercial-gtm-alignment]]
 == 商业和 GTM 对齐
 
 * 是否有分阶段的路线图（部门→企业范围的 AI 扩展）？

@@ -18,6 +18,7 @@ Kafka 大小调整可以通过四种配置模式进行：简单、粒度、反�
 
 
 
+[[simple]]
 == 简单的
 
 简单模式适合首次使用 Apache Kafka 的用户或早期使用案例。对于此模式，您可以提供吞吐量 MBps、读取扇出、保留和资源利用率百分比（默认值为 60%）等要求。您还可以进入环境，例如本地（裸机、VMware、Kubernetes 或 OpenStack）或云。根据这些信息，Kafka 集群的大小提供了代理、zookeeper、Apache Kafka 连接工作器、模式注册表、REST 代理、ksqlDB 和 Confluent 控制中心所需的服务器数量。
@@ -26,6 +27,7 @@ Kafka 大小调整可以通过四种配置模式进行：简单、粒度、反�
 
 
 
+[[producers]]
 === 生产者
 
 要描述 Apache Kafka 的生产者（例如本机客户端、REST 代理或 Kafka 连接器），请提供以下信息：
@@ -81,6 +83,7 @@ Kafka 大小调整可以通过四种配置模式进行：简单、粒度、反�
 
 
 
+[[consumers]]
 === 消费者
 
 描述使用来自 Apache Kafka 的数据但不返回到 Apache Kafka 的应用程序或服务；例如，本机客户端或 Kafka 连接器。
@@ -117,6 +120,7 @@ Kafka 大小调整可以通过四种配置模式进行：简单、粒度、反�
 
 
 
+[[describe-your-environment]]
 === 描述你的环境
 
 * *您的集群将在什么环境中运行？*亚马逊网络服务、微软 Azure、谷歌云平台、本地裸机、本地 VMware、本地 OpenStack 还是本地 Kubernates？

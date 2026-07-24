@@ -32,6 +32,7 @@ https://www.nvidia.com/en-us/data-center/products/ai-enterprise/["https://www.nv
 
 
 
+[[acknowledgments]]
 == 声明
 
 * Bobby Oommen， NetApp高级经理

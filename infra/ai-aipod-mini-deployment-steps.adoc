@@ -22,6 +22,7 @@ Sathish Thyagarajan、Michael Oglesby、Arpita Mahajan NetApp
 
 
 
+[[assumptions]]
 == 假设：
 
 * 部署用户有足够的权限来创建命名空间和安装 Helm 图表。
@@ -34,6 +35,7 @@ Sathish Thyagarajan、Michael Oglesby、Arpita Mahajan NetApp
 
 
 
+[[prerequisites]]
 == 前提条件
 
 安装 Git、Python3.11 和 pip for Python3.11
@@ -52,10 +54,12 @@ python3.11 -m pip --version
 ----
 
 
+[[erag-2-02-0-1-deployment-steps]]
 == ERAG 2.0/2.0.1 部署步骤
 
 
 
+[[1-pull-enterprise-rag-2-0-release-from-github]]
 === 1.从 GitHub 拉取 Enterprise RAG 2.0 版本
 
 [source, cli]
@@ -72,6 +76,7 @@ git checkout tags/release-2.0.1
 ----
 
 
+[[2-install-prerequisites]]
 === 2.安装先决条件
 
 [source, cli]
@@ -86,6 +91,7 @@ ansible-galaxy collection install -r requirements.yaml --upgrade
 ----
 
 
+[[3-create-inventory-file]]
 === 3.创建库存文件
 
 [source, cli]
@@ -124,6 +130,7 @@ ansible_connection=ssh
 ----
 
 
+[[4-set-up-passwordless-ssh-to-each-node]]
 === 4.为每个节点设置无密码 SSH
 
 [source, cli]
@@ -134,6 +141,7 @@ ssh-copy-id REMOTE_USER@MACHINE_IP
 
 
 
+[[5-verify-connectivity]]
 === 5.验证连接
 
 [source, cli]
@@ -144,6 +152,7 @@ ansible all -i inventory/<cluster-name>/inventory.ini -m ping
 
 
 
+[[6-edit-config-yaml-file]]
 === 6.编辑  `config.yaml` 文件
 
 通过编辑  `inventory/<cluster-name>/config.yaml` 来准备部署，以反映您的环境具体情况。
@@ -182,6 +191,7 @@ kubeconfig: "<repository path>/deployment/inventory/<cluster-name>/artifacts/adm
 ----
 
 
+[[7-deploy-the-k8s-cluster-with-trident]]
 === 7.部署 K8s 集群（使用 Trident）
 
 使用 configure 和 install 标签执行 ansible-playbook playbooks/infrastructure.yaml 以部署集群和 Trident CSI。
@@ -194,18 +204,21 @@ ansible-playbook playbooks/infrastructure.yaml --tags configure,install -i inven
 
 
 
+[[8-change-the-number-of-iwatch-open-descriptors]]
 === 8.更改 iwatch 打开描述符的数量
 
 请参见 https://github.com/opea-project/Enterprise-RAG/blob/release-2.0.0/docs/application_deployment_guide.md#change-number-of-iwatch-open-descriptors["iwatch 打开描述符"^]了解详细信息。
 
 
 
+[[9-install-kubectl]]
 === 9.安装 kubectl
 
 如果尚未安装，请参阅  https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/["安装 Kubectl"]。从  `<repository path>/deployment/inventory/<cluster-name>/artifacts/admin.conf` 检索 kubeconfig 文件。
 
 
 
+[[10-install-metallb-in-kubernetes-cluster]]
 === 10.在 Kubernetes 集群中安装 MetalLB
 
 在 Kubernetes 集群上使用 helm 安装 MetalLB。
@@ -219,6 +232,7 @@ helm -n metallb-system install metallb metallb/metallb --create-namespace
 
 
 
+[[11-configure-metallb]]
 === 11.配置 MetalLB
 
 MetalLB 配置为第 2 层模式，所需的 IPAddressPool 和 L2Advertisement 资源根据文档化配置指南创建。
@@ -255,6 +269,7 @@ metadata:
 
 
 
+[[12-update-config-yaml-with-fqdn-volume-access-mode-ingress-and-s3-details]]
 === 12.使用 FQDN、卷访问模式、ingress 和 S3 详细信息更新 config.yaml。
 
 修改位于  `inventory/<cluster-name>/config.yaml` 的 config.yaml 文件，以定义部署 FQDN，设置卷访问模式，配置入口曝光，并集成 ONTAP S3。
@@ -316,6 +331,7 @@ edp:
 
 
 
+[[13-configure-scheduled-synchronization-settings]]
 === 13.配置计划同步设置
 
 在安装 OPEA for Intel® AI for Enterprise RAG 应用程序时，启用 `scheduledSync`以使应用程序自动从您的 S3 存储桶中摄取新的或更新的文件。
@@ -341,6 +357,7 @@ celery:
 ----
 
 
+[[14-deploy-enterprise-rag-2-02-0-1]]
 === 14.部署企业 RAG 2.0/2.0.1
 
 在安装之前，请按照 link:https://github.com/opea-project/Enterprise-RAG/blob/main/docs/application_deployment_guide.md["Intel® AI for Enterprise RAG 应用程序部署指南"] 中概述的程序验证基础设施的就绪性。此步骤可确保正确配置基础架构，并满足成功安装企业 RAG 应用程序所需的所有先决条件。
@@ -355,6 +372,7 @@ ansible-playbook -u $USER playbooks/application.yaml --tags configure,install -e
 
 
 
+[[15-create-a-dns-entry]]
 === 15.创建 DNS 条目
 
 在 DNS 服务器中为 Enterprise RAG Web 仪表板创建 DNS 条目。要继续，请检索分配给 Enterprise RAG 入口 LoadBalancer 的外部 IP 地址：
@@ -369,16 +387,19 @@ kubectl -n ingress-nginx get svc ingress-nginx-controller
 
 
 
+[[16-access-enterprise-rag-ui]]
 === 16.访问企业 RAG UI
 
 通过在浏览器中导航到该 FQDN 来访问 Enterprise RAG UI。注意：您可以从 cat ansible-logs/default_credentials.txt 中检索默认 UI 凭据
 
 
 
+[[troubleshooting-guide]]
 == 故障排除指南
 
 
 
+[[1-issue-keycloak-helm-installation-conflict]]
 === 1.问题：Keycloak Helm 安装冲突
 
 场景：部署 ERAG 时，Keycloak 安装可能失败并出现以下错误：
@@ -404,6 +425,7 @@ kubectl delete ns auth
 
 
 
+[[2-issue-trident-operator-helm-chart-version-not-found]]
 === 2.问题：未找到 Trident Operator Helm Chart 版本
 
 场景：在 ERAG 部署期间，由于 Helm 图表版本不匹配，Trident 操作员安装可能会失败。可以观察到以下错误：

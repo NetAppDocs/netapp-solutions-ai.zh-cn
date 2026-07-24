@@ -18,6 +18,7 @@ summary: 本节介绍用于验证该解决方案的测试程序。
 
 
 
+[[operating-system-and-ai-inference-setup]]
 == 操作系统和 AI 推理设置
 
 对于AFF C190，我们使用了带有NVIDIA驱动程序的 Ubuntu 18.04 和支持NVIDIA GPU 的 docker，并使用了 MLPerf https://github.com/mlperf/inference_results_v0.7/tree/master/closed/Lenovo["代码"^]作为联想向 MLPerf Inference v0.7 提交的一部分提供。
@@ -52,6 +53,7 @@ make run_harness RUN_ARGS="--benchmarks=<BENCHMARKS> --scenarios=<SCENARIOS>"
 ....
 
 
+[[ai-inference-runs]]
 == AI推理运行
 
 执行了三种类型的运行：

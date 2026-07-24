@@ -18,6 +18,7 @@ summary: 本节介绍此解决方案所使用的技术。
 
 
 
+[[hardware-requirements]]
 === 硬件要求
 
 |===
@@ -52,6 +53,7 @@ summary: 本节介绍此解决方案所使用的技术。
 |===
 
 
+[[software-requirements]]
 === 软件要求
 
 |===

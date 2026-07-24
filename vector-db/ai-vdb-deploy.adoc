@@ -18,6 +18,7 @@ summary: 矢量数据库部署程序 - NetApp 矢量数据库解决方案
 
 
 
+[[deployment-procedure]]
 == 部署过程
 
 在本部署部分中，我们使用 milvus 矢量数据库和 Kubernetes 进行如下实验设置。
@@ -28,6 +29,7 @@ NetApp 存储为集群提供存储，以保存客户数据和 Milvus 集群数�
 
 
 
+[[netapp-storage-setup-ontap]]
 === NetApp存储设置 – ONTAP
 
 * 存储系统初始化
@@ -54,6 +56,7 @@ NetApp 存储为集群提供存储，以保存客户数据和 Milvus 集群数�
 
 
 
+[[netapp-storage-setup-storagegrid]]
 === NetApp存储设置 – StorageGRID
 
 . 安装 storageGRID 软件。

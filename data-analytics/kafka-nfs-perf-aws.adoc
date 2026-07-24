@@ -18,12 +18,14 @@ summary: 在NetApp NFS 上安装存储层的 Kafka 集群在 AWS 云中进行了
 
 
 
+[[kafka-in-aws-cloud-with-netapp-cloud-volumes-ontap-high-availability-pair-and-single-node]]
 == AWS 云中的 Kafka 与NetApp Cloud Volumes ONTAP （高可用性对和单节点）
 
 对带有NetApp Cloud Volumes ONTAP （HA 对）的 Kafka 集群在 AWS 云中进行了性能基准测试。以下章节描述了此基准测试。
 
 
 
+[[architectural-setup]]
 === 建筑设置
 
 下表展示了使用NAS的Kafka集群的环境配置。
@@ -48,6 +50,7 @@ summary: 在NetApp NFS 上安装存储层的 Kafka 集群在 AWS 云中进行了
 |===
 
 
+[[netapp-cluster-volume-ontap-setup]]
 === NetApp集群卷ONTAP设置
 
 . 对于Cloud Volumes ONTAP HA 对，我们创建了两个聚合，每个存储控制器上的每个聚合上有三个卷。对于单个Cloud Volumes ONTAP节点，我们在一个聚合中创建六个卷。
@@ -103,6 +106,7 @@ image:kafka-nfs-029.png["该图描绘了基于 NAS 的 Kafka 集群的架构。"
 
 
 
+[[openmessage-benchmarking-configurations]]
 === OpenMessage 基准测试配置
 
 . 为了获得更好的 NFS 性能，我们需要在 NFS 服务器和 NFS 客户端之间建立更多的网络连接，可以使用 nconnect 创建。通过运行以下命令，使用 nconnect 选项将 NFS 卷挂载到代理节点上：
@@ -325,6 +329,7 @@ consumerConfig: |
 
 
 
+[[methodology-of-testing]]
 == 测试方法
 
 . 根据上面描述的规范，使用 Terraform 和 Ansible 配置了 Kafka 集群。  Terraform 用于使用 AWS 实例为 Kafka 集群构建基础设施，Ansible 在其上构建 Kafka 集群。
@@ -342,6 +347,7 @@ sudo bin/benchmark –drivers driver-kafka/kafka-throughput.yaml workloads/1-top
 
 
 
+[[observation]]
 == 观察结果
 
 使用两种不同类型的驱动程序来生成工作负载，以对在 NFS 上运行的 Kafka 实例的性能进行基准测试。驱动程序之间的区别在于日志刷新属性。

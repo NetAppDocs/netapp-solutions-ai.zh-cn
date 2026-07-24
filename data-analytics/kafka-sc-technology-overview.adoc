@@ -18,6 +18,7 @@ summary: 本页介绍了此解决方案中使用的技术。
 
 
 
+[[netapp-ontap-storage-controller]]
 == NetApp ONTAP存储控制器
 
 NetApp ONTAP是一款高性能企业级存储操作系统。
@@ -32,12 +33,14 @@ image:kafka-sc-004.png["此图显示了访问 S3 存储桶的应用程序。"]
 
 
 
+[[primary-use-cases]]
 == 主要用例
 
 支持 S3 API 的主要目的是提供ONTAP上的对象访问。  ONTAP统一存储架构现在支持文件（NFS 和 SMB）、块（FC 和 iSCSI）和对象（S3）。
 
 
 
+[[native-s3-applications]]
 == 原生 S3 应用程序
 
 越来越多的应用程序能够利用ONTAP支持通过 S3 进行对象访问。尽管非常适合高容量存档工作负载，但对原生 S3 应用程序的高性能需求正在快速增长，包括：
@@ -52,6 +55,7 @@ image:kafka-sc-004.png["此图显示了访问 S3 存储桶的应用程序。"]
 
 
 
+[[fabricpool-endpoints]]
 == FabricPool端点
 
 从ONTAP 9.8 开始， FabricPool支持对ONTAP中的存储桶进行分层，从而允许ONTAP到ONTAP分层。对于希望将现有FAS基础设施重新用作对象存储端点的客户来说，这是一个绝佳的选择。
@@ -66,6 +70,7 @@ FabricPool通过两种方式支持分层到ONTAP ：
 
 
 
+[[netapp-ontap-for-confluent-tiered-storage]]
 === NetApp ONTAP for Confluent 分层存储
 
 每个数据中心都需要保持关键业务应用程序的运行以及重要数据的可用和安全。全新NetApp AFF A900系统采用ONTAP Enterprise Edition 软件和高弹性设计。我们全新的闪电般快速的 NVMe 存储系统可消除对关键任务操作的中断、最大限度地减少性能调整并保护您的数据免受勒索软件攻击。
@@ -78,6 +83,7 @@ ONTAP S3 服务器建立在ONTAP成熟的横向扩展存储功能之上。通过
 
 
 
+[[simple-management-with-ontap-system-manager]]
 === 使用ONTAP系统管理器进行简单管理
 
 ONTAP系统管理器是一个基于浏览器的图形界面，可让您在单一管理平台中配置、管理和监控全球分布位置的ONTAP存储控制器。
@@ -104,18 +110,21 @@ ONTAP尝试在具有最合适磁盘的本地层上配置此存储桶，以满足
 
 
 
+[[confluent]]
 == 汇合
 
 Confluent 平台是一个全方位的数据流平台，使您能够轻松地以连续的实时流形式访问、存储和管理数据。 Confluent 由 Apache Kafka 的原始创建者构建，它通过企业级功能扩展了 Kafka 的优势，同时消除了 Kafka 管理或监控的负担。如今，财富 100 强企业中超过 80% 都采用数据流技术，其中大多数都使用 Confluent。
 
 
 
+[[why-confluent]]
 === 为什么选择 Confluent？
 
 通过将历史数据和实时数据集成到单一的中央事实来源，Confluent 可以轻松构建全新类别的现代事件驱动应用程序，获得通用数据管道，并解锁具有完全可扩展性、性能和可靠性的强大新用例。
 
 
 
+[[what-is-confluent-used-for]]
 === Confluent 的用途是什么？
 
 Confluent 平台让您专注于如何从数据中获取商业价值，而不必担心底层机制，例如如何在不同的系统之间传输或集成数据。具体来说，Confluent Platform 简化了数据源与 Kafka 的连接、流应用程序的构建以及 Kafka 基础设施的保护、监控和管理。如今，Confluent 平台已广泛应用于众多行业，从金融服务、全渠道零售、自动驾驶汽车到欺诈检测、微服务和物联网。
@@ -126,6 +135,7 @@ image:kafka-sc-006.png["该图显示了 Confluent 平台的组件。"]
 
 
 
+[[overview-of-confluent-event-streaming-technology]]
 === Confluent 事件流技术概述
 
 Confluent 平台的核心是 https://kafka.apache.org/["卡夫卡"^]，最受欢迎的开源分布式流媒体平台。  Kafka 的主要功能包括：
@@ -139,6 +149,7 @@ Confluent 平台的核心是 https://kafka.apache.org/["卡夫卡"^]，最受欢
 
 
 
+[[overview-of-confluent-platform-enterprise-features]]
 === Confluent 平台企业功能概述
 
 * *汇合控制中心。*用于管理和监控 Kafka 的基于 UI 的系统。它允许您轻松管理 Kafka Connect 以及创建、编辑和管理与其他系统的连接。

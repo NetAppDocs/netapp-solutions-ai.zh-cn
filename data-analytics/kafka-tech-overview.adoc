@@ -18,6 +18,7 @@ summary: 本节介绍此解决方案所使用的技术。
 
 
 
+[[netapp-storagegrid]]
 == NetAppStorageGRID
 
 NetApp StorageGRID是一个高性能、经济高效的对象存储平台。通过使用分层存储，Confluent Kafka 上存储在本地存储或代理的 SAN 存储中的大部分数据都被卸载到远程对象存储。此配置可减少重新平衡、扩展或收缩集群或更换故障代理的时间和成本，从而显著改善操作。对象存储在管理驻留在对象存储层的数据方面发挥着重要作用，因此选择正确的对象存储非常重要。
@@ -28,6 +29,7 @@ StorageGRID使用分布式、基于节点的网格架构提供智能、策略驱
 
 
 
+[[simple-management-with-grid-manager]]
 === 使用网格管理器进行简单管理
 
 StorageGRID Grid Manager 是一个基于浏览器的图形界面，允许您在单一玻璃窗格中配置、管理和监控全球分布位置的StorageGRID系统。
@@ -44,18 +46,21 @@ image:confluent-kafka-004.png["该图显示输入/输出对话框或表示书面
 
 
 
+[[information-lifecycle-management-policies]]
 === 信息生命周期管理政策
 
 StorageGRID具有灵活的数据管理策略，包括保留对象的副本以及使用 EC（擦除编码）方案（例如 2+1 和 4+2 等）来存储对象，具体取决于特定的性能和数据保护要求。由于工作负载和需求随时间而变化，ILM 策略通常也必须随时间而变化。修改 ILM 策略是一项核心功能，允许StorageGRID客户快速轻松地适应不断变化的环境。
 
 
 
+[[performance]]
 === 性能
 
 StorageGRID通过添加更多存储节点来扩展性能，这些存储节点可以是虚拟机、裸机或专用设备，例如link:https://www.netapp.com/pdf.html?item=/media/7931-ds-3613.pdf["SG5712、SG5760、SG6060 或 SGF6024"^]。在我们的测试中，我们使用 SGF6024 设备以最小尺寸的三节点网格超越了 Apache Kafka 的关键性能要求。当客户使用额外的代理扩展他们的 Kafka 集群时，他们可以添加更多的存储节点来提高性能和容量。
 
 
 
+[[load-balancer-and-endpoint-configuration]]
 === 负载均衡器和端点配置
 
 StorageGRID中的管理节点提供网格管理器 UI（用户界面）和 REST API 端点来查看、配置和管理您的StorageGRID系统，以及审计日志来跟踪系统活动。为了为 Confluent Kafka 分层存储提供高可用性 S3 端点，我们实现了StorageGRID负载均衡器，它作为管理节点和网关节点上的服务运行。此外，负载均衡器还管理本地流量并与 GSLB（全局服务器负载均衡）对话以帮助进行灾难恢复。
@@ -64,12 +69,14 @@ StorageGRID中的管理节点提供网格管理器 UI（用户界面）和 REST 
 
 
 
+[[traffic-classification-in-storagegrid]]
 === StorageGRID中的流量分类
 
 StorageGRID具有内置 QoS 功能。流量分类策略可以帮助监控来自客户端应用程序的不同类型的 S3 流量。然后，您可以创建并应用策略来根据输入/输出带宽、读/写并发请求数或读/写请求率限制此流量。
 
 
 
+[[apache-kafka]]
 == 阿帕奇卡夫卡
 
 Apache Kafka 是一个用 Java 和 Scala 编写的使用流处理的软件总线的框架实现。其目的是提供一个统一、高吞吐量、低延迟的平台来处理实时数据馈送。  Kafka可以通过Kafka Connect连接外部系统进行数据导出和导入，并提供Java流处理库Kafka Streams。 Kafka 使用基于 TCP 的二进制协议，该协议针对效率进行了优化，并依赖于“消息集”抽象，该抽象自然地将消息组合在一起，以减少网络往返的开销。这使得更大的顺序磁盘操作、更大的网络数据包和连续的内存块成为可能，从而使 Kafka 能够将突发的随机消息写入流转换为线性写入。下图描述了Apache Kafka的基本数据流。
@@ -95,6 +102,7 @@ Kafka 中有五个主要 API：
 
 
 
+[[apache-kafka-use-cases]]
 === Apache Kafka 用例
 
 Apache Kafka 最受欢迎的用途是消息传递、网站活动跟踪、指标、日志聚合、流处理、事件源和提交日志记录。
@@ -110,18 +118,21 @@ Apache Kafka 最受欢迎的用途是消息传递、网站活动跟踪、指标�
 
 
 
+[[confluent]]
 == 汇合
 
 Confluent 平台是一个企业级平台，它为 Kafka 提供了先进的功能，旨在帮助加速应用程序开发和连接、通过流处理实现转换、简化企业大规模运营并满足严格的架构要求。 Confluent 由 Apache Kafka 的原始创建者构建，它通过企业级功能扩展了 Kafka 的优势，同时消除了 Kafka 管理或监控的负担。如今，财富 100 强企业中有超过 80% 都采用数据流技术，其中大多数都使用 Confluent。
 
 
 
+[[why-confluent]]
 === 为什么选择 Confluent？
 
 通过将历史数据和实时数据集成到单一的中央事实来源，Confluent 可以轻松构建全新类别的现代事件驱动应用程序，获得通用数据管道，并解锁具有完全可扩展性、性能和可靠性的强大新用例。
 
 
 
+[[what-is-confluent-used-for]]
 === Confluent 的用途是什么？
 
 Confluent 平台让您专注于如何从数据中获取商业价值，而不必担心底层机制，例如如何在不同的系统之间传输或集成数据。具体来说，Confluent Platform 简化了数据源与 Kafka 的连接、流应用程序的构建以及 Kafka 基础设施的保护、监控和管理。如今，Confluent 平台已广泛应用于众多行业，从金融服务、全渠道零售、自动驾驶汽车到欺诈检测、微服务和物联网。
@@ -132,6 +143,7 @@ image:confluent-kafka-006.png["该图显示输入/输出对话框或表示书面
 
 
 
+[[overview-of-confluents-event-streaming-technology]]
 === Confluent 事件流技术概述
 
 Confluent 平台的核心是 https://kafka.apache.org/["阿帕奇卡夫卡"^]，最受欢迎的开源分布式流媒体平台。  Kafka 的主要功能如下：
@@ -145,6 +157,7 @@ Confluent 平台的核心是 https://kafka.apache.org/["阿帕奇卡夫卡"^]，
 
 
 
+[[overview-of-confluent-platforms-enterprise-features]]
 === Confluent 平台企业功能概述
 
 * *汇合控制中心。*用于管理和监控 Kafka 的基于 GUI 的系统。它允许您轻松管理 Kafka Connect 以及创建、编辑和管理与其他系统的连接。

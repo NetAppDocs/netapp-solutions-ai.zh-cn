@@ -22,6 +22,7 @@ Sathish Thyagarajan、David Arnette、 NetApp Mircea Troaca、联想
 
 
 
+[[target-audience]]
 == 目标受众
 
 本文档适用于以下受众：
@@ -34,6 +35,7 @@ Sathish Thyagarajan、David Arnette、 NetApp Mircea Troaca、联想
 
 
 
+[[solution-architecture]]
 == 解决方案架构
 
 该解决方案采用联想 ThinkSystem 服务器和带有AFF存储的NetApp ONTAP，旨在利用 GPU 和传统 CPU 的处理能力来处理大型数据集的 AI 训练。此次验证展示了采用横向扩展架构的高性能和最佳数据管理，该架构使用一台、两台或四台 Lenovo SR670 V2 服务器以及一台NetApp AFF A400存储系统。下图提供了架构概览。

@@ -18,6 +18,7 @@ summary: 为 NetApp 的矢量数据库解决方案准备数据
 
 
 
+[[appendix-b-preparedatanetappnew-py]]
 == 附录 B：prepare_data_netapp_new.py
 
 [source, python]

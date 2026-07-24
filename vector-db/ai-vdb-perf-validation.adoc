@@ -18,6 +18,7 @@ summary: 矢量数据库性能验证 - NetApp 矢量数据库解决方案
 
 
 
+[[performance-validation]]
 == 性能验证
 
 性能验证在矢量数据库和存储系统中都起着至关重要的作用，是确保最佳运行和高效资源利用的关键因素。矢量数据库以处理高维数据和执行相似性搜索而闻名，需要保持高性能水平才能快速准确地处理复杂查询。性能验证有助于识别瓶颈、微调配置并确保系统能够处理预期负载而不会降低服务质量。同样，在存储系统中，性能验证对于确保数据高效存储和检索至关重要，不会出现可能影响整体系统性能的延迟问题或瓶颈。它还有助于对存储基础设施的必要升级或变更做出明智的决策。因此，性能验证是系统管理的一个重要方面，对维持高服务质量、运行效率和整体系统可靠性有重要贡献。
@@ -48,6 +49,7 @@ summary: 矢量数据库性能验证 - NetApp 矢量数据库解决方案
 |===
 
 
+[[vectordb-bench-with-milvus-standalone-cluster]]
 === 带有 Milvus 独立集群的 VectorDB-Bench
 
 我们使用vectorDB-Bench在milvus独立集群上进行了以下性能验证。  milvus 独立集群的网络和服务器连接如下。
@@ -95,6 +97,7 @@ image:vector-db-result-standalone.png["该图显示输入/输出对话框或表�
 
 
 
+[[vectordb-bench-with-milvus-cluster]]
 === 带有 milvus 集群的 VectorDB-Bench
 
 在本节中，我们讨论在 Kubernetes 环境中部署 Milvus 集群。此 Kubernetes 设置构建于 VMware vSphere 部署之上，该部署托管 Kubernetes 主节点和工作节点。
@@ -144,6 +147,7 @@ image:storagecluster-latency-iops-milcus.png["该图显示输入/输出对话框
 
 
 
+[[vectordb-bench-with-postgres-pgvecto-rs]]
 === 带有 Postgres 的vectorDB-Bench（pgvecto.rs）
 
 我们使用 VectorDB-Bench 对 PostgreSQL（pgvecto.rs）进行了如下操作：PostgreSQL（具体来说，pgvecto.rs）的网络和服务器连接详情如下：
@@ -161,6 +165,7 @@ image:pgvecto-storage-perf-metrics.png["该图显示输入/输出对话框或表
 
 
 
+[[performance-comparison-between-milvus-and-postgres-on-vector-db-bench]]
 === milvus 与 postgres 在 Vector DB Bench 上的性能对比
 
 image:perf-comp-milvus-postgres.png["该图显示输入/输出对话框或表示书面内容"]
@@ -177,6 +182,7 @@ image:perf-comp-milvus-postgres.png["该图显示输入/输出对话框或表示
 
 
 
+[[observation-based-on-our-performance-validations]]
 === 根据我们的性能验证得出的观察结果：
 
 根据我们的性能验证，我们做出了以下观察：

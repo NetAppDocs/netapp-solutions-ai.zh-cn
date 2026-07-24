@@ -18,6 +18,7 @@ summary: 使用NetApp SnapMirror进行灾难恢复 - NetApp 的矢量数据库�
 
 
 
+[[disaster-recovery-using-netapp-snapmirror]]
 == 使用NetApp SnapMirror进行灾难恢复
 
 image:vector-database-dr-fsxn-gcnv.png["该图显示输入/输出对话框或表示书面内容"]

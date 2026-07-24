@@ -18,12 +18,14 @@ summary: 技术要求-NetApp 的矢量数据库解决方案
 
 
 
+[[technology-requirement]]
 == 技术要求
 
 除性能外，下面概述的硬件和软件配置用于本文档中执行的大部分验证。这些配置可作为帮助您设置环境的指南。但请注意，具体组件可能会因个别客户的要求而有所不同。
 
 
 
+[[hardware-requirements]]
 == 硬件要求
 
 |===
@@ -43,6 +45,7 @@ summary: 技术要求-NetApp 的矢量数据库解决方案
 |===
 
 
+[[software-requirements]]
 == 软件要求
 
 |===

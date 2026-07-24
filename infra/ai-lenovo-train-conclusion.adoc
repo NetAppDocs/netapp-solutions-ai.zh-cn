@@ -26,6 +26,7 @@ NetApp存储提供与本地 SSD 存储相同或更好的性能，并为数据科
 
 
 
+[[acknowledgments]]
 == 声明
 
 * Karthikeyan Nagalingam， NetApp技术营销工程师
@@ -34,6 +35,7 @@ NetApp存储提供与本地 SSD 存储相同或更好的性能，并为数据科
 
 
 
+[[where-to-find-additional-information]]
 == 在哪里可以找到更多信息
 
 要了解有关本文档中描述的信息的更多信息，请参阅以下文档和/或网站：

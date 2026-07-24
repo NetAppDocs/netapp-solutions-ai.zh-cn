@@ -33,6 +33,7 @@ Karthikeyan Nagalingam 和 Sathish Thyagarajan， NetApp
 
 
 
+[[why-hadoop-data-protection]]
 == 为什么要进行 Hadoop 数据保护？
 
 在 Hadoop 和 Spark 环境中，必须解决以下问题：
@@ -44,6 +45,7 @@ Karthikeyan Nagalingam 和 Sathish Thyagarajan， NetApp
 
 
 
+[[data-protection-challenges-for-hadoop-and-spark-customers]]
 == Hadoop 和 Spark 客户面临的数据保护挑战
 
 Hadoop 和 Spark 客户面临的一个共同挑战是减少备份时间并提高备份可靠性，同时又不会在数据保护期间对生产集群的性能产生负面影响。

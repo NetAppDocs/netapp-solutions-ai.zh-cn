@@ -10,6 +10,7 @@ summary: 搭载NetApp AFF A90 的NVIDIA DGX SuperPOD
 
 
 
+[[nva-deployment]]
 == NVA 部署
 
 [role="lead"]
@@ -21,6 +22,7 @@ NetApp的 David Arnette
 
 
 
+[[program-summary]]
 == 项目摘要
 
 NVIDIA DGX SuperPOD™ 为组织提供交钥匙 AI 数据中心解决方案，无缝提供世界一流的计算、软件工具、专业知识和持续创新。 DGX SuperPOD 可为客户提供部署 AI/ML 和 HPC 工作负载所需的一切，同时最大程度地缩短设置时间并提高生产力。图 1 显示了 DGX SuperPOD 的高级组件。
@@ -38,6 +40,7 @@ DGX SuperPOD 具有以下优势：
 
 
 
+[[solution-overview]]
 == 解决方案概述
 
 随着各组织采用人工智能 (AI) 和机器学习 (ML) 计划，对强大、可扩展且高效的基础设施解决方案的需求从未如此强烈。这些举措的核心在于管理和训练日益复杂的人工智能模型，同时确保数据安全、可访问性和资源优化。 
@@ -51,12 +54,14 @@ DGX SuperPOD 具有以下优势：
 
 
 
+[[solution-technology]]
 === 解决方案技术
 
 NVIDIA DGX SuperPOD包含必要的服务器、网络和存储，可为要求苛刻的 AI 工作负载提供经过验证的性能。 NVIDIA DGX™ H200 和 B200 系统提供世界一流的计算能力， NVIDIA Quantum InfiniBand 和 Spectrum™ 以太网网络交换机提供超低延迟和业界领先的网络性能。借助NetApp ONTAP存储业界领先的数据管理和性能功能，客户可以更快地实现 AI/ML 计划，并减少数据迁移和管理开销。有关此解决方案中特定组件的更多信息，请参阅https://www.netapp.com/pdf.html?item=/media/125003-nva-1175-design-superpod-a90.pdf["NVA-1175 设计指南"]和 https://docs.nvidia.com/dgx-superpod/reference-architecture-scalable-infrastructure-b200/latest/index.html["+++ NVIDIA DGX SuperPOD参考架构+++"]文档。
 
 
 
+[[use-case-summary]]
 === 用例摘要
 
 NVIDIA DGX SuperPOD旨在满足最苛刻的工作负载的性能和规模要求。
@@ -70,12 +75,14 @@ NVIDIA DGX SuperPOD旨在满足最苛刻的工作负载的性能和规模要求�
 
 
 
+[[technology-requirements]]
 == 技术要求
 
 DGX SuperPOD 基于可扩展单元 (SU) 的概念，它包含提供所需连接和性能以及消除基础设施中任何瓶颈所需的所有组件。客户可以从一个或多个 SU 开始，然后根据需要添加其他 SU 来满足其要求。更多信息请参阅 https://docs.nvidia.com/dgx-superpod/reference-architecture-scalable-infrastructure-b200/latest/index.html["+++ NVIDIA DGX SuperPOD参考架构+++"]。本文档介绍了单个 SU 的存储组件和配置。
 
 
 
+[[hardware-requirements]]
 === 硬件要求
 
 表 1 列出了实现 1SU 存储组件所需的硬件组件。有关 1-4 个可扩展单元的具体零件和数量，请参阅附录 A。
@@ -97,6 +104,7 @@ DGX SuperPOD 基于可扩展单元 (SU) 的概念，它包含提供所需连接�
 |===
 
 
+[[software-requirements]]
 === 软件要求
 
 表 2 列出了将AFF A90存储系统与 DGX SuperPOD 集成所需的最低软件组件和版本。 DGX SuperPOD 还涉及此处未列出的其他软件组件。请参阅https://docs.nvidia.com/dgx-superpod/release-notes/latest/10-24-11.html["+++DGX SuperPOD 发行说明+++"]了解完整详情。
@@ -124,6 +132,7 @@ DGX SuperPOD 基于可扩展单元 (SU) 的概念，它包含提供所需连接�
 |===
 
 
+[[deployment-procedures]]
 == 部署过程
 
 将NetApp ONTAP存储与 DGX SuperPOD 集成涉及以下任务：
@@ -135,6 +144,7 @@ DGX SuperPOD 基于可扩展单元 (SU) 的概念，它包含提供所需连接�
 
 
 
+[[storage-system-installation-and-configuration]]
 === 存储系统的安装和配置
 
 
@@ -452,6 +462,7 @@ spod_qos
 ----
 
 
+[[dgx-server-configuration-with-nvidia-base-command-manager]]
 === 使用NVIDIA Base Command Manager 配置 DGX 服务器
 
 要准备 DGX 客户端使用AFF A90存储系统，请完成以下任务。此过程假定已在 DGX 系统节点上配置了存储结构的网络接口和静态路由。以下任务将由NetApp专业服务作为高级配置过程的一部分完成。
@@ -653,12 +664,14 @@ commit
 ----
 
 
+[[conclusion]]
 == 结束语
 
 搭载NetApp * AFF A90存储系统* 的NVIDIA DGX SuperPOD代表了 AI 基础设施解决方案的重大进步。通过解决安全性、数据管理、资源利用率和可扩展性方面的关键挑战，它使组织能够加速其人工智能计划，同时保持运营效率、数据保护和协作。该解决方案的集成方法消除了人工智能开发流程中的常见瓶颈，使数据科学家和工程师能够专注于创新而不是基础设施管理。
 
 
 
+[[where-to-find-additional-information]]
 == 在哪里可以找到更多信息
 
 要了解有关本文档中描述的信息的更多信息，请查看以下文档和/或网站：
@@ -679,10 +692,12 @@ commit
 
 
 
+[[appendix-a-bill-of-materials-and-rack-elevations]]
 == 附录 A：物料清单和机架立面图
 
 
 
+[[bill-of-materials]]
 === 物料清单
 
 表 3 显示了部署一个、两个、三个和四个可扩展单元的存储所需的NetApp组件的部件号和数量。
@@ -748,6 +763,7 @@ commit
 |===
 
 
+[[rack-elevations]]
 === 机架高度
 
 图 4-6 显示了 1-4 SU 的示例机架立面。

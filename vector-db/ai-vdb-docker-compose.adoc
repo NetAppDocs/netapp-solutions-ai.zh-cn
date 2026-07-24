@@ -18,6 +18,7 @@ summary: docker-compose.xml - Netapp 的矢量数据库解决方案
 
 
 
+[[appendix-d-docker-compose-yml]]
 == 附录 D：docker-compose.yml
 
 [source, yml]

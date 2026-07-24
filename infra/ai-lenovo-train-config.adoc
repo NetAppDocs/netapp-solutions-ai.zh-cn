@@ -18,6 +18,7 @@ summary: 本节介绍测试的配置、网络基础设施、SR670 V2 服务器�
 
 
 
+[[solution-architecture]]
 == 解决方案架构
 
 我们使用下表列出的解决方案组件进行此验证。
@@ -54,6 +55,7 @@ image:a400-thinksystem-007.png["该图描绘了计算层（联想 ThinkSystem SR
 
 
 
+[[storage-controller]]
 == 存储控制器
 
 下表列出了存储配置。

@@ -18,18 +18,21 @@ summary: NVIDIA AI Enterprise 与NetApp和 VMware - 利用NVIDIA NGC 软件 - �
 
 
 
+[[prerequisites]]
 == 前提条件
 
 在执行本节中概述的步骤之前，NVIDIA假设您已经按照link:ai-nvaie-vmw-setup.html["初始设置"]页。
 
 
 
+[[create-an-ubuntu-guest-vm-with-vgpu]]
 == 使用 vGPU 创建 Ubuntu Guest VM
 
 首先，您必须创建一个带有 vGPU 的 Ubuntu 20.04 客户虚拟机。要创建带有 vGPU 的 Ubuntu 20.04 来宾虚拟机，请按照link:https://docs.nvidia.com/ai-enterprise/deployment-guide-vmware/0.1.0/first-vm.html["NVIDIA AI 企业部署指南"]。
 
 
 
+[[download-and-install-nvidia-guest-software]]
 == 下载并安装NVIDIA客户软件
 
 接下来，您必须在上一步创建的客户虚拟机中安装所需的NVIDIA客户软件。要在客户虚拟机中下载并安装所需的NVIDIA客户软件，请按照link:https://docs.nvidia.com/ai-enterprise/latest/quick-start-guide/index.html["NVIDIA AI Enterprise 快速入门指南"]。
@@ -39,12 +42,14 @@ NOTE: 执行第 5.4 节中概述的验证任务时，您可能需要使用不同
 
 
 
+[[download-aianalytics-framework-containers]]
 == 下载 AI/分析框架容器
 
 接下来，您必须从NVIDIA NGC 下载所需的 AI 或分析框架容器映像，以便它们可以在您的客户虚拟机中使用。要在客户虚拟机中下载框架容器，请按照link:https://docs.nvidia.com/ai-enterprise/deployment-guide-vmware/0.1.0/installing-ai.html["NVIDIA AI 企业部署指南"]。
 
 
 
+[[install-and-configure-the-netapp-dataops-toolkit]]
 == 安装和配置NetApp DataOps 工具包
 
 接下来，您必须在来宾虚拟机中安装适用于传统环境的NetApp DataOps Toolkit。 NetApp DataOps Toolkit 可用于直接从客户虚拟机内的终端管理ONTAP系统上的横向扩展数据卷。要在客户虚拟机中安装NetApp DataOps Toolkit，请执行以下任务。
@@ -83,6 +88,7 @@ Created config file: '/home/user/.netapp_dataops/config.json'.
 
 
 
+[[create-a-guest-vm-template]]
 == 创建来宾虚拟机模板
 
 最后，您必须根据您的客户虚拟机创建一个虚拟机模板。您将能够使用此模板快速创建用于利用NVIDIA NGC 软件的客户虚拟机。

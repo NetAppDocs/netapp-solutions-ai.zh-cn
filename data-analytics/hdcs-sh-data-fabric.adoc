@@ -22,6 +22,7 @@ image:hdcs-sh-001.png["该图显示输入/输出对话框或表示书面内容"]
 
 
 
+[[proven-data-fabric-customer-use-cases]]
 == 经过验证的数据结构客户用例
 
 NetApp支持的数据结构为客户提供了以下九种经过验证的用例：
@@ -45,6 +46,7 @@ NetApp支持的数据结构为客户提供了以下九种经过验证的用例�
 
 
 
+[[netapp-nfs-direct-access]]
 === NetApp NFS 直接访问
 
 NetApp NFS 允许客户在其现有或新的 NFSv3 或 NFSv4 数据上运行大数据分析作业，而无需移动或复制数据。它可以防止数据的多次复制，并且无需将数据与源同步。例如，在金融领域，数据从一个地方移动到另一个地方必须满足法律义务，这不是一件容易的事。在这种情况下， NetApp NFS 直接访问会从原始位置分析财务数据。另一个主要优势是，使用NetApp NFS 直接访问可以通过使用本机 Hadoop 命令简化 Hadoop 数据的保护，并利用 NetApp 丰富的数据管理产品组合实现数据保护工作流程。
@@ -70,6 +72,7 @@ NetApp NFS 直接访问为 Hadoop/Spark 集群提供了两种部署选项：
 
 
 
+[[building-blocks-for-big-data]]
 === 大数据的构建模块
 
 NetApp提供支持的数据结构集成了数据管理服务和应用程序（构建块），用于数据访问、控制、保护和安全，如下图所示。

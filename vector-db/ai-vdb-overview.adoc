@@ -18,12 +18,14 @@ summary: NetApp 矢量数据库解决方案概述
 
 
 
+[[solution-overview]]
 == 解决方案概述
 
 该解决方案展示了NetApp为应对矢量数据库客户面临的挑战所提供的独特优势和功能。通过利用NetApp ONTAP、 StorageGRID、NetApp 的云解决方案和SnapCenter，客户可以为其业务运营增加显著的价值。这些工具不仅解决了现有的问题，还提高了效率和生产力，从而促进了整体业务增长。
 
 
 
+[[why-netapp]]
 === 为什么选择NetApp？
 
 * NetApp 的产品（例如ONTAP和StorageGRID）允许分离存储和计算，从而能够根据特定需求实现最佳资源利用率。这种灵活性使客户能够使用NetApp存储解决方案独立扩展其存储。

@@ -18,12 +18,14 @@ summary: 数据可在 NFS 中使用，并可通过 AWS SageMaker 的 S3 访问�
 
 
 
+[[technology-requirements]]
 == 技术要求
 
 对于数据二元性用例，您需要NetApp BlueXP、 NetApp Cloud Volumes ONTAP和 AWS SageMaker Notebooks。
 
 
 
+[[software-requirements]]
 === 软件要求
 
 下表列出了实现用例所需的软件组件。
@@ -42,6 +44,7 @@ summary: 数据可在 NFS 中使用，并可通过 AWS SageMaker 的 S3 访问�
 |===
 
 
+[[deployment-procedures]]
 == 部署过程
 
 部署数据二元性解决方案涉及以下任务：
@@ -55,6 +58,7 @@ summary: 数据可在 NFS 中使用，并可通过 AWS SageMaker 的 S3 访问�
 
 
 
+[[bluexp-connector]]
 === BlueXP连接器
 
 在本次验证中，我们使用了 AWS。它也适用于 Azure 和 Google Cloud。要在 AWS 中创建BlueXP连接器，请完成以下步骤：
@@ -71,6 +75,7 @@ summary: 数据可在 NFS 中使用，并可通过 AWS SageMaker 的 S3 访问�
 
 
 
+[[netapp-cloud-volumes-ontap]]
 === NetApp Cloud Volumes ONTAP
 
 要在BlueXP中创建Cloud Volumes ONTAP实例，请完成以下步骤：
@@ -244,6 +249,7 @@ sagemaker_cvo_sn1::*>
 
 
 
+[[aws-sagemaker]]
 === AWS SageMaker
 
 要从 AWS SageMaker 创建 AWS Notebook，请完成以下步骤：
@@ -318,6 +324,7 @@ sh-4.2$
 
 
 
+[[data-for-machine-learning]]
 === 机器学习数据
 
 在这次验证中，我们使用了来自众包社区努力的 DBpedia 的数据集，从各种维基媒体项目创建的信息中提取结构化内容。
@@ -443,6 +450,7 @@ sh-4.2$
 
 
 
+[[validate-machine-learning-from-jupyter-notebooks]]
 == 通过 Jupyter Notebook 验证机器学习
 
 以下验证通过使用以下 SageMaker BlazingText 示例通过文本分类提供机器学习构建、训练和部署模型：

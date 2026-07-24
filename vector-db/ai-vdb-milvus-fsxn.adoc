@@ -18,6 +18,7 @@ summary: milvus 与Amazon FSx ONTAP for NetApp ONTAP - NetApp 的矢量数据库
 
 
 
+[[milvus-with-amazon-fsx-ontap-for-netapp-ontap-file-and-object-duality]]
 == Milvus 与Amazon FSx ONTAP for NetApp ONTAP – 文件和对象二元性
 
 在本节中，我们将介绍为什么需要在云中部署矢量数据库，以及在 Docker 容器中的Amazon FSx ONTAP for NetApp ONTAP中部署矢量数据库（milvus 独立版）的步骤。

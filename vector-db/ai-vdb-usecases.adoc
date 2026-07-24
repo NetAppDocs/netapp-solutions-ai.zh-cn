@@ -18,12 +18,14 @@ summary: 用例 - NetApp 的矢量数据库解决方案
 
 
 
+[[vector-database-use-cases]]
 == 矢量数据库用例
 
 在本节中，我们讨论两个用例，例如使用大型语言模型的检索增强生成和NetApp IT 聊天机器人。
 
 
 
+[[retrieval-augmented-generation-rag-with-large-language-models-llms]]
 === 使用大型语言模型 (LLM) 进行检索增强生成 (RAG)
 
 ....
@@ -40,6 +42,7 @@ image:rag-nvidia-nemo.png["该图显示输入/输出对话框或表示书面内�
 
 
 
+[[netapp-it-chatbot-use-case]]
 === NetApp IT 聊天机器人用例
 
 NetApp 的聊天机器人是矢量数据库的另一个实时用例。在这种情况下， NetApp Private OpenAI Sandbox 为管理来自 NetApp 内部用户的查询提供了一个有效、安全且高效的平台。通过结合严格的安全协议、高效的数据管理系统和复杂的人工智能处理能力，它保证通过 SSO 身份验证根据组织中用户的角色和职责为他们提供高质量、精确的响应。这种架构凸显了融合先进技术以创建以用户为中心的智能系统的潜力。

@@ -18,6 +18,7 @@ summary: verify_data_netapp.py - netapp 的矢量数据库解决方案
 
 
 
+[[appendix-c-verifydatanetapp-py]]
 == 附录C：verify_data_netapp.py
 
 [source, python]

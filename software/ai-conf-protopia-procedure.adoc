@@ -18,6 +18,7 @@ summary: 本节描述完成验证所需的任务。
 
 
 
+[[prerequisites]]
 == 前提条件
 
 要执行本节中概述的任务，您必须能够访问安装并配置了以下工具的 Linux 或 macOS 主机：
@@ -36,6 +37,7 @@ summary: 本节描述完成验证所需的任务。
 
 
 
+[[scenario-1-on-demand-inferencing-in-jupyterlab]]
 == 场景 1 – JupyterLab 中的按需推理
 
 . 为 AI/ML 推理工作负载创建 Kubernetes 命名空间。
@@ -105,6 +107,7 @@ image:ai-protopia-009.png["该图显示输入/输出对话框或表示书面内�
 
 
 
+[[scenario-2-batch-inferencing-on-kubernetes]]
 == 场景 2 – Kubernetes 上的批量推理
 
 . 为 AI/ML 推理工作负载创建 Kubernetes 命名空间。
@@ -253,6 +256,7 @@ mAP: 0.8841195749171925
 
 
 
+[[scenario-3-nvidia-triton-inference-server]]
 == 场景 3 – NVIDIA Triton 推理服务器
 
 . 为 AI/ML 推理工作负载创建 Kubernetes 命名空间。

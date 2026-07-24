@@ -20,12 +20,14 @@ image:hdcs-sh-009.png["该图显示输入/输出对话框或表示书面内容"]
 
 
 
+[[scenario]]
 == 场景
 
 在这种情况下，物联网传感器数据被引入云中，并使用 AWS 内的开源 Apache Spark 集群进行分析。要求是将处理后的数据从云端备份到本地。
 
 
 
+[[requirements-and-challenges]]
 == 要求和挑战
 
 此用例的主要要求和挑战包括：
@@ -37,6 +39,7 @@ image:hdcs-sh-009.png["该图显示输入/输出对话框或表示书面内容"]
 
 
 
+[[solution]]
 == 解决方案
 
 客户使用 AWS Elastic Block Store (EBS) 作为其 Spark 集群 HDFS 存储，以通过 Kafka 接收和提取来自远程传感器的数据。因此，HDFS 存储充当备份数据的来源。

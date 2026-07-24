@@ -18,6 +18,7 @@ summary: 结论 - NetApp 的矢量数据库解决方案
 
 
 
+[[conclusion]]
 == 结束语
 
 总而言之，本文档全面概述了在NetApp存储解决方案上部署和管理矢量数据库（例如 Milvus 和 pgvector）。我们讨论了利用NetApp ONTAP和StorageGRID对象存储的基础设施指南，并通过文件和对象存储验证了 AWS FSx ONTAP中的 Milvus 数据库。
@@ -30,6 +31,7 @@ summary: 结论 - NetApp 的矢量数据库解决方案
 
 
 
+[[acknowledgments]]
 === 声明
 
 作者衷心感谢以下贡献者以及其他提供反馈和评论的人，使本文对NetApp客户和NetApp领域具有价值。
@@ -44,6 +46,7 @@ summary: 结论 - NetApp 的矢量数据库解决方案
 
 
 
+[[where-to-find-additional-information]]
 === 在哪里可以找到更多信息
 
 要了解有关本文档中描述的信息的更多信息，请查看以下文档和/或网站：
@@ -56,6 +59,7 @@ summary: 结论 - NetApp 的矢量数据库解决方案
 
 
 
+[[version-history]]
 === 版本历史
 
 |===

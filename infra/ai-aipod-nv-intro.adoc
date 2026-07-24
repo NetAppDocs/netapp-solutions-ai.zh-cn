@@ -20,6 +20,7 @@ NetApp解决方案工程
 
 
 
+[[executive-summary]]
 == 内容提要
 
 NetApp™ AIPod配备NVIDIA DGX™ 系统和NetApp云连接存储系统，通过消除设计复杂性和猜测，简化了机器学习 (ML) 和人工智能 (AI) 工作负载的基础设施部署。基于NVIDIA DGX BasePOD™ 设计，旨在为下一代工作负载提供卓越的计算性能，搭载NVIDIA DGX 系统的AIPod增加了NetApp AFF存储系统，使客户能够从小规模开始并无中断地发展，同时智能地管理从边缘到核心再到云端的数据。  NetApp AIPod是NetApp AI 解决方案产品组合的一部分，如下图所示。

@@ -26,6 +26,7 @@ NetApp存储系统提供与本地 SSD 存储相同或更好的性能，并为数
 
 
 
+[[acknowledgments]]
 == 声明
 
 * 俊杰Falkanger，联想 HPC 和人工智能解决方案高级经理
@@ -36,6 +37,7 @@ NetApp存储系统提供与本地 SSD 存储相同或更好的性能，并为数
 
 
 
+[[where-to-find-additional-information]]
 == 在哪里可以找到更多信息
 
 要了解有关本文档中描述的信息的更多信息，请参阅以下文档和/或网站：

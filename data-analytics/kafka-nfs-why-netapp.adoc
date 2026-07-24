@@ -25,12 +25,14 @@ summary: 既然有了针对 Kafka 的 NFS 存储中愚蠢重命名问题的解�
 
 
 
+[[reduced-cpu-utilization-on-kafka-broker]]
 == 降低 Kafka 代理的 CPU 利用率
 
 我们发现，当我们在两个技术规格相同但存储技术不同的独立 Kafka 集群上运行类似的工作负载时，整体 CPU 利用率低于其 DAS 对应集群。当 Kafka 集群使用ONTAP存储时，不仅整体 CPU 利用率较低，而且 CPU 利用率的增加比基于 DAS 的 Kafka 集群表现出更平缓的梯度。
 
 
 
+[[architectural-setup]]
 === 建筑设置
 
 下表显示了用于演示降低 CPU 利用率的环境配置。
@@ -55,6 +57,7 @@ summary: 既然有了针对 Kafka 的 NFS 存储中愚蠢重命名问题的解�
 |===
 
 
+[[benchmarking-tool]]
 === 基准测试工具
 
 本测试用例中使用的基准测试工具是 https://openmessaging.cloud/["开放消息传递"^]框架。 OpenMessaging 与供应商无关且与语言无关；它为金融、电子商务、物联网和大数据提供行业指南；并有助于开发跨异构系统和平台的消息传递和流媒体应用程序。下图描述了 OpenMessaging 客户端与 Kafka 集群的交互。
@@ -80,6 +83,7 @@ image:kafka-nfs-010.png["该图描述了为 OpenMessaging 基准工作负载配�
 
 
 
+[[methodology-of-testing]]
 === 测试方法
 
 . 创建了两个类似的集群，每个集群都有自己的一组基准集群群。
@@ -105,6 +109,7 @@ sudo bin/benchmark --drivers driver-kafka/kafka-group-all.yaml workloads/1-topic
 
 
 
+[[observation]]
 === 观察结果
 
 将NetApp NFS 存储与 Kafka 结合使用有两个主要好处：
@@ -125,12 +130,14 @@ image:kafka-nfs-014.png["该图描述了基于 NFS 的集群在 100,000 条消�
 
 
 
+[[faster-broker-recovery]]
 == 更快的经纪人恢复
 
 我们发现，当 Kafka 代理使用共享NetApp NFS 存储时，恢复速度更快。当 Kafka 集群中某个 Broker 崩溃时，可以用具有相同 Broker ID 的健康 Broker 替代该 Broker。在执行此测试用例时，我们发现，对于基于 DAS 的 Kafka 集群，集群会在新添加的健康 Broker 上重建数据，这非常耗时。对于基于NetApp NFS 的 Kafka 集群，替换代理将继续从以前的日志目录读取数据，并且恢复速度更快。
 
 
 
+[[architectural-setup]]
 === 建筑设置
 
 下表展示了使用NAS的Kafka集群的环境配置。
@@ -168,6 +175,7 @@ image:kafka-nfs-015.png["此图显示了为 Kafka 代理选择的规格。"]
 
 
 
+[[methodology-of-testing]]
 === 测试方法
 
 . 创建了两个类似的集群：
@@ -199,6 +207,7 @@ image:kafka-nfs-016.png["此图显示了两个终端屏幕。"]
 
 
 
+[[observation]]
 === 观察结果
 
 Kafka 代理的恢复速度几乎提高了 9 倍。与在 Kafka 集群中使用 DAS SSD 相比，使用NetApp NFS 共享存储时恢复故障代理节点所需的时间明显更快。对于 1TB 的主题数据，基于 DAS 的集群的恢复时间为 48 分钟，而基于NetApp-NFS 的 Kafka 集群的恢复时间则不到 5 分钟。
@@ -245,12 +254,14 @@ image:kafka-nfs-021.png["此图显示了代理恢复所需的时间，具体取�
 
 
 
+[[storage-efficiency]]
 == 存储效率
 
 由于 Kafka 集群的存储层是通过NetApp ONTAP配置的，因此我们获得了ONTAP的所有存储效率功能。这是通过在Cloud Volumes ONTAP上配置 NFS 存储的 Kafka 集群上生成大量数据进行的测试。我们可以看到，由于ONTAP功能，空间显著减少。
 
 
 
+[[architectural-setup]]
 === 建筑设置
 
 下表展示了使用NAS的Kafka集群的环境配置。
@@ -287,6 +298,7 @@ image:kafka-nfs-008.png["该图描绘了基于 NAS 的 Kafka 集群的架构。"
 
 
 
+[[methodology-of-testing]]
 === 测试方法
 
 . 已按照上述规格配置了 Kafka 集群。
@@ -296,6 +308,7 @@ image:kafka-nfs-008.png["该图描绘了基于 NAS 的 Kafka 集群的架构。"
 
 
 
+[[observation]]
 === 观察结果
 
 对于使用 OMB 工具生成的数据，我们发现空间节省了约 33%，存储效率比为 1.70:1。如下图所示，产生的数据所使用的逻辑空间为420.3GB，用于保存数据的物理空间为281.7GB。

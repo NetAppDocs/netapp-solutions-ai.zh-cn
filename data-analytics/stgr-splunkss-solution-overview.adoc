@@ -18,6 +18,7 @@ summary: 本页介绍了完成此解决方案所使用的组件，包括NetApp S
 
 
 
+[[netapp-storagegrid]]
 == NetAppStorageGRID
 
 NetApp StorageGRID是一个高性能且经济高效的对象存储平台。它使用分布式、基于节点的网格架构提供智能、策略驱动的全球数据管理。它通过其无处不在的全局对象命名空间与复杂的数据管理功能相结合，简化了 PB 级非结构化数据和数十亿个对象的管理。单次调用对象访问可跨站点扩展，并简化高可用性架构，同时确保无论站点或基础设施是否中断，都能持续进行对象访问。
@@ -28,6 +29,7 @@ SmartStore 利用StorageGRID作为远程存储层，并允许客户部署多个�
 
 
 
+[[splunk-enterprise]]
 == Splunk Enterprise
 
 Splunk 是机器生成数据收集和分析领域的领导者，通过其运营分析功能帮助简化和现代化 IT。它还扩展到商业分析、安全和物联网用例。存储是成功部署 Splunk 软件的关键因素。
@@ -36,6 +38,7 @@ Splunk 是机器生成数据收集和分析领域的领导者，通过其运营�
 
 
 
+[[splunk-smartstore]]
 == Splunk SmartStore
 
 Splunk SmartStore 是一种索引器功能，它使用对象存储（也称为远程存储或远程存储层）例如StorageGRID通过 S3 协议存储热数据。

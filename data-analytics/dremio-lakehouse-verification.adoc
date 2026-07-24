@@ -18,6 +18,7 @@ summary: 我们使用NetApp对象存储（例如ONTAP和 storagegrid）对五个
 
 
 
+[[sql-query-on-object-storage]]
 === 对象存储上的 SQL 查询
 
 . 在 dremio.env 中将每台服务器的内存设置为 250GB

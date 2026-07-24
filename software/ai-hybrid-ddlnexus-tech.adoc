@@ -18,6 +18,7 @@ summary: Domino Data Lab 和NetApp的混合多云 MLOps - 技术概述
 
 
 
+[[domino-data-lab]]
 == 多米诺数据实验室
 
 Domino Data Lab 通过其领先的企业 AI 平台为模型驱动型企业提供支持，该平台受到超过 20% 的财富 100 强企业的信赖。 Domino 加速了数据科学工作的开发和部署，同时增强了协作和治理。借助多米诺骨牌，世界各地的企业可以开发更好的药品、种植更高产的作物、制造更好的汽车等等。  Domino 成立于 2013 年，由 Coatue Management、Great Hill Partners、Highland Capital、Sequoia Capital 和其他领先投资者提供支持。
@@ -34,24 +35,28 @@ image:ddlnexus-002.png["该图显示输入/输出对话框或表示书面内容"
 
 
 
+[[domino-nexus]]
 == Domino Nexus
 
 Domino Nexus 是一个单一玻璃窗格，可让您在任何计算集群（任何云、区域或本地）运行数据科学和机器学习工作负载。它统一了整个企业的数据科学孤岛，因此您可以在一个地方构建、部署和监控模型。
 
 
 
+[[netapp-bluexp]]
 == NetApp BlueXP
 
 NetApp BlueXP将 NetApp 的所有存储和数据服务统一到一个工具中，让您可以构建、保护和管理混合多云数据资产。它为本地和云环境中的存储和数据服务提供统一的体验，并通过 AIOps 的强大功能实现操作简化，具有当今云主导世界所需的灵活消费参数和集成保护。
 
 
 
+[[netapp-ontap]]
 == NetApp ONTAP
 
 ONTAP 9 是NetApp最新一代存储管理软件，它支持企业实现基础架构现代化并过渡到云就绪数据中心。 ONTAP利用业界领先的数据管理功能，只需一套工具即可管理和保护数据，无论数据位于何处。您还可以将数据自由移动到任何需要的地方：边缘、核心或云端。  ONTAP 9 包含众多功能，可简化数据管理、加速和保护关键数据，并支持跨混合云架构的下一代基础架构功能。
 
 
 
+[[simplify-data-management]]
 === 简化数据管理
 
 数据管理对于企业 IT 运营和数据科学家至关重要，以便将适当的资源用于 AI 应用程序和训练 AI/ML 数据集。以下有关NetApp技术的附加信息超出了本次验证的范围，但可能与您的部署相关。
@@ -65,6 +70,7 @@ ONTAP数据管理软件包括以下功能，可简化操作并降低总运营成
 
 
 
+[[accelerate-and-protect-data]]
 === 加速并保护数据
 
 ONTAP提供卓越级别的性能和数据保护，并通过以下方式扩展这些功能：
@@ -77,6 +83,7 @@ ONTAP提供卓越级别的性能和数据保护，并通过以下方式扩展这
 
 
 
+[[future-proof-infrastructure]]
 === 面向未来的基础设施
 
 ONTAP具有以下功能，可帮助满足苛刻且不断变化的业务需求：
@@ -88,24 +95,28 @@ ONTAP具有以下功能，可帮助满足苛刻且不断变化的业务需求：
 
 
 
+[[amazon-fsx-for-netapp-ontap-fsx-ontap]]
 == Amazon FSx for NetApp ONTAP (FSx ONTAP)
 
 Amazon FSx ONTAP是第一方完全托管的 AWS 服务，它基于 NetApp 流行的ONTAP文件系统构建，提供高度可靠、可扩展、高性能且功能丰富的文件存储。FSx ONTAP将NetApp文件系统的熟悉功能、性能、功能和 API 操作与完全托管的 AWS 服务的灵活性、可扩展性和简单性相结合。
 
 
 
+[[netapp-trident]]
 == NetApp Trident
 
 Trident支持在所有流行的NetApp存储平台上（无论是在公共云还是在本地）使用和管理存储资源，包括ONTAP （AFF、 FAS、Select、Cloud、 Amazon FSx ONTAP）、Element 软件（NetApp HCI、 SolidFire）、 Azure NetApp Files服务和 Google Cloud 上的Google Cloud NetApp Volumes 。  Trident是一个符合容器存储接口 (CSI) 的动态存储编排器，可与 Kubernetes 原生集成。
 
 
 
+[[kubernetes]]
 == Kubernetes
 
 Kubernetes 是一个开源的、分布式的容器编排平台，最初由 Google 设计，现在由云原生计算基金会 (CNCF) 维护。  Kubernetes 实现了容器化应用程序的部署、管理和扩展功能的自动化，是企业环境中占主导地位的容器编排平台。
 
 
 
+[[amazon-elastic-kubernetes-service-eks]]
 == 亚马逊弹性 Kubernetes 服务 (EKS)
 
 Amazon Elastic Kubernetes Service (Amazon EKS) 是 AWS 云中的托管 Kubernetes 服务。 Amazon EKS 自动管理负责调度容器、管理应用程序可用性、存储集群数据和其他关键任务的 Kubernetes 控制平面节点的可用性和可扩展性。借助 Amazon EKS，您可以利用 AWS 基础设施的所有性能、规模、可靠性和可用性，以及与 AWS 网络和安全服务的集成。

@@ -15,12 +15,14 @@ David Espejo，Union.ai Sathish Thyagarajan， NetApp
 
 
 
+[[overview]]
 == 概述
 
 Union.ai 的混合编排平台与NetApp ONTAP和FlexCache无缝集成，可加速 AI/ML 训练工作流程。该解决方案允许数据安全地保留在本地，同时利用基于云的 GPU 计算进行 AI 训练工作负载。  NetApp FlexCache确保仅将必要的数据缓存在云端，从而实现高效、安全且可扩展的混合 AI/ML 管道。
 
 
 
+[[customer-use-case-hybrid-cloud-ai-training]]
 == 客户用例：混合云人工智能培训
 
 * 本地数据：存储在NetApp ONTAP上，以确保合规性和安全性。
@@ -31,6 +33,7 @@ Union.ai 的混合编排平台与NetApp ONTAP和FlexCache无缝集成，可加�
 
 
 
+[[customer-value]]
 == 客户价值
 
 * 利用NetApp ONTAP 的横向扩展功能，在海量数据集上运行 AI 工作负载。
@@ -42,6 +45,7 @@ Union.ai 的混合编排平台与NetApp ONTAP和FlexCache无缝集成，可加�
 
 
 
+[[enabling-the-plugin-prerequisites]]
 == 启用插件 - 前提条件
 
 [cols="32%,68%"]
@@ -80,6 +84,7 @@ ONTAP和 Kubernetes 集群的管理员权限。
 |===
 
 
+[[reference-architecture]]
 == 参考架构
 
 下图展示了 Union.ai 控制平面与NetApp存储的集成，用于混合 AI 训练。
@@ -93,6 +98,7 @@ image::ai-hybrid-union-001.png[采用 Union.ai 和NetApp 的混合 AI 训练架�
 
 
 
+[[step-1-create-a-flexcache-volume]]
 === 步骤 1：创建FlexCache卷
 
 使用ONTAP系统管理器
@@ -110,6 +116,7 @@ image::ai-hybrid-union-001.png[采用 Union.ai 和NetApp 的混合 AI 训练架�
 
 
 
+[[step-2-configure-trident]]
 === 步骤 2：配置 Trident
 
 在两个集群上都安装Trident ：
@@ -153,6 +160,7 @@ kubectl apply -f storageclass-flexcache.yaml
 ----
 
 
+[[step-3-deploy-union-ai-workflows]]
 === 步骤 3：部署 Union.ai 工作流
 
 Union 使用 PVC 将FlexCache卷挂载到训练作业中。
@@ -212,6 +220,7 @@ train_model(pvc_path="/data/flexcache")
 
 
 
+[[step-4-validate-integration]]
 === 步骤 4：验证集成
 
 [cols="21%,79%"]
@@ -234,6 +243,7 @@ train_model(pvc_path="/data/flexcache")
 
 
 
+[[security-considerations]]
 == 安全注意事项
 
 * 使用 VPC 端点为NetApp ONTAP 的FSx 启用
@@ -244,6 +254,7 @@ train_model(pvc_path="/data/flexcache")
 
 
 
+[[monitoring-and-optimization]]
 == 监测与优化
 
 [cols="31%,69%"]
@@ -300,6 +311,7 @@ train_model(pvc_path="/data/flexcache")
 
 
 
+[[related-links]]
 == 相关链接
 
 * https://docs.union.ai["+++Union.ai 文档+++"]
@@ -310,12 +322,14 @@ train_model(pvc_path="/data/flexcache")
 
 
 
+[[conclusion]]
 == 结束语
 
 您现在拥有一个经过验证的混合 AI 训练环境，该环境使用 Union.ai 和NetApp FlexCache。训练作业可以在云端运行，同时安全高效地访问本地数据，而无需复制整个数据集或损害治理。
 
 
 
+[[union-ai-companion-guide]]
 === *Union.ai - 配套指南*
 
 

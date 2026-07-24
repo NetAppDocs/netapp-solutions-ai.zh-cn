@@ -22,12 +22,14 @@ image:kafka-nfs-032.png["该图显示输入/输出对话框或表示书面内容
 
 
 
+[[storage-configuration]]
 == 存储配置
 
 我们使用NetApp FlexGroups 实例为日志目录提供单一命名空间，从而简化恢复和配置。我们使用 NFSv4.1 和 pNFS 来提供对日志段数据的直接路径访问。
 
 
 
+[[client-tuning]]
 == 客户端调优
 
 每个客户端使用以下命令挂载FlexGroup实例。
@@ -39,6 +41,7 @@ mount -t nfs -o vers=4.1,nconnect=16 172.30.0.121:/kafka_vol01 /data/kafka_vol01
 
 
 
+[[kafka-broker-tuning]]
 == Kafka 代理调优
 
 为了最大限度地提高测试系统的吞吐量，我们显著增加了某些关键线程池的默认参数。对于大多数配置，我们建议遵循 Confluent Kafka 最佳实践。此调整用于最大化存储的未完成 I/O 的并发性。这些参数可以进行调整以匹配您的代理的计算资源和存储属性。
@@ -53,6 +56,7 @@ queued.max.requests=2000
 ....
 
 
+[[workload-generator-testing-methodology]]
 == 工作负载生成器测试方法
 
 我们对吞吐量驱动程序和主题配置使用了与云测试相同的 OMB 配置。
@@ -115,6 +119,7 @@ sudo bin/benchmark --drivers driver-kafka/kafka-throughput.yaml workloads/1-topi
 
 
 
+[[steady-state-performance]]
 === 稳态性能
 
 我们使用 OpenMessaging Benchmark 评估了AFF A900 ，以提供与 AWS 中的Cloud Volumes ONTAP和 AWS 中的 DAS 类似的比较。所有性能值代表生产者和消费者级别的 Kafka 集群吞吐量。
@@ -129,6 +134,7 @@ image:kafka-nfs-034.png["该图显示了代理网络吞吐量。"]
 
 
 
+[[extreme-performance-and-exploring-storage-limits]]
 == 极致性能和探索存储极限
 
 对于AFF，我们还使用积压功能对 OMB 进行了测试。当 Kafka 集群中积累了大量事件积压时，积压功能会暂停消费者订阅。在此阶段，仅发生生产者流量，从而生成提交到日志的事件。这最接近地模拟了批处理或离线分析工作流程；在这些工作流程中，消费者订阅已启动，并且必须读取已从代理缓存中逐出的历史数据。
@@ -155,6 +161,7 @@ OMB 完成填充事件积压日志后，消费者流量重新启动。在积压�
 
 
 
+[[sizing-guidance]]
 == 尺寸指南
 
 亚马逊网络服务提供 https://aws.amazon.com/blogs/big-data/best-practices-for-right-sizing-your-apache-kafka-clusters-to-optimize-performance-and-cost/["尺码指南"^]用于 Kafka 集群大小调整和扩展。

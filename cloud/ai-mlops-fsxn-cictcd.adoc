@@ -18,12 +18,14 @@ summary: 本文提供了使用 AWS 服务构建 MLOps 管道的指南，重点�
 
 
 
+[[introduction]]
 == 简介
 
 在本教程中，您将学习如何利用各种 AWS 服务构建一个包含持续集成 (CI)、持续训练 (CT) 和持续部署 (CD) 的简单 MLOps 管道。与传统的 DevOps 管道不同，MLOps 需要额外的考虑才能完成操作周期。通过学习本教程，您将深入了解如何将 CT 纳入 MLOps 循环，从而实现模型的持续训练和推理的无缝部署。本教程将指导您完成利用 AWS 服务建立此端到端 MLOps 管道的过程。
 
 
 
+[[manifest]]
 == 显现
 
 |===
@@ -52,6 +54,7 @@ summary: 本文提供了使用 AWS 服务构建 MLOps 管道的指南，重点�
 |===
 
 
+[[prerequisite]]
 == 前提条件
 
 * 预配置的 FSx ONTAP文件系统。本教程利用 FSx ONTAP中存储的数据进行训练过程。
@@ -62,6 +65,7 @@ summary: 本文提供了使用 AWS 服务构建 MLOps 管道的指南，重点�
 
 
 
+[[architecture]]
 == 架构
 
 image:mlops-fsxn-cictcd-012.png["架构"]
@@ -70,10 +74,12 @@ image:mlops-fsxn-cictcd-012.png["架构"]
 
 
 
+[[step-by-step-configuration]]
 == 分步配置
 
 
 
+[[lifecycle-configurations]]
 === 生命周期配置
 
 要为 AWS SageMaker Notebook 实例配置生命周期回调函数，您需要使用*生命周期配置*。此服务允许您定义启动笔记本实例时需要执行的必要操作。具体来说，可以在*生命周期配置*中实现一个 shell 脚本，以便在训练和部署过程完成后自动关闭笔记本实例。这是必需的配置，因为成本是 MLOps 中的主要考虑因素之一。
@@ -126,6 +132,7 @@ image:mlops-fsxn-cictcd-005.png["更新笔记本的生命周期配置"]
 
 
 
+[[aws-lambda-serverless-function]]
 === AWS Lambda 无服务器函数
 
 如前所述，*AWS Lambda 函数*负责启动 *AWS SageMaker Notebook 实例*。

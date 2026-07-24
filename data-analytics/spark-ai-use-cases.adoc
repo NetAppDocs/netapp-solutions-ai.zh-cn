@@ -18,6 +18,7 @@ summary: 本页更详细地描述了主要的 AI、ML 和 DL 用例和架构。
 
 
 
+[[spark-nlp-pipelines-and-tensorflow-distributed-inferencing]]
 == Spark NLP 管道和 TensorFlow 分布式推理
 
 以下列表包含数据科学界在不同发展水平下采用的最流行的开源 NLP 库：
@@ -40,6 +41,7 @@ Spark NLP 的底层深度学习引擎是 TensorFlow，这是一个端到端的�
 
 
 
+[[horovod-distributed-training]]
 == Horovod分布式训练
 
 与 MapReduce 相关的性能的核心 Hadoop 验证是使用 TeraGen、TeraSort、TeraValidate 和 DFSIO（读写）执行的。  TeraGen 和 TeraSort 验证结果如下 https://www.netapp.com/pdf.html?item=/media/16420-tr-3969pdf.pdf["NetApp E系列Hadoop解决方案"]以及AFF的“存储分层”部分。
@@ -61,6 +63,7 @@ Horovod on Spark 包为 Horovod 提供了一个便捷的包装器，使得在 Sp
 
 
 
+[[multi-worker-deep-learning-using-keras-for-ctr-prediction]]
 == 使用 Keras 进行多任务深度学习以进行 CTR 预测
 
 随着机器学习平台和应用的最新进展，人们将大量注意力放在了大规模学习上。点击率（CTR）定义为每百次在线广告展示的平均点击次数（以百分比表示）。它被广泛采用为各个行业垂直领域和用例的关键指标，包括数字营销、零售、电子商务和服务提供商。有关 CTR 和分布式训练性能结果的应用的更多详细信息，请参阅link:apache-spark-testing-results.html#deep-learning-models-for-ctr-prediction-performance["CTR预测性能的深度学习模型"]部分。
@@ -89,6 +92,7 @@ DCN 是使用 Keras 在 TensorFlow 上实现的。使用DCN实现模型训练过
 
 
 
+[[architectures-used-for-validation]]
 == 用于验证的架构
 
 为了进行此验证，我们使用了四个工作节点和一个主节点以及一个AFF-A800 HA 对。所有集群成员都通过 10GbE 网络交换机连接。

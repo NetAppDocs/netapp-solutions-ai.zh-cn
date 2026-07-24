@@ -25,6 +25,7 @@ summary: 本节概述了NetApp为满足各种 Hadoop 数据保护要求而提供
 
 
 
+[[where-to-find-additional-information]]
 == 在哪里可以找到更多信息
 
 要了解有关本文档中描述的信息的更多信息，请参阅以下文档和/或网站：
@@ -49,6 +50,7 @@ https://www.netapp.com/media/16877-tr-4529.pdf["https://www.netapp.com/media/168
 
 
 
+[[acknowledgements]]
 == 致谢
 
 * Paul Burland， NetApp澳新银行维多利亚区销售部销售代表
@@ -59,6 +61,7 @@ https://www.netapp.com/media/16877-tr-4529.pdf["https://www.netapp.com/media/168
 
 
 
+[[version-history]]
 == 版本历史
 
 |===

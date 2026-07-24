@@ -18,6 +18,7 @@ summary: 本页介绍了 Splunk 架构，包括关键定义、Splunk 分布式�
 
 
 
+[[key-definitions]]
 == 关键定义
 
 接下来的两个表列出了分布式 Splunk 部署中使用的 Splunk 和NetApp组件。
@@ -76,6 +77,7 @@ summary: 本页介绍了 Splunk 架构，包括关键定义、Splunk 分布式�
 |===
 
 
+[[splunk-distributed-deployments]]
 == Splunk 分布式部署
 
 为了支持数据来自多台机器的更大环境，您需要处理大量数据。如果许多用户需要搜索数据，您可以通过在多台机器上分发 Splunk Enterprise 实例来扩展部署。这被称为分布式部署。
@@ -125,6 +127,7 @@ summary: 本页介绍了 Splunk 架构，包括关键定义、Splunk 分布式�
 
 
 
+[[splunk-smartstore]]
 == Splunk SmartStore
 
 SmartStore 是一种索引器功能，它使远程对象存储（如 Amazon S3）能够存储索引数据。随着部署的数据量增加，对存储的需求通常会超过对计算资源的需求。  SmartStore 允许您通过单独扩展这些资源来经济高效地管理索引器存储和计算资源。
@@ -135,6 +138,7 @@ SmartStore 引入了远程存储层和缓存管理器。这些功能允许数据
 
 
 
+[[splunk-smartstore-data-flow]]
 == Splunk SmartStore 数据流
 
 当来自各个来源的数据到达索引器时，数据会被索引并本地保存在热存储桶中。索引器还将热存储桶数据复制到目标索引器。到目前为止，数据流与非 SmartStore 索引的数据流相同。
@@ -151,6 +155,7 @@ image:stgr-splunkss-005.png["该图显示输入/输出对话框或表示书面�
 
 
 
+[[software-requirements]]
 == 软件要求
 
 下表列出了实施该解决方案所需的软件组件。解决方案实施过程中所使用的软件组件可能会根据客户要求而有所不同。
@@ -169,6 +174,7 @@ image:stgr-splunkss-005.png["该图显示输入/输出对话框或表示书面�
 |===
 
 
+[[single-and-multisite-requirements]]
 == 单站点和多站点要求
 
 在企业 Splunk 环境（中型和大型部署）中，数据源自多台机器，并且许多用户需要搜索数据，您可以通过在单个和多个站点上分发 Splunk Enterprise 实例来扩展部署。
@@ -210,6 +216,7 @@ image:stgr-splunkss-007.png["该图显示输入/输出对话框或表示书面�
 
 
 
+[[hardware-requirements]]
 == 硬件要求
 
 下表列出了实施该解决方案所需的最少硬件组件数量。解决方案具体实施中使用的硬件组件可能根据客户要求而有所不同。
@@ -241,6 +248,7 @@ NOTE: 无论您在单个站点还是多个站点部署了 Splunk SmartStore 和S
 |===
 
 
+[[netapp-storagegrid-load-balancer-sg1000]]
 === NetApp StorageGRID负载均衡器：SG1000
 
 对象存储需要使用负载均衡器来呈现云存储命名空间。  StorageGRID支持来自 F5 和 Citrix 等领先供应商的第三方负载均衡器，但许多客户选择企业级StorageGRID均衡器以实现简单性、弹性和高性能。  StorageGRID负载均衡器可作为虚拟机、容器或专用设备使用。
@@ -262,6 +270,7 @@ image:stgr-splunkss-008.png["该图显示输入/输出对话框或表示书面�
 
 
 
+[[sg6060]]
 === SG6060
 
 StorageGRID SG6060 设备包括一个计算控制器（SG6060）和一个存储控制器架（E 系列 E2860），其中包含两个存储控制器和 60 个驱动器。该设备具有以下功能：
@@ -280,6 +289,7 @@ image:stgr-splunkss-009.png["该图显示输入/输出对话框或表示书面�
 
 
 
+[[splunk-design]]
 == Splunk 设计
 
 下表列出了单个站点的 Splunk 配置。

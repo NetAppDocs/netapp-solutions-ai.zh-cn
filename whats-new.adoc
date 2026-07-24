@@ -15,6 +15,7 @@ summary: NetApp人工智能解决方案附件的最新变更日志。
 
 
 
+[[18-august-2025]]
 == 2025年8月18日
 
 NetApp解决方案网站现在是link:https://docs.netapp.com/us-en/netapp-solutions-family/index.html["NetApp解决方案系列"^]，其中包括以下网站：
@@ -30,6 +31,7 @@ NetApp解决方案网站现在是link:https://docs.netapp.com/us-en/netapp-solut
 
 
 
+[[3-december-2025]]
 == 2025年12月3日
 
 新方案：link:software/ai-hybrid-union.html["使用 Union.ai 和NetApp FlexCache部署混合 AI 训练"]

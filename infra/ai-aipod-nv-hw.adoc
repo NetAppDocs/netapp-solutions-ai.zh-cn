@@ -18,12 +18,14 @@ summary: 搭载NVIDIA DGX 系统的NetApp AIPod - 硬件组件
 
 
 
+[[netapp-aff-storage-systems]]
 == NetApp AFF存储系统
 
 NetApp AFF最先进的存储系统使 IT 部门能够通过业界领先的性能、卓越的灵活性、云集成和一流的数据管理来满足企业存储需求。  AFF系统专为闪存设计，有助于加速、管理和保护关键业务数据。
 
 
 
+[[aff-a90-storage-systems]]
 === AFF A90存储系统
 
 由NetApp ONTAP数据管理软件提供支持的NetApp AFF A90提供内置数据保护、可选的反勒索软件功能以及支持最关键业务工作负载所需的高性能和弹性。它消除了对关键任务操作的中断，最大限度地减少了性能调整，并保护您的数据免受勒索软件攻击。它提供：• 行业领先的性能 • 不折不扣的数据安全性 • 简化的无中断升级
@@ -54,6 +56,7 @@ AFF A90系统包含一整套NetApp集成和应用程序一致的数据保护软�
 
 
 
+[[nvidia-dgx-basepod]]
 == NVIDIA DGX BasePOD
 
 NVIDIA DGX BasePOD是由NVIDIA硬件和软件组件、MLOps 解决方案以及第三方存储组成的集成解决方案。利用NVIDIA产品和经过验证的合作伙伴解决方案的横向扩展系统设计最佳实践，客户可以实现高效且易于管理的 AI 开发平台。图 1 突出显示了NVIDIA DGX BasePOD的各个组件。
@@ -64,6 +67,7 @@ image:aipod-nv-basepod-layers.png["该图显示输入/输出对话框或表示�
 
 
 
+[[nvidia-dgx-h100-systems]]
 === NVIDIA DGX H100 系统
 
 NVIDIA DGX H100™ 系统是 AI 的强大引擎，由NVIDIA H100 Tensor Core GPU 的突破性性能加速。
@@ -80,6 +84,7 @@ image:aipod-nv-h100-rear.png["该图显示输入/输出对话框或表示书面�
 
 
 
+[[nvidia-networking]]
 === NVIDIA 网络连接
 
 

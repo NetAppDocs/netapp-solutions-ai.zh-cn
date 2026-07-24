@@ -18,6 +18,7 @@ summary: values-xml - Netapp 的矢量数据库解决方案
 
 
 
+[[appendix-a-values-yaml]]
 == 附录 A：Values.yaml
 
 [source, yaml]

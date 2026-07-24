@@ -18,6 +18,7 @@ summary: 这篇文章提供了使用 AWS SageMaker 将 FSx ONTAP配置为私有 
 
 
 
+[[introduction]]
 == 简介
 
 以 SageMaker 为例，本页面提供了将 FSx ONTAP配置为私有 S3 存储桶的指导。
@@ -26,10 +27,12 @@ summary: 这篇文章提供了使用 AWS SageMaker 将 FSx ONTAP配置为私有 
 
 
 
+[[user-guide]]
 == 用户指南
 
 
 
+[[server-creation]]
 === 服务器创建
 
 
@@ -102,6 +105,7 @@ image:mlops-fsxn-s3-integration-012.png["检查 FSx 控制台"]
 
 
 
+[[server-configuration]]
 === 服务器配置
 
 
@@ -231,6 +235,7 @@ binary_data = bucket.Object(data.filename).get()['Body']
 
 
 
+[[useful-debugging-checklist]]
 == 有用的调试清单
 
 * 确保 SageMaker Notebook 实例和 FSx ONTAP文件系统位于同一个 VPC 中。
@@ -239,6 +244,7 @@ binary_data = bucket.Object(data.filename).get()['Body']
 
 
 
+[[faq-as-of-sep-27-2023]]
 == 常见问题解答（截至 2023 年 9 月 27 日）
 
 问：为什么我在将文件上传到 FSx ONTAP时收到错误“*调用 CreateMultipartUpload 操作时发生错误（未实现）：您请求的 s3 命令未实现*”？

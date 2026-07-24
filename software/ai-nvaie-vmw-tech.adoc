@@ -18,18 +18,21 @@ summary: NVIDIA AI Enterprise 与NetApp和 VMware 合作 - 技术概述
 
 
 
+[[nvidia-ai-enterprise]]
 == NVIDIA AI 企业版
 
 NVIDIA AI Enterprise 是一款端到端、云原生的 AI 和数据分析软件套件，经过NVIDIA优化、认证和支持，可在具有NVIDIA认证系统的 VMware vSphere 上运行。该软件有助于在现代混合云环境中简单、快速地部署、管理和扩展 AI 工作负载。
 
 
 
+[[nvidia-gpu-cloud-ngc]]
 == NVIDIA GPU 云 (NGC)
 
 NVIDIA NGC 为 AI 从业者提供了一系列针对 GPU 优化的软件，以开发他们的 AI 解决方案。它还提供对各种 AI 服务的访问，包括用于模型训练的NVIDIA Base Command、用于部署和监控模型的NVIDIA Fleet Command 以及用于安全访问和管理专有 AI 软件的 NGC Private Registry。此外， NVIDIA AI Enterprise 客户可以通过 NGC 门户请求支持。
 
 
 
+[[vmware-vsphere]]
 == VMware vSphere
 
 VMware vSphere 是 VMware 的虚拟化平台，它将数据中心转变为包含 CPU、存储和网络资源的聚合计算基础架构。vSphere 将这些基础架构作为统一的操作环境进行管理，并为管理员提供管理该环境中数据中心的工具。
@@ -38,12 +41,14 @@ vSphere 的两个核心组件是 ESXi 和 vCenter Server。  ESXi 是管理员�
 
 
 
+[[netapp-ontap]]
 == NetApp ONTAP
 
 ONTAP 9 是NetApp最新一代存储管理软件，它支持企业实现基础架构现代化并过渡到云就绪数据中心。 ONTAP利用业界领先的数据管理功能，只需一套工具即可管理和保护数据，无论数据位于何处。您还可以将数据自由移动到任何需要的地方：边缘、核心或云端。  ONTAP 9 包含众多功能，可简化数据管理、加速和保护关键数据，并支持跨混合云架构的下一代基础架构功能。
 
 
 
+[[simplify-data-management]]
 === 简化数据管理
 
 数据管理对于企业 IT 运营和数据科学家至关重要，以便将适当的资源用于 AI 应用程序和训练 AI/ML 数据集。以下有关NetApp技术的附加信息超出了本次验证的范围，但可能与您的部署相关。
@@ -57,6 +62,7 @@ ONTAP数据管理软件包括以下功能，可简化操作并降低总运营成
 
 
 
+[[accelerate-and-protect-data]]
 === 加速并保护数据
 
 ONTAP提供卓越级别的性能和数据保护，并通过以下方式扩展这些功能：
@@ -69,6 +75,7 @@ ONTAP提供卓越级别的性能和数据保护，并通过以下方式扩展这
 
 
 
+[[future-proof-infrastructure]]
 === 面向未来的基础设施
 
 ONTAP具有以下功能，可帮助满足苛刻且不断变化的业务需求：
@@ -80,6 +87,7 @@ ONTAP具有以下功能，可帮助满足苛刻且不断变化的业务需求：
 
 
 
+[[netapp-dataops-toolkit]]
 == NetApp DataOps 工具包
 
 NetApp DataOps Toolkit 是一款基于 Python 的工具，可简化由高性能、横向扩展NetApp存储支持的开发/培训工作区和推理服务器的管理。主要功能包括：

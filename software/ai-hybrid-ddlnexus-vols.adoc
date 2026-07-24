@@ -18,6 +18,7 @@ summary: Domino Data Lab 和NetApp的混合多云 MLOps - 将现有NetApp卷暴�
 
 
 
+[[why-expose-netapp-ontap-volumes-to-domino]]
 == 为什么要将NetApp ONTAP卷公开给 Domino？
 
 将NetApp卷与 Domino 结合使用可带来以下好处：
@@ -30,12 +31,14 @@ summary: Domino Data Lab 和NetApp的混合多云 MLOps - 将现有NetApp卷暴�
 
 
 
+[[expose-existing-nfs-volumes-that-were-not-provisioned-by-trident]]
 == 公开未由Trident配置的现有 NFS 卷
 
 如果您现有的NetApp ONTAP NFS 卷不是由Trident配置的，请按照本小节中概述的步骤进行操作。
 
 
 
+[[create-pv-and-pvc-in-kubernetes]]
 === 在 Kubernetes 中创建 PV 和 PVC
 
 
@@ -45,6 +48,7 @@ NOTE: 对于本地卷，在本地 Kubernetes 集群中创建 PV 和 PVC。对于
 
 
 
+[[register-external-data-volume-in-domino]]
 === 在 Domino 中注册外部数据卷
 
 接下来，您必须在 Domino 中注册一个外部数据卷。要注册外部数据卷，请参阅link:https://docs.dominodatalab.com/en/latest/admin_guide/9c3564/register-external-data-volumes/["指示"]在 Domino 管理指南中。注册卷时，请确保从“卷类型”下拉菜单中选择“NFS”。选择“NFS”后，您应该会在“可用卷”列表中看到您的 PVC。
@@ -53,12 +57,14 @@ image:ddlnexus-003.png["该图显示输入/输出对话框或表示书面内容"
 
 
 
+[[expose-existing-volumes-that-were-provisioned-by-trident]]
 == 公开由Trident提供的现有卷
 
 如果您现有的卷是由Trident配置的，请按照本小节中概述的步骤进行操作。
 
 
 
+[[edit-existing-pvc]]
 === 编辑现有 PVC
 
 如果您的卷是由Trident配置的，那么您已经拥有与您的卷相对应的持久卷声明 (PVC)。为了将此卷公开给 Domino，您必须编辑 PVC 并将以下标签添加到 `metadata.labels`场地：
@@ -68,6 +74,7 @@ image:ddlnexus-003.png["该图显示输入/输出对话框或表示书面内容"
 ....
 
 
+[[register-external-data-volume-in-domino]]
 === 在 Domino 中注册外部数据卷
 
 接下来，您必须在 Domino 中注册一个外部数据卷。要注册外部数据卷，请参阅link:https://docs.dominodatalab.com/en/latest/admin_guide/9c3564/register-external-data-volumes/["指示"]在 Domino 管理指南中。注册卷时，请务必从“卷类型”下拉菜单中选择“通用”。选择“通用”后，您应该会在“可用卷”列表中看到您的 PVC。

@@ -75,6 +75,7 @@ summary: 我们使用 TeraGen 基准测试工具中的 TeraSort 和 TeraValidate
 |===
 
 
+[[financial-sentiment-analysis]]
 == 金融情绪分析
 
 我们发表了link:https://www.netapp.com/pdf.html?item=/media/17123-tr4910pdf.pdf["TR-4910：利用NetApp AI 对客户沟通进行情绪分析"^]，其中使用 https://github.com/NetApp/netapp-dataops-toolkit["NetApp DataOps 工具包"^]、 AFF存储和NVIDIA DGX 系统。该管道利用 DataOps Toolkit 执行批量音频信号处理、自动语音识别 (ASR)、迁移学习和情绪分析， https://developer.nvidia.com/riva["NVIDIA Riva SDK"^] ，以及 https://developer.nvidia.com/tao["道框架"^]。将情绪分析用例扩展到金融服务行业，我们构建了 SparkNLP 工作流程，为各种 NLP 任务（例如命名实体识别）加载了三个 BERT 模型，并获得了纳斯达克十大公司季度收益电话会议的句子级情绪。
@@ -160,6 +161,7 @@ image:apache-spark-011.png["Spark NLP 情绪分析端到端工作流运行时。
 
 
 
+[[distributed-training-with-horovod-performance]]
 == Horovod 性能的分布式训练
 
 以下命令使用单个 `master`具有 160 个执行器的节点，每个执行器都有一个核心。执行器内存限制为 5GB，以避免内存不足错误。请参阅link:spark-python-scripts.html["针对每个主要用例的 Python 脚本"]有关数据处理、模型训练和模型准确率计算的更多详细信息，请参阅 `keras_spark_horovod_rossmann_estimator.py`。
@@ -236,6 +238,7 @@ image:apache-spark-012.png["Horovod Spark 工作流运行时。"]
 
 
 
+[[deep-learning-models-for-ctr-prediction-performance]]
 == CTR预测性能的深度学习模型
 
 对于旨在最大化点击率的推荐系统，必须学习用户行为背后复杂的特征交互，这些特征交互可以通过数学方式从低阶到高阶计算。对于良好的深度学习模型来说，低阶和高阶特征交叉应该同等重要，而不应偏向其中任何一方。深度分解机（DeepFM）是一种基于分解机的神经网络，它将用于推荐的分解机和用于特征学习的深度学习结合在一种新的神经网络架构中。

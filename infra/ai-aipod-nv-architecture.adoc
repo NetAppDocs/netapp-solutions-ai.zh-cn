@@ -18,6 +18,7 @@ summary: NetApp AIPod与NVIDIA DGX 系统 - 架构
 
 
 
+[[netapp-aipod-with-dgx-systems]]
 == 搭载 DGX 系统的NetApp AIPod
 
 该参考架构利用单独的结构进行计算集群互连和存储访问，并在计算节点之间实现 400Gb/s InfiniBand (IB) 连接。下图展示了NetApp AIPod与 DGX H100 系统的整体解决方案拓扑。
@@ -28,6 +29,7 @@ image:aipod-nv-a90-topo.png["该图显示输入/输出对话框或表示书面�
 
 
 
+[[network-design]]
 == 网络设计
 
 在此配置中，计算集群结构使用一对 QM9700 400Gb/s IB 交换机，它们连接在一起以实现高可用性。每个 DGX H100 系统使用八个连接连接到交换机，其中偶数端口连接到一个交换机，奇数端口连接到另一个交换机。
@@ -38,6 +40,7 @@ image:aipod-nv-a90-topo.png["该图显示输入/输出对话框或表示书面�
 
 
 
+[[storage-access-overview-for-dgx-h100-systems]]
 == DGX H100 系统的存储访问概述
 
 每个 DGX H100 系统都配备了两个双端口 ConnectX-7 适配器用于管理和存储流量，并且对于此解决方案，每个卡上的两个端口都连接到同一个交换机。然后将每个卡的一个端口配置为 LACP MLAG 绑定，并将一个端口连接到每个交换机，并且带内管理、客户端访问和用户级存储访问的 VLAN 都托管在此绑定上。
@@ -48,6 +51,7 @@ image:aipod-nv-a90-topo.png["该图显示输入/输出对话框或表示书面�
 
 
 
+[[storage-system-design]]
 == 存储系统设计
 
 每个AFF A90存储系统使用每个控制器的六个 200 GbE 端口进行连接。每个控制器的四个端口用于从 DGX 系统访问工作负载数据，每个控制器的两个端口配置为 LACP 接口组，以支持从管理平面服务器访问集群管理工件和用户主目录。存储系统的所有数据访问均通过 NFS 提供，其中有一个专用于 AI 工作负载访问的存储虚拟机 (SVM) 和一个专用于集群管理用途的单独 SVM。
@@ -60,6 +64,7 @@ image:aipod-nv-a90-logical.png["该图显示输入/输出对话框或表示书�
 
 
 
+[[management-plane-servers]]
 == 管理平面服务器
 
 该参考架构还包括五个基于 CPU 的服务器，用于管理平面。其中两个系统用作NVIDIA Base Command Manager 的头节点，用于集群部署和管理。其他三个系统用于提供额外的集群服务，例如 Kubernetes 主节点或利用 Slurm 进行作业调度的部署的登录节点。利用 Kubernetes 的部署可以利用NetApp Trident CSI 驱动程序为AFF A900存储系统上的管理和 AI 工作负载提供具有持久存储的自动配置和数据服务。

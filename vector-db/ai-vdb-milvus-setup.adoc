@@ -18,6 +18,7 @@ summary: milvus 集群设置 - NetApp 的矢量数据库解决方案
 
 
 
+[[milvus-cluster-setup-with-kubernetes-in-on-premises]]
 == 在本地使用 Kubernetes 设置 Milvus 集群
 
 客户面临的挑战是在存储和计算上独立扩展、有效的基础设施管理和数据管理，Kubernetes 和矢量数据库共同构成了管理大数据操作的强大、可扩展的解决方案。 Kubernetes 优化资源并管理容器，而矢量数据库则高效处理高维数据和相似性搜索。这种组合能够快速处理大型数据集上的复杂查询，并随着数据量的增加而无缝扩展，使其成为大数据应用程序和人工智能工作负载的理想选择。
