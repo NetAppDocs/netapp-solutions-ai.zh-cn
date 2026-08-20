@@ -3,6 +3,9 @@ section: ai-use-cases
 title: 人工智能用例
 url: "/ai-use-cases/index.html"
 entries:
+- title: KV Cache 卸载与 NetApp
+  pdf-filename: KV Cache 卸载与 NetApp
+  url: "/software/ai-kv-cache-offloading-netapp.html"
 - title: 适用于企业 RAG 的NetApp AIPod Mini
   pdf-filename: 适用于 RAG 推理的NetApp AIPod Mini
   url: "/infra/ai-minipod.html"
