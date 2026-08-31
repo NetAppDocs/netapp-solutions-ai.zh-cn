@@ -2,7 +2,7 @@
 sidebar: sidebar 
 permalink: data-analytics/spark-solutions-overview.html 
 keywords: fas, aff, e-series, cloud volumes ontap, nfs, direct access, snapmirror, paas, 
-summary: NetApp有三个存储产品组合： FAS/ AFF、E 系列和Cloud Volumes ONTAP。我们已经通过 Apache Spark 验证了适用于 Hadoop 解决方案的AFF和带有ONTAP存储系统的 E 系列。  NetApp支持的数据结构集成了数据管理服务和应用程序（构建块），用于数据访问、控制、保护和安全。 
+summary: NetApp 有三个存储产品组合。FAS 和 AFF、E-Series 和 Cloud Volumes ONTAP。我们已验证 AFF 和 E-Series 与 ONTAP 存储系统用于基于 Apache Spark 的 Hadoop 解决方案。由 NetApp 提供支持的数据结构集成了数据管理服务和应用程序（构建块），用于数据访问、控制、保护和安全。 
 ---
 = NetApp Spark 解决方案概述
 :hardbreaks:

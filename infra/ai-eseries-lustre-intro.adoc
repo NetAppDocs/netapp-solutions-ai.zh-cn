@@ -1,0 +1,31 @@
+---
+sidebar: sidebar 
+permalink: infra/ai-eseries-lustre-intro.html 
+keywords: Lustre, NetApp E-Series, EF80, HPC, AI, parallel file system, NVMe-oF, high-performance storage 
+summary: Lustre with NetApp E-Series Storage 使用具有 NetApp E-Series 全闪存阵列的可重复构建块架构，为 AI 和 HPC 工作负载提供经过验证的可扩展并行文件系统。 
+---
+= 基于 NetApp E 系列存储的 Lustre - 简介
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+Lustre with NetApp E-Series Storage 是针对 AI 和 HPC 工作负载的经过验证的并行文件系统解决方案，由 HA 服务器对和 E-Series 全闪存阵列的可重复构建块构建而成。
+
+
+
+[[solution-overview]]
+== 解决方案概述
+
+Lustre 与 NetApp E 系列存储将开源 Lustre 并行文件系统与 NetApp E 系列块存储相结合，为数据密集型工作负载提供可扩展的高性能基础。每个构建块将两个配置为高可用性 (HA) 的 OSS/MDS 服务器节点与两个 E 系列全闪存阵列配对。后端 NVMe-oF 连接将块 I/O 传输到阵列，独立的 LNet 网络连接客户端和 OSS/MDS 服务器节点以进行并行文件系统访问。
+
+基本构建块托管管理服务器 (MGS)、初始元数据目标 (MDTs) 和对象存储目标 (OSTs)。额外的构建块向基本 MGS 注册，以随着工作负载需求的增长扩展元数据容量、数据容量和聚合吞吐量。
+
+下图显示了通过 LNet 连接的多个构建基块和 Lustre 客户端的部署示例。
+
+.Lustre with NetApp E-Series 存储解决方案概述
+image:eseries-lustre-overview-diagram.png["Lustre with NetApp E-Series 存储解决方案概述，包括构建模块和客户端"]

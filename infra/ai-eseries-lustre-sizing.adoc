@@ -1,0 +1,119 @@
+---
+sidebar: sidebar 
+permalink: infra/ai-eseries-lustre-sizing.html 
+keywords: Lustre, NetApp E-Series, EF80, sizing, scaling, building block, validation, performance, capacity 
+summary: 根据容量和元数据需求调整 Lustre 与 NetApp E-Series 存储构建块的规模，决定何时进行扩展，并审查影响性能的因素。 
+---
+= 基于 NetApp E 系列存储的 Lustre - 规模调整指南
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+根据容量和元数据需求调整 Lustre 与 NetApp E-Series 存储构建块的规模，决定何时增加容量，并审查影响性能的因素。
+
+
+
+[[capacity-sizing]]
+== 容量估算
+
+包含两个 EF80 阵列的基础构建块可提供以下 Lustre 目标布局。有关首选目标位置和 NVMe-oF 路径的信息，请参见 link:ai-eseries-lustre-hw.html["硬件组件"] 中的 link:ai-eseries-lustre-hw.html#_primary_building_block_volume_distribution["主要构建块卷分布"]。
+
+|===
+| 组件 | 计数 | 典型卷大小（每个目标） 
+
+
+| MGS | 1 | 5-10 GiB 
+
+
+| MDT | 8 | 大小因驱动器容量和RAID布局而异 
+
+
+| OST | 32 | 大小因驱动器容量和RAID布局而异 
+|===
+每个 EF80 阵列使用 24 个 NVMe 驱动器。传统卷组（MGS/MDT 为 RAID 1，OST 为 RAID 6）或 DDP 支持的容量为 3.84 TB、7.68 TB 和 15.3 TB，仅 DDP 支持 30.7 TB 或 61.4 TB 容量闪存（QLC）驱动器。目前不建议将 1.92 TB 驱动器用于此解决方案。有关驱动器插槽布局和池选择，请参阅 link:ai-eseries-lustre-hw.html["硬件组件"]。
+
+下表列出了 EF80 构建基块（两个阵列，48 个驱动器）的大致可用容量。阵列可用容量与最终 Lustre 文件系统可用容量不同。MDT inode 分配、日志、过度配置和库存量百分比会降低应用程序的可用容量。
+
+[cols="2,4,2"]
+|===
+| 驱动器容量 | 布局（每个数组） | 大致可用性（构建基块） 
+
+
+| 3.84 TB | RAID 1 (2+2) + RAID 6 (10) + RAID 6 (10) | 138.08 TB 
+
+
+| 3.84 TB | DDP（24个驱动器，2个保留） | 133.63 TB 
+
+
+| 7.68 TB | RAID 1 (2+2) + RAID 6 (10) + RAID 6 (10) | 276.35 TB 
+
+
+| 7.68 TB | DDP（24） | 267.47 TB 
+
+
+| 15.3 TB | RAID 1 (2+2) + RAID 6 (10) + RAID 6 (10) | 552.88 TB 
+
+
+| 15.3 TB | DDP（24） | 535.15 TB 
+
+
+| 30.7 TB | 仅限 DDP | 1,070.35 TB 
+
+
+| 61.4 TB | 仅限 DDP | 2,162.70 TB 
+|===
+分别调整元数据和数据的大小，然后在 Ansible 库存中设置卷大小。部署模板使用 ldiskfs 格式化目标；MDT 使用 Lustre 默认 inode 比率，OST 模板设置 `-i 4096`。
+
+* *元数据（MDT）：* 按预期文件计数调整 MDT 大小。规划大约为预期文件数量两倍的增长空间。MDT 过小可能会导致无法创建新文件，即使 OST 容量仍有剩余。
+* *数据（OST）：* 根据可用容量和吞吐量需求确定 OST 大小。
+* *MGS：* 仅对文件系统配置使用小管理目标（5-10 GiB）。
+
+
+为所选驱动器容量调整清单中的 MDT 和 OST 卷大小。仅当站点需要不同的 inode 比率时，才更改 `format_options.mkfsoptions`中的 `eseries_lustre_filesystem_mdt`或 `eseries_lustre_filesystem_ost`。有关 inode 比率的背景知识，请参见link:https://wiki.lustre.org/Lustre_Tuning["Lustre Wiki：Lustre Tuning"^]。有关何时添加构建基块的信息，请参见<<缩放>>。
+
+
+
+[[scaling]]
+== 缩放
+
+在容量或元数据负载需要时，添加构建基块：
+
+* *仅限 OST：* 文件计数和元数据加载在现有 MDT 容量范围内，您需要更多数据容量或聚合吞吐量。添加 32 个 OST 和两个 OSS/MDS 服务器节点。
+* *MDT+OST:* 文件计数或元数据速率接近 MDT 容量，或者您需要更多元数据吞吐量和数据容量。增加 8 个 MDT 和 32 个 OST。
+
+
+在现有 MDT 上使用 `mdt.*.md_stats`以确认元数据是否饱和。将每个 Pacemaker/Corosync 集群限制为五个构建块（十个 OSS/MDS 服务器节点）。对于较大的部署，将构建块均匀分布在多个 HA 集群中。有关扩展规则，请参阅link:ai-eseries-lustre-architecture.html["解决方案架构"]。
+
+以下示例显示了一个 HA 集群中带有基本构建块和仅 OST 构建块的文件系统。
+
+|===
+| 构建基块 | 类型 | 服务器 | 数组 | MGS | MDT | OST 
+
+
+| BB1 | 基础 | 2 | 2 | 1 | 8 | 32 
+
+
+| BB2 | 仅限 OST | 2 | 2 | 0 | 0 | 32 
+
+
+| 总计 |  | 4 | 4 | 1 | 8 | 64 
+|===
+BB2 使用 `mgsnode=`针对 BB1 中的 MGS 注册其 OST 目标。BB2 的 OST 索引是全局分配的（例如，OST0032 到 OST0063），因此没有索引与 BB1 冲突。
+
+
+
+[[performance]]
+== 性能
+
+正式验证使用来自 Lustre 客户端的 IOR、mdtest 和 fio 来表征相对吞吐量、IOPS 和元数据行为，并验证 HA 故障转移。这些测试不会发布有保证的性能数据。综合基准测试衡量最佳情况下的行为，可能无法反映实际的应用程序性能。
+
+性能大致随构建块的数量而扩展。实现的结果取决于驱动器类型和池布局、NVMe-oF 路径计数、LNet 结构和客户端计数，以及数据与元数据 I/O 的混合。
+
+请联系您的 NetApp 客户团队，以获取特定于工作负载的规模和性能建议。
+
+有关驱动器布局和卷计数，请参见link:ai-eseries-lustre-hw.html["硬件组件"]。有关部署步骤，请参见link:ai-eseries-lustre-deploy.html["部署解决方案"]。有关现场级库存指导，请参见link:ai-eseries-lustre-deploy-inventory.html["自定义 Lustre Ansible 清单"]。

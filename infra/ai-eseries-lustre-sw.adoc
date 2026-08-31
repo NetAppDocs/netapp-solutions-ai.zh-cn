@@ -1,0 +1,89 @@
+---
+sidebar: sidebar 
+permalink: infra/ai-eseries-lustre-sw.html 
+keywords: Lustre, NetApp E-Series, software, SANtricity, Rocky Linux, Pacemaker, Corosync, DOCA, Lustre client 
+summary: 查看用于使用 NetApp E-Series 存储部署 Lustre 的软件组件和 Ansible 自动化。 
+---
+= 使用 NetApp E 系列存储的 Lustre - 软件组件
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+查看使用 NetApp E-Series Storage 部署 Lustre 的软件堆栈和 Ansible 自动化。有关服务器、存储和网络，请参见 link:ai-eseries-lustre-hw.html["硬件组件"]。
+
+
+
+[[building-block-software]]
+== 构建块软件
+
+下表列出了 E 系列阵列和 OSS/MDS 服务器节点使用的软件组件。使用 link:https://imt.netapp.com/imt/#welcome["NetApp 互操作性矩阵工具 (IMT)"^] 作为支持的版本和组件组合的权威来源。搜索 *E-Series Lustre* 并在部署之前确认操作系统、Lustre、SANtricity 操作系统、DOCA-OFED、HCA 固件和 HA 软件包版本。
+
+[cols="30%,70%"]
+|===
+| 组件 | 功能 
+
+
+| SANtricity OS | 在每个 E-Series 阵列上运行，并提供 SANtricity System Manager、具有自动 I/O 路径故障转移的双活动控制器高可用性、自动负载平衡和路径监控、动态磁盘池和传统 RAID、自动驱动器重建、镜像缓存保护、数据保证、主动驱动器运行状况监控以及在线软件、固件和配置更改。 
+
+
+| Lustre | 为客户端提供符合 POSIX 标准的单个命名空间，同时跨多个目标分发元数据和文件数据以进行并行访问。管理服务器 (MGS) 存储文件系统配置，元数据目标 (MDT) 管理命名空间，对象存储目标 (OST) 在 E-Series 卷上存储文件数据。这种分离可通过添加构建块来扩展性能和容量。 
+
+
+| Red Hat Enterprise Linux (RHEL) 或 Rocky Linux | 为 Lustre 目标服务、HA 集群、存储和网络连接提供内核、系统服务和包框架。受支持的操作系统存储库还提供 Pacemaker、Corosync、fence agents、NVMe-oF 和多路径软件包，这些软件包作为解决方案堆栈一起进行测试。 
+
+
+| 高可用性集群服务（Pacemaker、Corosync 和 fence agent） | 这些服务共同为 OSS/MDS 服务器节点上的 Lustre 目标提供协调的高可用性。它们维护集群成员资格和仲裁，监控资源，协调有序故障转移，并在其他位置激活共享目标之前隔离无响应的节点。这种协调可防止对 E-Series 卷的脑裂访问，并在故障期间保护文件系统的完整性。 
+
+
+| NVIDIA DOCA-OFED | 为 InfiniBand 和 RoCE 结构提供 HCA 驱动程序、RDMA 库和管理实用程序。相同的软件堆栈支持对 E-Series 阵列的低延迟后端 NVMe-oF 访问以及与 Lustre 客户端的高吞吐量前端 LNet 通信。 
+|===
+NetApp 为 Rocky Linux 9.8 和 Red Hat Enterprise Linux 9.8 提供预构建的 Lustre 服务器 RPM。
+
+
+
+[[ansible-automation]]
+== Ansible 自动化
+
+Lustre with NetApp E-Series Storage 通过控制节点使用 Ansible 自动化进行交付和部署，该控制节点具有对 E-Series 阵列和 OSS/MDS 服务器节点的管理访问权限。Ansible 清单模拟所需的解决方案，包括阵列、服务器、存储分配、网络接口和 HA 集群资源。
+
+The NetApp E-Series Lustre Ansible 集合通过使用 SANtricity 和 Host 集合来协调端到端部署。这些集合一起配置和映射 E-Series 存储，准备服务器操作系统，配置 NVMe-oF 和 LNet 连接，部署 Lustre 目标，并创建 Pacemaker 资源。这种自动化使配置可重复，并简化了向现有文件系统添加构建基块的过程。
+
+下表总结了 Ansible 控制节点上使用的主要软件包。有关当前软件包依赖项，请参见 link:https://github.com/NetApp/ansible-lustre["NetApp E-Series Lustre Ansible 集合"^]。
+
+[cols="35%,65%"]
+|===
+| 套餐 | 依赖关系或目的 
+
+
+| Python | 提供 Ansible 和所需 Python 模块的运行时。 
+
+
+| ansible-core | 需要 Python 并运行 NetApp E-Series Ansible 集合。 
+
+
+| 其他 Python 包 | `cryptography`、 `ipaddr`、 `netaddr`、 `passlib`、 `resolvelib`、 `jinja2`和 `pyyaml` 
+
+
+| NetApp E-Series Lustre Ansible 集合 | 配置 Lustre、LNet、NVMe-oF 主机连接和 Pacemaker 资源。 
+
+
+| NetApp E-Series SANtricity Ansible 集合 | 通过 SANtricity Web Services API 配置 E 系列阵列、存储池、卷和主机映射。 
+
+
+| NetApp E-Series 主机 Ansible 集合 | 为 LNet 和 NVMe-oF 与 E 系列阵列连接准备 OSS/MDS 服务器节点。 
+|===
+
+
+[[lustre-client-software]]
+== Lustre 客户端软件
+
+Lustre 客户端软件使系统能够通过前端 LNet 结构访问并行文件系统。每个客户端都需要与其运行的内核和服务器上部署的 Lustre 版本兼容的 Lustre 内核模块和 Lustre 客户端实用程序。
+
+使用link:https://wiki.whamcloud.com/display/PUB/Lustre+Support+Matrix["Lustre 支持表"^]查找与 Lustre 版本兼容的客户端操作系统和内核。NetApp 不提供预构建的 Lustre 客户端包。从link:https://github.com/NetApp/netapp-lustre["netapp-lustre 存储库"^]中 NetApp 提供的 Lustre 源代码为客户端操作系统和内核构建客户端包。安装 Lustre 客户端软件包后， `lustre_client`角色可以配置网络接口、LNet，并为 Lustre 文件系统创建持久的 systemd 挂载单元。
+
+有关客户端部署步骤，请参见 link:ai-eseries-lustre-deploy.html["部署解决方案"]。

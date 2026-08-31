@@ -42,15 +42,15 @@ NetApp存储提供与本地 SSD 存储相同或更好的性能，并为数据科
 
 * NetApp全闪存阵列产品页面
 +
-https://www.netapp.com/us/products/storage-systems/all-flash-array/aff-a-series.aspx["https://www.netapp.com/us/products/storage-systems/all-flash-array/aff-a-series.aspx"^]
+https://www.netapp.com/aff-a-series/["https://www.netapp.com/aff-a-series/"^]
 
 * NetApp AFF A400页面
 +
-https://docs.netapp.com/us-en/ontap-systems/a400/index.html["https://docs.netapp.com/us-en/ontap-systems/a400/index.html"]
+https://docs.netapp.com/us-en/ontap-systems/a400/overview.html["https://docs.netapp.com/us-en/ontap-systems/a400/overview.html"^]
 
 * NetApp ONTAP数据管理软件产品页面
 +
-http://www.netapp.com/us/products/data-management-software/ontap.aspx["http://www.netapp.com/us/products/data-management-software/ontap.aspx"^]
+https://www.netapp.com/ontap-data-management-software/["https://www.netapp.com/ontap-data-management-software/"^]
 
 * MLPerf
 +

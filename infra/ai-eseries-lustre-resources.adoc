@@ -1,0 +1,49 @@
+---
+sidebar: sidebar 
+permalink: infra/ai-eseries-lustre-resources.html 
+keywords: Lustre, NetApp E-Series, EF80, documentation, references, Ansible 
+summary: 查找适用于 Lustre with NetApp E-Series Storage 的相关文档、工具和软件。 
+---
+= 使用 NetApp E-Series 存储的 Lustre - 相关资源
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+在规划或扩展 Lustre with NetApp E-Series Storage 部署时，请使用这些链接获取相关文档、工具和软件。有关调整大小和部署步骤，请参阅 link:ai-eseries-lustre-sizing.html["尺寸指南"] 和 link:ai-eseries-lustre-deploy.html["部署解决方案"]。
+
+
+
+[[netapp-resources]]
+== NetApp 资源
+
+* link:https://imt.netapp.com/imt/#welcome["NetApp 互操作性表工具"^]。搜索 *E-Series Lustre*。
+* link:https://www.netapp.com/pdf.html?item=/media/14036-ds-4082.pdf["NetApp EF-Series 全闪存阵列数据表"^]
+* link:https://docs.netapp.com/us-en/e-series-santricity/["NetApp SANtricity System Manager 文档"^]
+* link:https://github.com/NetApp/ansible-lustre/tree/release/1.0.0["NetApp ansible-lustre 集合"^]。有关清单字段指南，请参见 link:ai-eseries-lustre-deploy-inventory.html["自定义 Lustre Ansible 清单"]。
+* link:https://github.com/NetApp/netapp-lustre/tree/master["NetApp Lustre 源库"^]。NetApp 为 Rocky Linux 9.8 和 Red Hat Enterprise Linux 9.8 提供预构建的 Lustre 服务器 RPM。从 NetApp 源代码为客户端操作系统和内核构建 Lustre 客户端包。
+
+
+
+
+[[lustre-community]]
+== Lustre 社区
+
+* link:https://www.lustre.org/["Lustre 文件系统"^]
+* link:https://wiki.whamcloud.com/display/PUB/Lustre+Support+Matrix["Lustre 支持表"^] 适用于客户端操作系统和内核
+* link:https://wiki.lustre.org/Lustre_Tuning["Lustre Wiki：Lustre Tuning"^]
+
+
+
+
+[[related-netapp-ai-infrastructure-solutions]]
+== 相关 NetApp AI 基础设施解决方案
+
+* link:ai-eseries-beegfs.html["NetApp上的 BeeGFS 与 E 系列存储"]
+* link:ai-eseries-spectrumscale.html["利用 NetApp E-Series 存储部署 IBM Spectrum Scale"]
+* link:ai-eseries-superpod.html["搭载NetApp EF 系列的NVIDIA DGX SuperPOD"]
+

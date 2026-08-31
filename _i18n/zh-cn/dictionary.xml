@@ -4,8 +4,6 @@
   <block id="7a206e7f1f7bd7df4f649256e750768b" category="doc">阅读NetApp专家的 AI 解决方案博客</block>
   <block id="683be49e9105a56d06431bcdc1630cb6" category="paragraph">阅读 AI/ML 博客，了解行业趋势、创新和实际影响，以及开发人员资源、社区见解和使用NetApp AI 解决方案的实用工具。</block>
   <block id="5bbe94ba0a14c52be3cc9534b43f4713" category="paragraph-title">人工智能趋势和行业洞察</block>
-  <block id="78463a384a5aa4fad5fa73e2f506ecfc" category="inline-link-macro">英语</block>
-  <block id="69501f595c5bd3cdb17ea63c90291622" category="paragraph">探索各个领域的行业趋势、创新以及现实世界的人工智能影响。<block ref="3b277c3e8740f32e48fe9dd888ed34aa" category="inline-link-macro-rx"></block> &amp;f:@facet_soultion_mktg=[AI,Analytics,artificial-intelligence]++[在NetApp上阅读 AI 博客^]</block>
   <block id="d5769d364696d52f17c7b56bd51573f8" category="paragraph-title">开发者资源和社区</block>
   <block id="bb765a119d53333b43f301b6a00a388a" category="inline-link-macro">在 Pub 上阅读 AI 博客</block>
   <block id="43c273574ee7233878bcc9fc0bd893c9" category="paragraph">为 AI/ML 从业者提供技术见解、实用工具和社区驱动的内容。<block ref="f89e2ffa35ae5933259a8ae6e49a69ad" category="inline-link-macro-rx"></block></block>
@@ -198,8 +196,6 @@
   <block id="7a431daf3a478d96ed5ffc10a4056228" category="paragraph">FSx ONTAP （Amazon FSx ONTAP）是一项 AWS 存储服务。它包括在NetApp ONTAP系统上运行的文件系统和连接到它的 AWS 管理的系统虚拟机 (SVM)。在提供的图中，AWS 管理的NetApp ONTAP服务器位于 VPC 外部。 SVM作为SageMaker和NetApp ONTAP系统之间的中介，接收来自SageMaker的操作请求并转发到底层存储。要访问 FSx ONTAP，SageMaker 必须放置在与 FSx ONTAP部署相同的 VPC 内。此配置可确保 SageMaker 和 FSx ONTAP之间的通信和数据访问。</block>
   <block id="f8aacfa5c683858912c498f517c9b457" category="section-title">数据访问</block>
   <block id="70385d02db6379c01d4b7b17101f2004" category="paragraph">在现实场景中，数据科学家通常利用 FSx ONTAP中存储的现有数据来构建他们的机器学习模型。但是，出于演示目的，由于 FSx ONTAP文件系统在创建后最初是空的，因此需要手动上传训练数据。这可以通过将 FSx ONTAP作为卷安装到 SageMaker 来实现。文件系统成功挂载后，您可以将数据集上传到挂载位置，以便在 SageMaker 环境中训练模型。这种方法允许您利用 FSx ONTAP的存储容量和功能，同时与 SageMaker 进行模型开发和训练。</block>
-  <block id="23ea498668d1fa717fb7cfb600bf3238" category="inline-link-macro">第 1 部分 - 将Amazon FSx for NetApp ONTAP (FSx ONTAP) 作为私有 S3 存储桶集成到 AWS SageMaker</block>
-  <block id="95d89db7f4a106e280e1c30cde658610" category="paragraph">数据读取过程涉及将 FSx ONTAP配置为私有 S3 存储桶。详细配置说明请参考<block ref="8e7379c67a0724b1a49308a7ae6ac3d5" category="inline-link-macro-rx"></block></block>
   <block id="30eaeebc8f9611f55e018d1dd51789ba" category="section-title">集成概述</block>
   <block id="7ffc912d31a398685c5667622bb5ed7f" category="inline-image-macro">训练工作流程</block>
   <block id="29e5f040e75c8e4e628e90efc594e3ef" category="paragraph"><block ref="29e5f040e75c8e4e628e90efc594e3ef" category="inline-image-macro-rx" type="image"></block></block>
@@ -315,7 +311,6 @@
   <block id="090e55ccd8633a454f9d471ca3ed004d" category="list-text">云管理员和架构师必须能够设置和管理混合云资源。</block>
   <block id="3cb782c6019ddcbb4e7f6bf8ae154d40" category="list-text">商业用户希望能够访问分析、AI、ML 和 DL 应用程序。</block>
   <block id="3dfd24951a51ec1661b0294f59bea86e" category="paragraph">在本技术报告中，我们描述了NetApp AFF、E 系列、 StorageGRID、NFS 直接访问、Apache Spark、Horovod 和 Keras 如何帮助这些角色为企业带来价值。</block>
-  <block id="49c9a66d1f76b5f264fea5d54130b82a" category="summary">我们使用 TeraGen 基准测试工具中的 TeraSort 和 TeraValidate 脚本来测量 E5760、E5724 和AFF-A800 配置的 Spark 性能验证。此外，还测试了三个主要用例：Spark NLP 管道和 TensorFlow 分布式训练、Horovod 分布式训练以及使用 Keras 进行多工深度学习，通过 DeepFM 进行 CTR 预测。</block>
   <block id="41be8de44faa8ba43210d7494ee095d2" category="doc">测试结果</block>
   <block id="60637296d8b6dcd84aaff3afc778241d" category="paragraph">我们使用 TeraGen 基准测试工具中的 TeraSort 和 TeraValidate 脚本来测量 E5760、E5724 和AFF-A800 配置的 Spark 性能验证。此外，还测试了三个主要用例：Spark NLP 管道和 TensorFlow 分布式训练、Horovod 分布式训练以及使用 Keras 进行 DeepFM CTR 预测的多工深度学习。</block>
   <block id="653a9ba51c0af0c11aab6af3ecfdc8c6" category="paragraph">对于 E 系列和StorageGRID验证，我们使用了 Hadoop 复制因子 2。对于AFF验证，我们仅使用一个数据源。</block>
@@ -2177,7 +2172,6 @@
   <block id="cfb5f1c014066f18d7979fa1d35a934d" category="paragraph">以下三个 Python 脚本对应测试的三个主要用例。首先是<block ref="b01d528ada3b5a6e0e9094642b727562" prefix=" " category="inline-code"></block>。</block>
   <block id="d3abf6f12cafa2cc1b795b31cd547c75" category="paragraph">第二个脚本是<block ref="b502aa50c7ae6d7ea7adaf15de40ffe5" prefix=" " category="inline-code"></block>。</block>
   <block id="6e9120b39f924b2eed528e3bcdd009ac" category="paragraph">第三个脚本是<block ref="5e1386bf4aaea9725a3cc5bc8e2bc9f4" prefix=" " category="inline-code"></block>。</block>
-  <block id="90f0f970ed32524c528ba2778079d485" category="summary">NetApp有三个存储产品组合： FAS/ AFF、E 系列和Cloud Volumes ONTAP。我们已经通过 Apache Spark 验证了适用于 Hadoop 解决方案的AFF和带有ONTAP存储系统的 E 系列。  NetApp支持的数据结构集成了数据管理服务和应用程序（构建块），用于数据访问、控制、保护和安全。</block>
   <block id="12a9f57585cd6b3b985dd451bf552845" category="doc">NetApp Spark 解决方案概述</block>
   <block id="c7516072fbed3396e6f4c39a5f2356a6" category="paragraph">NetApp有三个存储产品组合： FAS/ AFF、E 系列和Cloud Volumes ONTAP。我们已经通过 Apache Spark 验证了适用于 Hadoop 解决方案的AFF和带有ONTAP存储系统的 E 系列。</block>
   <block id="710b54a5dd637d8e21574c4fb3eea545" category="inline-image-macro">数据结构提供数据管理服务和应用程序。</block>
@@ -3246,7 +3240,6 @@
   <block id="3a4a320ee019614122e99baebf056b86" category="list-text">使用本地存储的单服务器 AI 推理</block>
   <block id="adf25fe660bba733a104887732393fdd" category="list-text">使用网络存储的单服务器 AI 推理</block>
   <block id="34e4c32e4097a70208139be85d5dc892" category="list-text">使用网络存储的多服务器 AI 推理</block>
-  <block id="8708911de20cfce9bafb315fd0cde0a2" category="summary">我们进行了大量的测试来评估所提出的架构的性能。有六种不同的工作负载（图像分类、对象检测 [小]、对象检测 [大]、医学成像、语音转文本和自然语言处理 [NLP]），您可以在三种不同的场景中运行 - 离线、单流和多流。</block>
   <block id="3274a50ba9f0d3c0adefdfa11c5094be" category="doc">测试结果</block>
   <block id="a274daca2deace9b89099b24f248715c" category="paragraph">我们进行了大量的测试来评估所提出的架构的性能。</block>
   <block id="37bf74d7f686cd395d40af1cc2ed7c55" category="paragraph">有六种不同的工作负载（图像分类、对象检测[小]、对象检测[大]、医学成像、语音转文本和自然语言处理[NLP]），您可以在三种不同的场景中运行：离线、单流和多流。</block>
@@ -3394,14 +3387,8 @@
   <block id="2ea563f362255807faae7242f06c9881" category="list-text">Karthikeyan Nagalingam， NetApp技术营销工程师</block>
   <block id="cccf21ceeae034a9e54b62eb00d9b6b3" category="list-text">Jarrett Upton，联想人工智能实验室系统管理员</block>
   <block id="fdc944d7a0de8d8e3dfff03c6a0e03c6" category="list-text">NetApp全闪存阵列产品页面</block>
-  <block id="d875955d78b62e4aff0847425410f79a" category="inline-link"><block ref="d875955d78b62e4aff0847425410f79a" category="inline-link-rx"></block></block>
-  <block id="45f6f9585c85146b389a4f896653a5f9" category="paragraph"><block ref="45f6f9585c85146b389a4f896653a5f9" category="inline-link-rx"></block></block>
   <block id="ec5282877903d9d2aceb3db45b21da54" category="list-text">NetApp AFF A400页面</block>
-  <block id="1f84bc4168c48270f2cc931b900d9eb4" category="inline-link"><block ref="1f84bc4168c48270f2cc931b900d9eb4" category="inline-link-rx"></block></block>
-  <block id="04438df627d0343d17b2f6f307b489ed" category="paragraph"><block ref="04438df627d0343d17b2f6f307b489ed" category="inline-link-rx"></block></block>
   <block id="9d92155996555576a58d20e697fc2bd6" category="list-text">NetApp ONTAP数据管理软件产品页面</block>
-  <block id="dae4be95628a9cc8cb5ecb4b90cd738e" category="inline-link"><block ref="dae4be95628a9cc8cb5ecb4b90cd738e" category="inline-link-rx"></block></block>
-  <block id="2f08744b4a39af375744e1fc4a15b53a" category="paragraph"><block ref="2f08744b4a39af375744e1fc4a15b53a" category="inline-link-rx"></block></block>
   <block id="45913847e0b47b72b60766711f7a8c21" category="inline-link"><block ref="45913847e0b47b72b60766711f7a8c21" category="inline-link-rx"></block></block>
   <block id="229469a202dbd3052c7b165bd55eda87" category="paragraph"><block ref="229469a202dbd3052c7b165bd55eda87" category="inline-link-rx"></block></block>
   <block id="dedba6b3261804ab1e5c2b75051c62ac" category="list-text">NVIDIA SMI（nvidia-smi）</block>
@@ -4178,7 +4165,6 @@
   <block id="217af7d1776d22530d98be04d104fd49" category="cell">23.07</block>
   <block id="db5eb84117d06047c97c9a0191b5fffe" category="section-title">支持</block>
   <block id="b2e75bbfb9933bc21b7f875e8676641d" category="inline-link-macro">联系NetApp</block>
-  <block id="952c6ea6549ebf347f6aae3d6b029756" category="paragraph">NetApp不为 Apache Airflow、JupyterHub、MLflow、Kubeflow 或 Kubernetes 提供企业支持。如果您对完全支持的 MLOps 平台感兴趣，<block ref="15a32e54137b30751a17b6bf2b412f99" category="inline-link-macro-rx"></block>了解NetApp与合作伙伴联合提供的全面支持的 MLOps 解决方案。</block>
   <block id="6999319a5a39a9ca41436977f2cb8b8d" category="summary">NetApp的开源 MLOps - 技术概述</block>
   <block id="4c9ffff73cd2c66ec9f6be3cb2b21333" category="paragraph">本节重点介绍NetApp的 OpenSource MLOps 技术概述。</block>
   <block id="5cd2adc9e2a5254e4c1da803519f298b" category="section-title">人工智能</block>
@@ -5401,7 +5387,6 @@
   <block id="6eac7b0a5cfc938d19f189c4a925ae85" category="section-title">步骤 2：配置 Trident</block>
   <block id="56c52a0dabd55220d0a00db845f7eb1f" category="paragraph">在两个集群上都安装Trident ：</block>
   <block id="45d2098b426afc9ab859375c1adbe887" category="inline-link">+++ Trident安装指南+++</block>
-  <block id="d250649bce56841bd7a8ae7e4a825154" category="paragraph">🔗 <block ref="d4fe2bbcee5aa3fc712cc2604ddb189d" category="inline-link-rx"></block></block>
   <block id="ce18e85a5244ef1099f883c207b32d36" category="paragraph">创建Trident后端</block>
   <block id="1d505b9bfd6afef0b98758bef1cef23c" category="paragraph">如果收到 401 未授权错误，请验证ONTAP用户是否具有足够的 API 权限，以及是否使用了正确的用户名 (vsadmin) 和密码。</block>
   <block id="e5250cf37b377ddb3586661f3e7bdc3e" category="paragraph">定义存储类</block>
@@ -5551,7 +5536,6 @@
   <block id="b360c8c43818ee701c2c04aea42cd62a" category="section-title">7.部署 K8s 集群（使用 Trident）</block>
   <block id="0e2e4419e3eb7aa754e49ee968cd9405" category="paragraph">使用 configure 和 install 标签执行 ansible-playbook playbooks/infrastructure.yaml 以部署集群和 Trident CSI。</block>
   <block id="41ea2d03e0d611507cffcee378f6559a" category="inline-link">NetApp Trident CSI 集成用于企业 RAG</block>
-  <block id="6a1fa30ffb46efef37952483ac8b77d0" category="paragraph">注意：- 如果您的节点上未设置无密码 sudo，则需要将<block ref="13d87b4892426ec19bdc58a4643d3104" prefix=" " category="inline-code"></block>添加到此命令中。使用<block ref="13d87b4892426ec19bdc58a4643d3104" prefix=" " category="inline-code"></block>时，ssh 用户在每个节点上必须使用相同的密码，这一点至关重要。- 有关详细信息，请参阅<block ref="df44a473c05d78f41c72a7649c842643" category="inline-link-rx"></block>。有关更多详细信息，请参阅<block ref="0fa543c14587a20e022922b0d6d40500" category="inline-link-rx"></block>。</block>
   <block id="6ea33c0cef6e57544b8e10c644b762af" category="section-title">8.更改 iwatch 打开描述符的数量</block>
   <block id="8b594829fa102007d7fb98eb374b87bd" category="inline-link">iwatch 打开描述符</block>
   <block id="0b90ae516b9c9e0b43fab8d0faccdace" category="paragraph">请参见<block ref="7175b82763deb794c2905a8612fbe6de" category="inline-link-rx"></block>了解详细信息。</block>
@@ -5779,4 +5763,626 @@
   <block id="ad9a3bc80573e30d355ceade1a1a0df0" category="paragraph">部署分层 KV 缓存架构将 KV 缓存从 GPU 内存移动到 CPU 内存和共享 NetApp 存储，因此推理可以随用户和上下文长度扩展，而无需在重复预填充时浪费 GPU 周期。共享存储将缓存转化为跨服务实例的可重用基础架构，并帮助您从现有 GPU 投资中获得更多价值。</block>
   <block id="f333cd9299f433a3c4b700d33c3c8aa9" category="paragraph">NetApp 存储非常适合这一层，因为它提供了超出原始容量的生产推理所需的功能：通过 S3 和 NFS/pNFS 进行标准访问、多个服务引擎实例可同时使用的共享缓存，以及您已依赖的用于持久性、保护和治理的企业数据服务。您无需专有客户端；KV 缓存卸载框架使用熟悉的协议连接到 StorageGRID S3 或 ONTAP NAS 挂载点。</block>
   <block id="76c31e105f288ff172a4369d68076253" category="paragraph">NetApp 为 KV 缓存卸载提供了熟悉的存储基础，而无需更改运行推理的方式或团队管理数据的方式。</block>
+  <block id="7f81d4beec39a48a9c89bdc01911cb68" category="inline-link-macro">阅读 NetApp.com 上的 AI 博客</block>
+  <block id="0bf9d2d7a2690fbfa406fbab84718f0a" category="paragraph">探索各行业的行业趋势、创新及人工智能的实际影响。 <block ref="664aa1dcd8c100045b2cda193137e6b7" category="inline-link-macro-rx"></block></block>
+  <block id="5b7c2e1131022c94db3527c404bf4075" category="paragraph">数据读取过程涉及将 FSx ONTAP 配置为专用 S3 存储桶。要了解详细的配置说明，请参阅 <block ref="a4f6db8ee799d71c8436c5d66421c857" category="inline-link-macro-rx"></block></block>
+  <block id="f6f063eccd373c25744d28ef8af6a6db" category="summary">我们使用 TeraGen 基准测试工具中的 TeraSort 和 TeraValidate 脚本来衡量采用 E5760、E5724 和 AFF-A800 配置的 Spark 性能验证。</block>
+  <block id="7effc798d6695bcdf299c9d6f49fb7e5" category="summary">NetApp 有三个存储产品组合。FAS 和 AFF、E-Series 和 Cloud Volumes ONTAP。我们已验证 AFF 和 E-Series 与 ONTAP 存储系统用于基于 Apache Spark 的 Hadoop 解决方案。由 NetApp 提供支持的数据结构集成了数据管理服务和应用程序（构建块），用于数据访问、控制、保护和安全。</block>
+  <block id="8f162c0dfd9f119fb9683160247618d5" category="paragraph">注意：- 如果您的节点上未设置无密码 sudo，则需要将<block ref="13d87b4892426ec19bdc58a4643d3104" prefix=" " category="inline-code"></block>添加到此命令中。使用<block ref="13d87b4892426ec19bdc58a4643d3104" prefix=" " category="inline-code"></block>时，ssh 用户必须在每个节点上使用相同的密码。- 详情请参阅 <block ref="df44a473c05d78f41c72a7649c842643" category="inline-link-rx"></block>。有关更多详细信息，请参阅<block ref="ee42a3ab3b8bbd38a7c5f36f55d2fb5d" category="inline-link-rx"></block>。</block>
+  <block id="dc9609005748fb37ba46e98cc99030e1" category="summary">了解 Lustre 与 NetApp E-Series 存储构建块设计、扩展规则、HA 模型、网络拓扑和客户端集成。</block>
+  <block id="83ffc53d15196aeb1a817460dbb486aa" category="doc">Lustre 与 NetApp E 系列存储 - 解决方案架构</block>
+  <block id="8ae9700922a0bb4891f51a48ed4ef464" category="paragraph">了解 Lustre with NetApp E-Series Storage 如何使用构建块、高可用性、网络拓扑和客户端，以便您可以规划容量、性能和故障转移。</block>
+  <block id="2168104e73d11c05aa64fc655516a82f" category="section-title">构建块设计</block>
+  <block id="26534a28e7b4d9bd2dfa3eadc9cf999d" category="paragraph">构建模块是 NetApp E 系列 Lustre 解决方案的基本可扩展单元。每个构建块由两个服务器节点组成，配置为提供 Lustre 对象存储服务器 (OSS) 和元数据服务器 (MDS) 功能的高可用性 (HA) 对，两个 NetApp E 系列全闪存阵列，服务器和阵列之间的专用后端 NVMe over Fabrics (NVMe-oF) 连接，以及用于客户端和节点间通信的专用前端 Lustre 网络 (LNet) 连接。Pacemaker 和 Corosync HA 集群可以包含一个或多个构建块中的服务器对。NetApp<block ref="a0483fb858f70ef7270ed27766b1a748" prefix=" " category="inline-code"></block>集合使用 Ansible 自动化来部署和配置 Lustre 服务。</block>
+  <block id="17a6f4a0cccca248a9e2b75f4387a067" category="paragraph-title">Lustre 构建块</block>
+  <block id="b1c9036bef997910c340a575472f7e91" category="inline-image-macro">具有两个 OSS/MDS 服务器节点和两个 E-Series EF80 阵列的 Lustre HA 构建块</block>
+  <block id="d669f6c4bb64d85cbd5ff5963a5c6e12" category="paragraph"><block ref="d669f6c4bb64d85cbd5ff5963a5c6e12" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="3cfddb8045406573ceedbf76423d82fb" category="paragraph">构建块可根据文件系统的增长需求进行扩展。每个文件系统都需要一个基本构建块。基本构建块在管理目标 (MGT) 上托管管理服务器 (MGS)，并提供初始元数据目标 (MDT) 和对象存储目标 (OST) 容量。其他构建块可扩展文件系统，并将其 MDT 和 OST 目标注册到基本构建块的 MGS 中。模块化方法允许根据工作负载需求独立扩展容量和性能。</block>
+  <block id="b9ffd0f5d2fbeca8a21d0e7f6c3fd99d" category="paragraph">NetApp 建议在大多数部署中使用以下构建块配置文件。列出的 MGS、MDT 和 OST 计数是推荐的默认值，经过优化以最大化 E-Series 存储阵列的性能和容量。调整 Ansible 清单中的目标计数、卷大小和 E-Series 驱动器分配，以满足工作负载需求。例如，需要更大元数据存储容量的部署可以在同一构建块硬件中配置更多 MDT 和更少 OST。</block>
+  <block id="88e8c06052f9e72ef6c6e4069fd7b276" category="paragraph">下表总结了构建基块类型和建议的目标计数。</block>
+  <block id="26e2cdaaf8f34633fee6f31dbb424c86" category="cell">MGS</block>
+  <block id="e0f67ead95c63aee6a8fe009bacf6c50" category="cell">MDT</block>
+  <block id="5e67f7a1d587efcc376c11c9806cf456" category="cell">OSTs</block>
+  <block id="ad8783089f828b927473fb61d51940ec" category="cell">用途</block>
+  <block id="095a1b43effec73955e31e790438de49" category="cell">基础</block>
+  <block id="5e19de7ff972cdc4394b10f96a9fb0fa" category="cell">文件系统中的第一个构建块。托管 MGS 和初始 MDT 和 OST 容量。</block>
+  <block id="4b160bd7bc9d2d97b1132396a4548529" category="cell">MDT+OST</block>
+  <block id="9ee291176e6650ee7aca2375921cfd81" category="cell">添加元数据和数据容量。根据基本构建基块 MGS 进行注册。</block>
+  <block id="5d93aaa6378dba134d0b51c6efb34fba" category="cell">仅限 OST</block>
+  <block id="edbad65223505b7cb3e8a1910da9a48a" category="cell">仅添加数据容量。根据基础构建块 MGS 进行注册。</block>
+  <block id="f93aa434cbe5bab4ec93ef90f5d87697" category="list-text">*驱动器类型和池布局：* E-Series 支持传统的 RAID 卷组和动态磁盘池 (DDP)。对于 TLC NVMe 驱动器，将 RAID 6 卷组用于 OST 存储，将 RAID 1 卷组用于 MGS 和 MDT 存储。对于 QLC NVMe 驱动器，请将 DDP 用于共享驱动器池。</block>
+  <block id="afa16f87b0793f1f055d7f4c8fc94a8c" category="inline-link-macro">目标分布和 NVMe-oF 连接</block>
+  <block id="e47f832e68af8d68b0991a362aa4db96" category="list-text">*目标分布：* 每个构建块中的 Lustre 目标在两个 OSS/MDS 服务器节点和两个 E-Series 阵列之间进行平衡。该布局跨服务器 CPU 和阵列控制器分布 I/O，以提高 NVMe-oF 路径性能并保持冗余。请参阅 <block ref="3cc6169fe479d4e15a96418fa2b92a35" category="inline-link-macro-rx"></block> 中的 <block ref="b951df04c708233bd0e6aa30024a444e" category="inline-link-macro-rx"></block>。</block>
+  <block id="697ea025ecb303d4f40d1bf3a8b4bde0" category="inline-link-macro">NetApp 互操作性矩阵工具 (IMT)</block>
+  <block id="5368a693aa74a0eba7b84abbd9be3a75" category="paragraph">支持的操作系统、Lustre 版本、阵列固件和相关构建块组件列于 <block ref="dea5a7fef452493e48f46a815b88571f" category="inline-link-macro-rx"></block> 的 *E-Series Lustre* 下。有关详细的卷计数、驱动器布局和大小调整指南，请参阅 <block ref="b951df04c708233bd0e6aa30024a444e" category="inline-link-macro-rx"></block>。有关软件组件，请参阅 <block ref="50dec6b1119ecf8040454f42ce24288c" category="inline-link-macro-rx"></block>。</block>
+  <block id="b6bf6b7b72e2440dd65804236671aaf2" category="section-title">扩展建议</block>
+  <block id="219f5cf2d51ca12a90e8e6f6dead489f" category="paragraph">当元数据容量、数据容量或两者都变得有限时，Lustre 文件系统通过添加构建基块进行扩展。根据文件计数和元数据 IOPS 扩展 MDT；根据容量和聚合吞吐量需求扩展 OST。</block>
+  <block id="be46f21ebcdd3e8dbc3407f201e7671f" category="list-text">*每个文件系统一个基本构建块：* 仅部署一个基本构建块；它托管 MGS 以及初始 MDT 和 OST 目标。</block>
+  <block id="a51646c3ef687993c117154c9bd9c2e9" category="list-text">*其他构建基块配置文件：* 当现有 MDT 容量足够且数据容量或吞吐量必须增加时，添加仅限 OST 的构建基块。当元数据性能或命名空间容量成为瓶颈时，添加 MDT+OST 构建基块。</block>
+  <block id="bc8b43c37df464527d4967a75891ed34" category="list-text">*HA 集群限制：*将每个 Pacemaker 和 Corosync HA 集群限制为五个构建块（十个 Lustre 服务器节点）。将较大的部署均匀拆分为多个 HA 集群，以避免大型配置中的资源限制。</block>
+  <block id="49a6e0259d41be0a04ea6873c59a3935" category="paragraph">下图显示了堆叠在 42U 机架中的最多五个构建模块（每个机架一个 Pacemaker HA 集群）。多个机架可以参与单个 Lustre 文件系统；只有基本构建模块托管 MGS。</block>
+  <block id="adb3b1a9740a4792db095434b57d730d" category="paragraph-title">Lustre并行文件系统机架扩展</block>
+  <block id="3124af7a7890d90dc620feeb1baf29f4" category="inline-image-macro">Lustre 并行文件系统跨多个 42U 机架扩展，每个机架在一个 Pacemaker HA 集群中最多包含五个构建块</block>
+  <block id="31f2e44e6941fd0758165db8d6a4b611" category="paragraph"><block ref="31f2e44e6941fd0758165db8d6a4b611" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="1be138531fe213ae00cd83288ff59040" category="paragraph">有关尺寸示例，请参见 <block ref="fd37d50a703eb90bca5592e7cf7939cb" category="inline-link-macro-rx"></block>。</block>
+  <block id="cf03dce6d27c37ae2bf803a5ad8ddb93" category="section-title">HA 架构</block>
+  <block id="8a13f8617619d3e648e8c45a19f4c599" category="paragraph">Lustre with NetApp E-Series Storage 使用与 NetApp E-Series 存储集成的共享磁盘高可用性 (HA) 架构。Pacemaker 管理 HA 资源，Corosync 提供集群成员资格和消息传递。它们共同管理每个构建块中两个 OSS/MDS 服务器节点之间的 Lustre 目标故障转移。多路径 NVMe-oF 将两个 OSS/MDS 服务器节点连接到相同的 E-Series 卷，因此任一节点都可以在需要时接管目标服务。</block>
+  <block id="384280ea651954973b3d9bce2e1c4fea" category="paragraph">每个 MGS、MDT 和 OST 都配置为 HA 资源，其依赖关系位于 Pacemaker 资源组中。Pacemaker 确保资源以正确的顺序启动和停止，保持在同一节点上并置，一次仅在一个节点上运行。从两个节点并发访问同一目标可能会损坏底层文件系统。</block>
+  <block id="229f171ab4ff38290d5b4ca86d00f328" category="list-text">*目标故障转移：* 两个 OSS/MDS 服务器节点都是集群中的对等节点，但每个 Lustre 目标一次仅在一个节点上处于活动状态。Pacemaker 监控资源监视每个目标及其依赖项的运行状况，并在目标在其当前节点上不可用时触发故障转移。发生故障时，Pacemaker 会按正确顺序在伙伴节点上重新启动受影响的资源组，一旦服务恢复，客户端将透明地重新连接到目标的新位置。由于每个目标仅在单个节点上激活，因此文件系统永远不会面临来自两个节点的并发写入风险。</block>
+  <block id="29a2de841205976f47a4fa0209832a9c" category="list-text">*共享存储访问：* 多路径 NVMe-oF 路径将每个 OSS/MDS 服务器节点连接到构建块中的所有 E 系列控制器，因此每个目标卷都可以从任一节点访问。如果服务器节点发生故障，合作伙伴节点已具有指向相同卷的活动路径，无需重新配置存储连接即可接管目标的所有权。如果阵列控制器或路径发生故障，多路径会将 I/O 重定向到存活的控制器。这种双重冗余使 Lustre 目标能够在 OSS/MDS 服务器节点或阵列控制器之间进行故障切换，而不会丢失对后备卷的访问权限。</block>
+  <block id="a482c53de2fc843e0bb2f865a9f6a655" category="list-text">*STONITH 隔离：* 发生故障时，Pacemaker 有时无法与故障节点通信以确认其目标已停止。在其他位置重新启动这些目标之前，Pacemaker 会隔离故障节点（理想情况下通过断电），以确保其处于关闭状态。隔离可防止脑裂情况的发生——即两个节点同时访问同一目标并损坏底层文件系统——从而在故障转移期间保持数据完整性。NetApp 建议将<block ref="ed7a45bcbbe63a63733ab17ec2246fcc" prefix=" " category="inline-code"></block>用于配备支持 Redfish 的基板管理控制器 (BMC) 的服务器。其他隔离代理（例如<block ref="138fd23846f5d48fe0a28591814e283f" prefix=" " category="inline-code"></block>）也受支持。</block>
+  <block id="1fdcbe69d913b747190662ff186848c2" category="inline-link-macro">HA用户指南</block>
+  <block id="89f3bec5eaf56f644be8beb09688b8e8" category="inline-link-macro">ansible-lustre 集合</block>
+  <block id="1635607a80c549691f35dccafcee86d0" category="paragraph">有关集群管理和隔离配置，请参见 <block ref="b3db81bf0fae1fdfc6b6cee591291abc" category="inline-link-macro-rx"></block> 中的 <block ref="6e79803b16c52a648633d8620cb9f221" category="inline-link-macro-rx"></block>。</block>
+  <block id="82c161268dfe0b9b1287ad4fe5c236b0" category="section-title">网络架构</block>
+  <block id="d2893affb3627b50d8c0adf917d16ba5" category="paragraph">该解决方案对存储后端流量和 LNet 前端流量使用单独的网络路径。</block>
+  <block id="602b1c8167e99c819b0279b3ea2a890e" category="inline-link-macro">机架和线缆 Lustre 硬件</block>
+  <block id="7ed3467ebc44638b347f49a62ba1e2fb" category="inline-link-macro">目标分布</block>
+  <block id="31bcce12b5160e4886c47b8a0d991888" category="list-text">*后端 (NVMe-oF)：* OSS/MDS 服务器节点使用 NVMe/InfiniBand 或 NVMe/RoCE 通过 NVMe-oF 连接到 E-Series 阵列。NVMe-oF 路径在 Lustre 目标服务和 E-Series 卷之间传输块 I/O。有关 EF80 六 HCA 后端布线的信息，请参见 <block ref="18bea05bda8ed8f518d518ea28b4f1ab" category="inline-link-macro-rx"></block>。有关跨节点和阵列的首选目标放置，请参见 <block ref="b951df04c708233bd0e6aa30024a444e" category="inline-link-macro-rx"></block> 中的 <block ref="ff23c4948ae50c95f779a1609ba4e520" category="inline-link-macro-rx"></block>。</block>
+  <block id="f7dd9a813b10b7d4884b4643def972f5" category="list-text">*前端 (LNet)：* Lustre 客户端和 OSS/MDS 服务器节点使用 NVIDIA OFED 堆栈通过 LNet 以<block ref="c49f0c3c2926c11287cf9b9355c7aa1f" prefix=" " category="inline-code"></block>网络类型进行通信。InfiniBand 和 RoCE 都是经过验证的前端传输协议。ansible-lustre 集合为多轨 LNet 配置所有前端接口，通过聚合多个端口来增加带宽，并为客户端及节点间流量提供路径冗余。</block>
+  <block id="a43c363f559b33460c8075b618d0eaf8" category="list-text">*管理和集群：* 带外管理网络提供服务器管理、BMC 访问和阵列管理。STONITH 隔离代理（例如<block ref="ed7a45bcbbe63a63733ab17ec2246fcc" prefix=" " category="inline-code"></block>）使用此网络访问服务器 BMC 并从故障节点切断电源。Corosync 还可以在此网络上运行集群通信，作为前端结构旁边的附加环。使用多个环配置 Corosync 可增加集群消息传递的冗余，并降低单个网络故障中断仲裁的风险。</block>
+  <block id="145312809fb4d503a6e0ac92674276ac" category="section-title">Lustre 客户端</block>
+  <block id="5ab70d1058c71efddd71a0b5b4a39d61" category="inline-link-macro">Lustre 支持表</block>
+  <block id="ecd1920a56f570c6a4fe79526a61389b" category="paragraph">Lustre 客户端加载客户端内核模块，建立到 OSS/MDS 服务器节点的 LNet 连接，并挂载文件系统，以向应用程序提供单一、一致、符合 POSIX 的命名空间。I/O 跨活动 OST 并行分布。客户端节点位于构建块的外部，并通过前端 LNet 结构使用文件系统。此解决方案的 IMT 中未列出客户端操作系统；请使用 <block ref="612e690bea76796aad3a16779b18be6e" category="inline-link-macro-rx"></block> 查找已部署的 Lustre 版本所支持的已测试客户端发行版和内核版本（例如，Red Hat Enterprise Linux 9、SUSE Linux Enterprise Server 15 和 Ubuntu 24.04）。</block>
+  <block id="9998d218109c40ea696c5c329fc14bc7" category="paragraph">客户端节点需要连接到与 OSS/MDS 服务器节点相同的 LNet 结构和网络类型。如果需要，LNet 路由器可以桥接单独的 LNet 子网或结构。</block>
+  <block id="b6df2ef001d9ba7e28f5c5f925e6400d" category="inline-link-macro">netapp-lustre 存储库</block>
+  <block id="5f326ef4b597e980cb188da5a716d991" category="paragraph">NetApp 为 Rocky Linux 9.8 和 Red Hat Enterprise Linux 9.8 提供预构建的 Lustre 服务器 RPM。NetApp 不提供预构建的客户端软件包。从 <block ref="a26fe5a6450900f32fdc60abe5f6c5e6" category="inline-link-macro-rx"></block> 中的 Lustre 源代码为客户端操作系统和内核构建客户端软件包。</block>
+  <block id="f6fe383d782ca3cc78e7f5626027ddd3" category="inline-link-macro">部署解决方案</block>
+  <block id="6d68186fae21c34bab6837e5625f472c" category="inline-link-macro">lustre_client角色文档</block>
+  <block id="c524fafdc97e3e8be7ee3233f1f35afc" category="paragraph">安装客户端软件包后，<block ref="6e79803b16c52a648633d8620cb9f221" category="inline-link-macro-rx"></block> 中的可选 <block ref="99fc42f6ce60cac70cab6ee0f8f2330f" prefix=" " category="inline-code"></block> 角色会配置客户端网络接口和 LNet，在选中时启用 multi-rail LNet，验证连接性，并管理持久的 systemd 挂载单元。该角色不会构建 Lustre。仅当 <block ref="d5f50bdd80db018bfa3d362452fb861d" prefix=" " category="inline-code"></block> 已填充时，它才会安装客户端软件包。如果需要，可以手动配置客户端。有关分步步骤，请参见 <block ref="8f49e9bdbd514d6a8081d8c90c9f306a" category="inline-link-macro-rx"></block> 和 <block ref="a0f4d068c029bf8f009ee83ddd7b9328" category="inline-link-macro-rx"></block>。</block>
+  <block id="4f5054c7d30512a9939ddf2201d86d54" category="summary">使用 NetApp Ansible playbook 部署 Lustre HA 集群和客户端。</block>
+  <block id="33083b65cfe94a2f3ae9f4197d0c53ce" category="doc">部署 Lustre HA 集群和客户端</block>
+  <block id="07148f1dd881fdc7dfe8f1e0688d01c8" category="paragraph">使用 NetApp Ansible playbook 准备服务器操作系统、安装 NVIDIA DOCA-OFED、部署 Lustre HA 集群，并配置 Lustre 客户端。</block>
+  <block id="b49b203ba6d22ffb53b89f8af41db490" category="inline-link-macro">自定义 Lustre Ansible 清单</block>
+  <block id="840f333f0bb0cf08631b9e65cdfd9339" category="paragraph">在开始之前，请填写并固定 <block ref="48fa4fcc6ef309525d67cfc2e71da78c" category="inline-link-macro-rx"></block> 中所述的清单。</block>
+  <block id="92329ab03465cefd3513d3cc78541047" category="section-title">部署 Lustre HA 集群</block>
+  <block id="f3a29486bed19a90f2da6d007818b427" category="list-title">步骤</block>
+  <block id="ae500f96b6ddfd600df7c0bc6b5fa41e" category="list-text">从工作副本中的<block ref="8e25afc00dfc76dcf543a4bd8b70f7d8" prefix=" " category="inline-code"></block>目录，在 Lustre 服务器上准备操作系统。将<block ref="64c25f7bf7bc31acd4f5cc4d7ecb73f5" prefix=" " category="inline-code"></block>替换为自定义清单目录的路径：</block>
+  <block id="3673a4003851958483ff8498a769ecf3" category="inline-link-macro">NVIDIA DOCA-Host 安装和升级</block>
+  <block id="dc5a71188a3275cc63a24b0b74655792" category="list-text">在每台 Lustre 服务器上安装 NVIDIA DOCA-OFED。根据上一步安装的内核构建内核模块。按照 <block ref="7d78b1760b4ebb4ab1ad267c85870752" category="inline-link-macro-rx"></block> 中适用于您内核的操作步骤进行。以下示例显示了在 RHEL 或 Rocky Linux 上安装 DOCA-OFED 的过程。</block>
+  <block id="7dbcaaae23c6528910c2b21076a59632" category="list-text">安装 DOCA 主机存储库包并刷新包缓存。将<block ref="f0c55660120f8848748167a8b3832af1" prefix=" " category="inline-code"></block>替换为适用于您的操作系统和架构的 DOCA 主机包：</block>
+  <block id="e8bc4be36e4cdb37c3d25fdce0841b8d" category="list-text">为正在运行的内核构建 DOCA 内核模块。脚本将打印其创建的软件包的路径：</block>
+  <block id="83e3008e4cb223028ba0b7b6966de575" category="list-text">安装脚本创建的内核模块存储库包，然后刷新包缓存。将<block ref="aa654633a9857018c94f9b36506e1548" prefix=" " category="inline-code"></block>替换为上一步中的路径：</block>
+  <block id="4871ece702c640438eee131f662524d5" category="list-text">安装 DOCA-OFED 用户空间、内核和 NVMe 包。将 <block ref="da5c2b896a2957f1ee87942e2da7ff73" prefix=" " category="inline-code"></block> 替换为正在运行的内核版本：</block>
+  <block id="f9fa68ae7af314229bcdc48211c162c3" category="list-text">运行主要部署 playbook：</block>
+  <block id="8477b59b4dbd5b47a10b2b9c38042a89" category="admonition">调整<block ref="51ded8ed2d854ee1bcb6557aaf84688f" prefix=" " category="inline-code"></block>以适应部署规模，从而控制 Ansible 并行配置的主机数量。例如，对于较大的集群，请添加<block ref="2a86fba4a938ce618ea8eefc39d65050" prefix=" " category="inline-code"></block>。</block>
+  <block id="01a16f7eaa19f99ed1cfdef329e584f2" category="paragraph">此 Playbook 负责配置 E-Series 卷组或 DDP 池和卷、配置 NVMe-oF 主机连接、格式化和挂载 Lustre 目标、配置 LNet、应用性能调优，以及配置 Pacemaker HA 资源。</block>
+  <block id="ff3ff2497027b0fe1b310b10a084a716" category="inline-link-macro">HA 管理用户指南</block>
+  <block id="fe06485e37868a7559e7f21c10b5fb16" category="admonition">一个包含一个构建块的部署构成一个双节点 Pacemaker 集群。在故障转移的情况下，节点 A 会获得额外投票。要在双节点集群中实现仲裁，请考虑配置 qdevice。当部署包含多个构建块时，每个构建块为较大的 Pacemaker 集群提供一个双节点服务器对，最高可达已记录的集群限制。查看 <block ref="366b62f6dcea4b62f9ab1e6c11adfdc9" category="inline-link-macro-rx"></block> 中的隔离和仲裁配置，以便集群可以在节点故障期间安全地恢复目标。</block>
+  <block id="65d39f81777200093c526fc1556aad51" category="section-title">部署 Lustre 客户端</block>
+  <block id="ba5289041c7fafcab23ace4ff8fd6d9b" category="paragraph">通过自定义客户端部署模板并运行客户端 playbook，在任何需要文件系统访问权限的系统上部署 Lustre 客户端。</block>
+  <block id="5170ac37884b96453d1e6b82a815c4d6" category="inline-link-macro">netapp-lustre</block>
+  <block id="14e4a498fd2bac1e92f8e542185e0cda" category="list-text">从 <block ref="612e690bea76796aad3a16779b18be6e" category="inline-link-macro-rx"></block> 中选择兼容的客户端操作系统和内核。如果尚未安装，请从 <block ref="be60e290dc17959a4905f75b82e3dad6" category="inline-link-macro-rx"></block> 为该内核构建并安装 Lustre 客户端软件包。</block>
+  <block id="3ecb3b700b08dd014a63fca3af74da77" category="list-text">创建<block ref="fac04ca68a48af91f0290001604a2463" prefix=" " category="inline-code"></block>模板目录的工作副本，包括其共享<block ref="97a67fc90fe6d13cef22fa951de48f8d" prefix=" " category="inline-code"></block>文件，然后选择与您的架构匹配的模板：</block>
+  <block id="80f21b5d5686ebf74112f9e0f36c7569" category="inline-link-macro">IB_lustre_cluster_clients</block>
+  <block id="677221edf3da01fe7ab07685265d8062" category="list-text">*InfiniBand：* <block ref="35e4b458ad871ca1f95b4932bb7cda13" category="inline-link-macro-rx"></block></block>
+  <block id="4111ad1003028b71065d3de237a53787" category="inline-link-macro">ROCE_lustre_cluster_clients</block>
+  <block id="a20b9b6f9eda64ea2918cc6cd869bd9a" category="list-text">*RoCE:* <block ref="2a9c8d5e1726d46d316bd69280f6ba0d" category="inline-link-macro-rx"></block></block>
+  <block id="64a5c7a596b010742dcc41993dc90e60" category="list-text">为您的客户端自定义 <block ref="ca5b470e14f1597be2a41f1c443527b5" prefix=" " category="inline-code"></block>、<block ref="3342582e194d63e4c91b56623752c9c6" prefix=" " category="inline-code"></block> 和 <block ref="96fa973cda8809ad84f646e3d8fbbc1c" prefix=" " category="inline-code"></block>。表中的行引用指向 <block ref="a0483fb858f70ef7270ed27766b1a748" prefix=" " category="inline-code"></block><block ref="e4dcd80dd2930580c435398aa52a9b6d" prefix=" " category="inline-code"></block> 标记中的 RoCE 客户端模板文件；除另有说明外，InfiniBand 客户端模板使用相同的变量。</block>
+  <block id="6f16a5f8ff5d75ab84c018adacdfcbb7" category="cell">字段</block>
+  <block id="97497e4f12b766346e472319e9f36261" category="cell">Ansible 变量</block>
+  <block id="697fa0809c141a51ad35505df3cc002c" category="cell">模板文件 <block ref="e4dcd80dd2930580c435398aa52a9b6d" prefix="(" category="inline-code"></block>)</block>
+  <block id="5d113f2038d289f391614c39043629e8" category="cell">范围</block>
+  <block id="f4c6f851b00d5518bf888815de279aba" category="cell">备注</block>
+  <block id="8be1a9d1b639b001a740bd70f202f545" category="cell">客户端主机</block>
+  <block id="f8f0230eb9a10081a6983c55a009596c" category="cell"><block ref="7c311b499aee4363d8dfccb8e00eb65c" prefix="" category="inline-code"></block></block>
+  <block id="4319c164a7c3bc200ff559ee1f9f9012" category="inline-link-macro">lustre_client_inventory.yml#L4</block>
+  <block id="90ce4d39a17095097495da298e0d723f" category="cell"><block ref="90ce4d39a17095097495da298e0d723f" category="inline-link-macro-rx"></block></block>
+  <block id="3db64796d547827f6e1ce991769830d1" category="cell">每位客户</block>
+  <block id="3131d8b15b19d5601f1e7f150bfcec03" category="cell">列出每个客户端主机名。</block>
+  <block id="3b0cd6ef1ad5815f5876514623cdc732" category="cell">客户端 SSH 用户和提权密码</block>
+  <block id="75183c22c6ed23f273cd33ff93cf5bfa" category="cell"><block ref="2059341c4409e15a9f13830208b77e56" prefix="" category="inline-code"></block> /<block ref="846082d5f2a5a221d387dc3719e8d096" prefix=" " category="inline-code"></block></block>
+  <block id="e672e0b08f2ae1f26424c9210007f2e7" category="inline-link-macro">passwords.yml#L2</block>
+  <block id="939b8d59ca6d09cea63e285c50fed916" category="cell"><block ref="939b8d59ca6d09cea63e285c50fed916" category="inline-link-macro-rx"></block></block>
+  <block id="a8a92c2afc6585e5fa081901419d1b6e" category="cell">集群范围</block>
+  <block id="eb5dc2a531453217cdd76674000cead8" category="cell">仅当 SSH 用户不是<block ref="63a9f0ea7bb98050796b649e85481845" prefix=" " category="inline-code"></block>时，才设置提权密码。</block>
+  <block id="b51137da99daab4e87a07179ef60b7bb" category="cell">LNet接口</block>
+  <block id="6abd80c04895fc2904236adea666f5bb" category="cell"><block ref="ef28b8b060b698f7614ae0f0773879d7" prefix="" category="inline-code"></block></block>
+  <block id="db105a090f4b3178b97050461d585230" category="inline-link-macro">group_vars/all.yml#L7</block>
+  <block id="32d2980dce4814173fdeae36bf8fb9f4" category="cell"><block ref="32d2980dce4814173fdeae36bf8fb9f4" category="inline-link-macro-rx"></block></block>
+  <block id="cb297a8d150b85cde575250ed180c09b" category="cell">客户端 LNet 接口名称（L13 处的值）。</block>
+  <block id="7c9c93c85fa5555fb2d20e1f30ecf193" category="cell">挂载 MGS NIDs</block>
+  <block id="8035c29187a1f6b393d457b37b6e59f3" category="cell"><block ref="297aebd8865be3c5176be647ec05d8b6" prefix="" category="inline-code"></block></block>
+  <block id="87098da60fa086fd5bd5018a8dadad76" category="inline-link-macro">group_vars/all.yml#L17</block>
+  <block id="87d9b1f2ef4d1ed85fac9c490ac9e8fd" category="cell"><block ref="87d9b1f2ef4d1ed85fac9c490ac9e8fd" category="inline-link-macro-rx"></block></block>
+  <block id="3b20230a140792bd3a080f55546cc77b" category="cell">用于挂载文件系统的 MGS NID（L20 的值）。</block>
+  <block id="443bd317da0c7f5d88ff99b0c047c7f5" category="cell">文件系统名称</block>
+  <block id="88f98cb728bdeec611e192b39efea1b4" category="cell"><block ref="9a37a14aef09a5e40c4b65d4ffe4f84d" prefix="" category="inline-code"></block></block>
+  <block id="5c7c2d7eb4ca78e38ece35e0cb311532" category="inline-link-macro">group_vars/all.yml#L21</block>
+  <block id="539c3a3bc51e3e53e36cd00cf3aa35d9" category="cell"><block ref="539c3a3bc51e3e53e36cd00cf3aa35d9" category="inline-link-macro-rx"></block></block>
+  <block id="84801f7e79e1f99301c9575758d60fcb" category="cell">必须与集群<block ref="9948b2d72c189368aba79ff6a6f29e9f" prefix=" " category="inline-code"></block>匹配。</block>
+  <block id="0bc0058b2b986d2f1a1c89a94d6bfda6" category="cell">挂载点</block>
+  <block id="3cd86aacaf7923faca6ea2da7707ee4e" category="cell"><block ref="03b4cb723e91f1cecf0324aa97555270" prefix="" category="inline-code"></block></block>
+  <block id="031d0aa4c67fd872bd944298af012b5e" category="inline-link-macro">group_vars/all.yml#L22</block>
+  <block id="eff88b9bf540236200c5a3407412db56" category="cell"><block ref="eff88b9bf540236200c5a3407412db56" category="inline-link-macro-rx"></block></block>
+  <block id="680370327c4f3d77d7ff35c210978000" category="cell">客户端挂载目录。</block>
+  <block id="21c9bef152653e3fcf9d610ee543235c" category="cell">客户端管理 IP</block>
+  <block id="26b672f4cd021fb18ef56983414f134c" category="cell"><block ref="e15cba2a55d1c830968665125de5abf6" prefix="" category="inline-code"></block></block>
+  <block id="67f48ec24a12d065b454bbeac7878968" category="inline-link-macro">host_vars/client_01.yml#L4</block>
+  <block id="605bd5ebce3e987c1975bd3d0aeed280" category="cell"><block ref="605bd5ebce3e987c1975bd3d0aeed280" category="inline-link-macro-rx"></block></block>
+  <block id="7a0f487b094afb8328bef454792eb431" category="cell">每个客户端重复</block>
+  <block id="19988a9a8dd0ce44cf0228707868bb1a" category="cell">每个客户端一个<block ref="b6b61f33b6f898807880665e9e5f94de" prefix=" " category="inline-code"></block>文件。</block>
+  <block id="ecd174b586df36adb7803f4f17f8f8e1" category="cell">存储结构接口</block>
+  <block id="ab462ebb7ad10b4077acdc4a2ee7e661" category="cell"><block ref="4b785157a5e72b7262c130d2302f2206" prefix="" category="inline-code"></block></block>
+  <block id="58a404858b4958b16eab97fa7c74fdf8" category="inline-link-macro">host_vars/client_01.yml#L10</block>
+  <block id="c443d457524e158ff1f4d18df7b496d3" category="cell"><block ref="c443d457524e158ff1f4d18df7b496d3" category="inline-link-macro-rx"></block></block>
+  <block id="55908942c22db1aa7358ed0c0070f047" category="cell">前端接口地址（L15 处的值）。InfiniBand 模板在此处使用<block ref="e3f0f10215cb725eaa278fec38bd76e6" prefix=" " category="inline-code"></block>。</block>
+  <block id="b2731fdd0dec92240838b47554534f06" category="paragraph">为每个客户端重复设置。为每个客户端创建一个<block ref="b6b61f33b6f898807880665e9e5f94de" prefix=" " category="inline-code"></block>文件，并将相应的主机添加到<block ref="ca5b470e14f1597be2a41f1c443527b5" prefix=" " category="inline-code"></block>。填充共享<block ref="81fc088f3a9391600c7af8878cb365e6" prefix=" " category="inline-code"></block>文件，并在运行客户端 playbook 之前使用 Ansible Vault 对其进行加密。</block>
+  <block id="36523ec6a2cfaa5f35f4a133d166ef0b" category="list-text">从客户端模板目录运行客户端 playbook：</block>
+  <block id="6e53643c8b5ab7ab3a87799e37ce5743" category="paragraph">客户端 playbook 配置客户端网络接口和 LNet，可以为 Lustre 文件系统创建一个持久的 systemd 挂载单元。</block>
+  <block id="bd965e38a0c9cf27aa1bde099308e23f" category="section-title">完成后</block>
+  <block id="d4be0cd50f8113c9539912151e7021a8" category="inline-link-macro">验证部署</block>
+  <block id="dc3b94d1e90e58c76ff8007e6eceb45b" category="paragraph"><block ref="0bb6b88af486d04bc1cb72af611125a0" category="inline-link-macro-rx"></block>。</block>
+  <block id="09cee721f0b4e3f153330cf11723d57f" category="summary">为 Lustre 构建块安装机架并连接服务器、EF80 阵列、后端 NVMe-oF 网络和前端 LNet 结构的线缆。</block>
+  <block id="57265f475d0b1c925f29247bf9ffd849" category="doc">机架和布线 Lustre 硬件</block>
+  <block id="3b2606d1286290a450fa0fbac710df97" category="paragraph">架设 Lustre 服务器和 NetApp EF80 阵列，然后连接每个构建模块的后端 NVMe-oF 和前端 LNet 结构。</block>
+  <block id="135b308ed83c53f1516b7c754566d1c4" category="section-title">开始之前</block>
+  <block id="62f5efbb78bbf058114f0fe9d5e86cca" category="paragraph">查看 <block ref="b951df04c708233bd0e6aa30024a444e" category="inline-link-macro-rx"></block> 中的 HCA 计数、PCIe 插槽要求、路径要求和 MTU 指南。</block>
+  <block id="a0b0137ed670e8af15faa3b11abb8d48" category="list-text">根据构建块拓扑，对所有 Lustre 服务器和 E-Series 存储阵列进行机架安装和线缆连接。</block>
+  <block id="786669c9f212d6c20ffc339eb2367a8e" category="inline-image-macro">已标记的 Lustre 构建块，与两个 OSS/MDS 服务器和两个 EF80 阵列堆叠</block>
+  <block id="736fbba86d0a03b59b6eeee9c3d86c83" category="paragraph"><block ref="736fbba86d0a03b59b6eeee9c3d86c83" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="f9b4774d94693f6b2e8c99ab5a85b0f1" category="inline-link-macro">用缆线连接 EF50 和 EF80 控制器间镜像连接</block>
+  <block id="f016230d9333347a56544d34190817e2" category="list-text">对于每个 EF80 阵列，将控制器 A 端口 4a 连接到控制器 B 端口 4a，将控制器 A 端口 4b 连接到控制器 B 端口 4b。这些专用连接提供控制器间镜像，不用于主机流量。请参阅 <block ref="2167f991eb9981359d79aa07afa06edc" category="inline-link-macro-rx"></block>。</block>
+  <block id="0efa2e875fbcce2ca098bc7d3beffa59" category="list-text">根据EF80六HCA拓扑，在服务器和阵列之间连接后端NVMe-oF网络。</block>
+  <block id="cc0250785d0c2de26d745fcf0f2d1741" category="paragraph-title">EF80 六 HCA 后端布线（RoCE 或 InfiniBand）</block>
+  <block id="5dc0d089dbc7f323c2b2db3adda4aceb" category="inline-image-macro">两个 OSS/MDS 服务器节点和两个 EF80 阵列之间的 EF80 六 HCA 后端 NVMe-oF 布线</block>
+  <block id="fa0c84ec25d5521949201d115aea8f0d" category="paragraph"><block ref="fa0c84ec25d5521949201d115aea8f0d" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="4a70c61365d613b05bf336ff2d3b6331" category="list-text">将每个 Lustre 服务器和 Lustre 客户端上的四个前端 LNet 接口（i1 和 i4 HCA）连接到专用 InfiniBand 或 RoCE 交换机网络。</block>
+  <block id="549e900f52bc5aae5d24e560cda8f002" category="list-text">使用 RoCE 时，使用优先级流量控制 (PFC) 配置网络结构以实现无损操作。Ansible playbooks 在构建基块的所有接口上配置无损 RoCE。</block>
+  <block id="8ff63dda38394cf7e27b69e493fc02d8" category="inline-link-macro">准备服务器、阵列和 Ansible 控制节点</block>
+  <block id="ac9c449909db3bbc27c2d5c6630efdea" category="paragraph"><block ref="b82e71660dcff2c4b12ae3bc9d103566" category="inline-link-macro-rx"></block>。</block>
+  <block id="7fb6b1e6bab59eccacbd98c19cc1c38c" category="summary">自定义 Lustre 服务器、EF80 阵列、网络和 HA 资源的 NetApp Ansible 部署清单。</block>
+  <block id="07d5e0c6744dedd5f7049570b1ac34ae" category="doc">自定义 Lustre Ansible 清单</block>
+  <block id="849fa199688169bda702b938798074ee" category="paragraph">创建 EF80 部署模板的工作副本，并为服务器、阵列、网络和 Lustre 构建基块自定义其清单。</block>
+  <block id="ba5fc3a997ddadbbd02c4f2135ea89b4" category="paragraph">将选定的清单保留在其 fabric 和平台目录下。保留 <block ref="f48601f3d578d4005c478a296758f8af" prefix=" " category="inline-code"></block> 根目录下的 shared 目录和 <block ref="97a67fc90fe6d13cef22fa951de48f8d" prefix=" " category="inline-code"></block> 文件<block ref="4c9ed35a5bd895e82f72511e6cec8913" prefix=" " category="inline-code"></block>。</block>
+  <block id="b092a0a76f85e0b51b2b5d3e06255ea3" category="section-title">选择部署模板</block>
+  <block id="5cde57a20fc900ae9b57f3113bffb1dc" category="paragraph">从与站点的网络结构匹配的模板开始：</block>
+  <block id="fc4237a05da8825b9eb433a52ba633f0" category="inline-link-macro">IB_H2_IB_DAC_A2_EF80/lustre_building_block_cluster_1</block>
+  <block id="52b81e131e1d226662d234ac01012953" category="list-text">*InfiniBand:* <block ref="65b60e6b9c22162bb0aed549ad85be37" category="inline-link-macro-rx"></block></block>
+  <block id="698abb1eaba651b930d805eee8497d5c" category="inline-link-macro">ROCE_H2_ROCE_DAC_A2_EF80/lustre_building_block_cluster_1</block>
+  <block id="abeb9ae212983c6ef1b3bb03e1cdf92b" category="list-text">*RoCE:* <block ref="ca7061a33e7f5cdc5aa0d0093ae53375" category="inline-link-macro-rx"></block></block>
+  <block id="c8ff17e78c3fe1abe573cba77387562f" category="section-title">配置特定于站点的设置</block>
+  <block id="161dddc8fd4745906dbb0976b71174eb" category="paragraph">在清单中设置站点特定的值，以及本地存储库和 udev 规则设置。表中的行引用指向 <block ref="a0483fb858f70ef7270ed27766b1a748" prefix=" " category="inline-code"></block><block ref="e4dcd80dd2930580c435398aa52a9b6d" prefix=" " category="inline-code"></block> 标记中的 RoCE EF80 模板文件。InfiniBand 模板使用相同的变量名称和结构，但 LNet 接口变量除外，该变量在表中注明。</block>
+  <block id="dc092a27b4da7dbaa0f4aada8403dee8" category="cell"><block ref="a294d87e0bba9781edfdb76560bc0bc5" prefix="" category="inline-code"></block>,<block ref="69a0ccdb4868ac688435eca28e0c1ae8" prefix=" " category="inline-code"></block>,<block ref="70f1214c90795f0b99f3c804157a5725" prefix=" " category="inline-code"></block></block>
+  <block id="28ebdf2227e37c2cbe7b419e6f9762f3" category="inline-link-macro">ha_cluster.yml#L76</block>
+  <block id="64162db154d0237e209e51fe9ee5c480" category="inline-link-macro">#L90</block>
+  <block id="0e2366426af40b340c435457fb3eeb30" category="inline-link-macro">#L110</block>
+  <block id="e4f36cb2204e11b20cf8dc587fe2675e" category="cell"><block ref="2cc120a696591d58d931f8e1826ddd7a" category="inline-link-macro-rx"></block>, <block ref="6fe80d99302a728476e69eaf6d4a06ee" category="inline-link-macro-rx"></block>, <block ref="812c7c8e5ff1488f0fb83528a7ad1697" category="inline-link-macro-rx"></block></block>
+  <block id="c6923e59d08c52028fe18b89ea901d1e" category="cell">嵌套在 MGT、MDT 和 OST 映射下的<block ref="2fcb79070f0e58d8d56aeb420f6af256" prefix=" " category="inline-code"></block>。最多 8 个字符。在所有三个位置使用相同的值。顶级<block ref="9948b2d72c189368aba79ff6a6f29e9f" prefix=" " category="inline-code"></block>键无效。</block>
+  <block id="2825e20c61c0fedd16ff6898b977df56" category="cell">用于目标注册的 MGS NIDs</block>
+  <block id="d8c7784427dbc9854cc5b9c63a4f334f" category="cell"><block ref="a16670ebe2fc1221d321770495fd3993" prefix="" category="inline-code"></block>,<block ref="b3f34377f449167c79bd9cf61c043ff1" prefix=" " category="inline-code"></block></block>
+  <block id="dd11a332ef88fa73b21cfd1bd77575a2" category="inline-link-macro">ha_cluster.yml#L98</block>
+  <block id="ec381a353275bfd44e020062b3fd99fa" category="inline-link-macro">#L118</block>
+  <block id="729ec7d67659e14164dce49fbf4731ae" category="cell"><block ref="9584ff8ab41e94b311d547c836f1d8b7" category="inline-link-macro-rx"></block>, <block ref="66717e95762f304aba48b059b79beab0" category="inline-link-macro-rx"></block></block>
+  <block id="bceefbcfbe8a5e76a1e25b28875382f9" category="cell">嵌套在 MDT 和 OST 下<block ref="2fcb79070f0e58d8d56aeb420f6af256" prefix=" " category="inline-code"></block>。包括 HA 对中两个节点的前端 LNet NID。首先列出配置为首选 MGS 所有者的节点的 NID，然后列出合作伙伴节点的 NID。</block>
+  <block id="db0e9bbe14f69452cb025c4585a1984c" category="cell">Pacemaker 集群名称</block>
+  <block id="d4dadd76ce4715776cfcda468992e55b" category="cell"><block ref="22ef28d91e6a54cd1e917c5030de68ef" prefix="" category="inline-code"></block></block>
+  <block id="b0cfee9d061f8586a1bcd4bfdff03026" category="inline-link-macro">ha_cluster.yml#L228</block>
+  <block id="3b6ae527a7c2a4ab73d38f52aee32d31" category="cell"><block ref="3b6ae527a7c2a4ab73d38f52aee32d31" category="inline-link-macro-rx"></block></block>
+  <block id="4fcc3aba99cf6eddd67ef2dc0b3ea449" category="cell">嵌套在 Pacemaker CIB 属性覆盖下。HA 集群的唯一名称。</block>
+  <block id="0819953d792a0e5537c5d335b34e7e50" category="cell">BMC 隔离地址</block>
+  <block id="2a35365d9c941c0421715291f38de458" category="cell"><block ref="0721ac52e00ff9d39bfc7ac6ea226c19" prefix="" category="inline-code"></block></block>
+  <block id="9deffbe868d493a1cb7eeb5499782ee0" category="inline-link-macro">ha_cluster.yml#L211</block>
+  <block id="f2627bacca2db635ecfb76f8fc3ab09f" category="inline-link-macro">#L214</block>
+  <block id="7685a2c6de328ab53aa694dd72b4c7ed" category="inline-link-macro">#L217</block>
+  <block id="376cab8c66e9e46e0a6e2308b81313b3" category="inline-link-macro">#L220</block>
+  <block id="90aa2dad0631ae7e6b5e7fa249b8acf8" category="cell"><block ref="57f1866b7c6c96aede22bff74850a7a1" category="inline-link-macro-rx"></block>, <block ref="5f56188f908f185423a80af398e2647d" category="inline-link-macro-rx"></block>, <block ref="218da9a6c1fbcdb4655478b7c9d688ba" category="inline-link-macro-rx"></block>, <block ref="efe7443fe5778cfa1021ecaffa0c368b" category="inline-link-macro-rx"></block></block>
+  <block id="8fad9b2f1bb07b7137b792ab9dda3abf" category="cell">每个 Lustre 服务器重复</block>
+  <block id="6f8108e5d862d3575d73f220aa5c9187" category="cell">每个服务器节点的 Redfish BMC IP 地址。</block>
+  <block id="48432554382ecd7b3a9e4a0820481377" category="cell">警报电子邮件收件人</block>
+  <block id="85e3c19dd4a66bc102a0e81eb6e20c6c" category="cell"><block ref="0c41e283fc637b718002e2855c06798c" prefix="" category="inline-code"></block></block>
+  <block id="8d1fe2e28a39fa6135959b4a9183d295" category="inline-link-macro">ha_cluster.yml#L233</block>
+  <block id="5672bf78ba92c2a6e869d7580ae4ce4b" category="cell"><block ref="5672bf78ba92c2a6e869d7580ae4ce4b" category="inline-link-macro-rx"></block></block>
+  <block id="faf7f93a5bb1a4334bcc080e520a00bb" category="cell">HA 资源和故障通知的收件人。</block>
+  <block id="705e2aa73a8fa6d0668c74c80e9ccef2" category="cell">邮件域</block>
+  <block id="4eb84af5d4ab198d4c0e9fb0f1571628" category="cell"><block ref="cf0c208b30eac9839752881b2bef28d5" prefix="" category="inline-code"></block></block>
+  <block id="cd7966b537c9a656c3dffb64cd0ac869" category="inline-link-macro">ha_cluster.yml#L240</block>
+  <block id="e0dfd7110a4d5e9de24736a906ea205f" category="cell"><block ref="e0dfd7110a4d5e9de24736a906ea205f" category="inline-link-macro-rx"></block></block>
+  <block id="a7e3d851dc5c0eb2956c1f1ff000e8a8" category="cell">用于发送警报电子邮件的后缀域。</block>
+  <block id="c3a147e1ee28f6349c57421b4d5cb524" category="cell">NTP 时间源</block>
+  <block id="a5826cb41f6e95f2ff5f79e012f44360" category="cell"><block ref="99ad683ffc6dbf7d99fb2050c2cc0c1c" prefix="" category="inline-code"></block></block>
+  <block id="cf2c30f90edf99467126c607a878acfc" category="inline-link-macro">ha_cluster.yml#L250</block>
+  <block id="625528c84d430ec70773e4f1101cc139" category="cell"><block ref="625528c84d430ec70773e4f1101cc139" category="inline-link-macro-rx"></block></block>
+  <block id="467d09a3bfe35b45f5c3e650ece8bdf5" category="cell">集群节点的时间源。指定一个 NTP 池或一个或多个单独的 NTP 服务器。包括所需的<block ref="b10a8c0bede9eb4ea771b04db3149f28" prefix=" " category="inline-code"></block>或<block ref="cf1e8c14e54505f60aa10ceb8d5d8ab3" prefix=" " category="inline-code"></block>指令和选项，例如<block ref="4e78b2062a724468763b086556c73046" prefix=" " category="inline-code"></block>。</block>
+  <block id="907b60c8cfd6057cb141020e21390ffd" category="cell">接口 PCI 到名称 udev 映射</block>
+  <block id="d3ba215665e71ef616a9d66adc2fba1c" category="cell"><block ref="24106e17a501ccfc6e41dec4a61aab0c" prefix="" category="inline-code"></block></block>
+  <block id="32a69362da83b6aa610263b2d6738923" category="inline-link-macro">ha_cluster.yml#L172</block>
+  <block id="1369c547b38f0e5caae682fa78d337bc" category="cell"><block ref="1369c547b38f0e5caae682fa78d337bc" category="inline-link-macro-rx"></block></block>
+  <block id="4b4404ddf34ee3ed378224e664fbeb1c" category="cell">每个 HCA 插槽布局重复</block>
+  <block id="84dab3f787eddd5f32097b8d666403cc" category="cell">将每个 PCI 插槽映射到持久接口名称（L182 处的值）。使用<block ref="6da975c28b569d5b3195b69314ff8cd3" prefix=" " category="inline-code"></block>收集。</block>
+  <block id="b566633973f2388105706e2db3286ef0" category="cell">本地包存储库（可选）</block>
+  <block id="234cefeab428deb613b757e069321dbf" category="cell"><block ref="4b2bda69c5f1ab28684c4c68820bee9a" prefix="" category="inline-code"></block></block>
+  <block id="01b4efd53143b7423d9e98362a51afb5" category="inline-link-macro">ha_cluster.yml#L256</block>
+  <block id="ff92ddbbc1558dd25d95a862d8b0ab07" category="inline-link-macro">#L261</block>
+  <block id="e6a84f4548df3d6a4995d2f0141fde9b" category="cell"><block ref="8147b353047ac75b2aaa643fb1051f6c" category="inline-link-macro-rx"></block>, <block ref="90c9532fa4f9c4b777a0daf5d0fd3c56" category="inline-link-macro-rx"></block></block>
+  <block id="a2e1abbebb66ae0c88c85bf74515e8da" category="cell">对于气隙安装，请取消注释该块并设置存储库<block ref="572d4e421e5e6b9bc11d815e8a027112" prefix=" " category="inline-code"></block>（L264）。</block>
+  <block id="54a9a3e8b66d38394d513bb788a737af" category="cell">服务器管理 IP</block>
+  <block id="636203dc4440306a14dd696c4de5931a" category="inline-link-macro">host_vars/lustre_01.yml#L10</block>
+  <block id="65802799f33fb909f185b3f75d5dde47" category="cell"><block ref="65802799f33fb909f185b3f75d5dde47" category="inline-link-macro-rx"></block></block>
+  <block id="4289d0b4a0eb9de69ee5a0eb8dac75ea" category="cell">每台服务器一个<block ref="d15ffd2d191c94654e8e50c55cf273b9" prefix=" " category="inline-code"></block>文件。</block>
+  <block id="91ca84480d7b5ee6738d3687875165de" category="cell">NVMe-oF 后端接口</block>
+  <block id="ef2f483559dc6ae3841f7a2413191328" category="cell"><block ref="acd335a4d756a503bbe90f51587e6cd6" prefix="" category="inline-code"></block> (RoCE) / <block ref="f70b96976b303b11c8901e62834ddcbf" prefix=" " category="inline-code"></block> (InfiniBand)</block>
+  <block id="44670a832e8c669d616a8e5bb73ea90d" category="inline-link-macro">RoCE host_vars/lustre_01.yml#L21</block>
+  <block id="e4fe71da7ee64ff1432c605328af6949" category="inline-link-macro">InfiniBand host_vars/lustre_01.yml#L17</block>
+  <block id="043caf30caa6df90601c496a87eba920" category="cell"><block ref="d5dd1f2ccfb900d7775232d615bbd59d" category="inline-link-macro-rx"></block>、<block ref="f8506d7da0c02cce792e8f991f3efdb6" category="inline-link-macro-rx"></block></block>
+  <block id="de3294bf0a8c13aec72739c96ab358df" category="cell">用于连接 E 系列阵列的 NVMe-oF 存储流量的后端接口地址。</block>
+  <block id="d1eca90db1b5937ecf631c86492e542a" category="cell">LNet 集群接口</block>
+  <block id="f4cfcf44d6d2bd79213a39876836b2a7" category="cell"><block ref="4b785157a5e72b7262c130d2302f2206" prefix="" category="inline-code"></block> (RoCE) / <block ref="e3f0f10215cb725eaa278fec38bd76e6" prefix=" " category="inline-code"></block> (InfiniBand)</block>
+  <block id="c88c4966964eb7fd171c670b02bea1be" category="inline-link-macro">RoCE host_vars/lustre_01.yml#L47</block>
+  <block id="3be01edee3acf1567e136111efc731a9" category="inline-link-macro">InfiniBand host_vars/lustre_01.yml#L38</block>
+  <block id="3a312ec8c30a90b41b8e95b33186f9f9" category="cell"><block ref="0bf6a33116c634b0311082d3b8b27524" category="inline-link-macro-rx"></block>、<block ref="209a601e7842c823a6d9437e13f7ac6f" category="inline-link-macro-rx"></block></block>
+  <block id="daa858dd88f813bf2abe72e05ac79104" category="cell">前端 LNet 接口地址（RoCE 值在 L56；InfiniBand 值在 L47）。</block>
+  <block id="8f275be344e18a73f50c90c98862730c" category="cell">Corosync 节点 IP</block>
+  <block id="3bcebedf92386c6d782a4fb1d9245fbe" category="cell"><block ref="b3da4c961227c7f785b5051a5f3d1ca2" prefix="" category="inline-code"></block></block>
+  <block id="d26865aecb9841f5fa8e4a2ad002653f" category="inline-link-macro">host_vars/lustre_01.yml#L58</block>
+  <block id="7674410161b2469ec2f0588d7cb0133c" category="cell"><block ref="7674410161b2469ec2f0588d7cb0133c" category="inline-link-macro-rx"></block></block>
+  <block id="499bfea2697a63f16233ea2f3b77b2c5" category="cell">列出 HA 集群中的所有节点 IP（L62 处的值）。</block>
+  <block id="dd603111f7aedcb686a7d943e7470a9a" category="cell">Lustre 目标服务 NID</block>
+  <block id="84d5fb1f5c4c2a3b20e920eab695f987" category="cell"><block ref="1f853ce28851014f6eadd5c849ba3ce1" prefix="" category="inline-code"></block></block>
+  <block id="3642d5fc1bd5e1d5a2d0a0aea7f8fec5" category="inline-link-macro">host_vars/lustre_01.yml#L64</block>
+  <block id="f1680e035658b9a3e449dbce28e26600" category="cell"><block ref="f1680e035658b9a3e449dbce28e26600" category="inline-link-macro-rx"></block></block>
+  <block id="ad71d199400e65302247951bced69da2" category="cell">包括 HA 对中两个节点的前端 LNet NID <block ref="c49f0c3c2926c11287cf9b9355c7aa1f" prefix="(" category="inline-code"></block>），以便在故障转移后仍可访问目标服务（L67 处的值）。</block>
+  <block id="ce1cdc9c6fba0be5fab535b8c6c76141" category="cell">阵列管理 IP</block>
+  <block id="e9ad5d914deda2bd4c808eeb12731073" category="inline-link-macro">host_vars/netapp_01.yml#L13</block>
+  <block id="79f1e43a9431bc629779c58d7b668a19" category="cell"><block ref="79f1e43a9431bc629779c58d7b668a19" category="inline-link-macro-rx"></block></block>
+  <block id="1ed3694d7fef8516584c13d7e425a15f" category="cell">每个 E 系列阵列重复</block>
+  <block id="c1e52517a2b31863df6c2d898abcc01d" category="cell">一个控制器的管理 IP；API URL 从中派生。</block>
+  <block id="f4ef5ebc27d3b5a17305f41fb5c5db15" category="cell">构建基块组成员身份</block>
+  <block id="8652be8ec7c0b4c93fed54d63fc4199a" category="cell"><block ref="8f0c7cb61ff113f553b01d302349363d" prefix="" category="inline-code"></block> /<block ref="4647aa62acfd3b810edc652fa314c7cb" prefix=" " category="inline-code"></block> /<block ref="bf32ff9511689bd14861dff657e44726" prefix=" " category="inline-code"></block></block>
+  <block id="d786551e185211b4a5d09185f23fb538" category="inline-link-macro">lustre_inventory.yml</block>
+  <block id="6effedf6fbec7408857e1bfb2b346819" category="cell"><block ref="6effedf6fbec7408857e1bfb2b346819" category="inline-link-macro-rx"></block></block>
+  <block id="b700b11efc5bf105f3d1d016a1898ccb" category="cell">每个构建基块</block>
+  <block id="edbb7fde506d06d0a74f410ae74ae9bd" category="cell">每个库存主机名必须与其相应的<block ref="3342582e194d63e4c91b56623752c9c6" prefix=" " category="inline-code"></block>文件的基本名称匹配。例如，主机<block ref="fd9c79d5ba03f66eeda1a5779a2f6306" prefix=" " category="inline-code"></block>使用<block ref="9fce5ea0bbc826006c4eca4c77528b7f" prefix=" " category="inline-code"></block>，而<block ref="3d1a3866e5aadfdac8b0e07e6740b0fe" prefix=" " category="inline-code"></block>使用<block ref="2b15be3da156715623b1ee1a391ea9a3" prefix=" " category="inline-code"></block>。仅在第一个构建基块中包含 MGS 组。在基本构建基块和每个 MDT+OST 扩展构建基块中包含 MDS 组；仅从纯 OST 扩展构建基块中省略 MDS 组。使用<block ref="66a6093c519e2b125743a6852a2ec6e3" prefix=" " category="inline-code"></block>将扩展目标注册到现有 MGS。</block>
+  <block id="2d19cf156c50d25894c04c35fb419694" category="paragraph">重复每个主机和构建基块的设置。每个 Lustre 服务器创建一个<block ref="d15ffd2d191c94654e8e50c55cf273b9" prefix=" " category="inline-code"></block>文件，每个阵列创建一个<block ref="dc2f43c391dc7b72c12fc5ae6d01e2e1" prefix=" " category="inline-code"></block>文件，并为每个额外的构建基块重复清单组。</block>
+  <block id="4ddffb6f5d60e20069aba18bc5a26927" category="paragraph">部署 playbook 从共享<block ref="effd9a6216a1b8004049a82746c94314" prefix=" " category="inline-code"></block>文件加载阵列、Pacemaker 和 BMC 凭据。在部署之前填充此文件并使用 Ansible Vault 对其进行加密，或在运行时使用<block ref="eba52ae7bfe34d5eddd33dafc00e5e80" prefix=" " category="inline-code"></block>安全地覆盖值。请勿将纯文本凭据提交到源代码管理。</block>
+  <block id="4728df228c58b637c323edba3c3e2651" category="admonition">部署模板中的 IP 地址、主机名、接口名和卷大小均为示例。在运行任何 playbook 之前，请修改环境的所有清单文件。</block>
+  <block id="b4c9bb8273733c93d9b34e9b8fe4bfad" category="inline-link-macro">部署 Lustre HA 集群和客户端</block>
+  <block id="e444981416b2b56e2e032006135ac278" category="paragraph"><block ref="d63814e8d0dc8874c6eba881ba68dc47" category="inline-link-macro-rx"></block>。</block>
+  <block id="5466c0d4ffb6f769d1c408d88d1083c2" category="summary">准备 EF80 阵列、Lustre 服务器和 Ansible 控制节点以进行部署。</block>
+  <block id="b68d1a7653b43062b1d13b68e387e5b8" category="doc">准备 Lustre 部署环境</block>
+  <block id="c243ac8f423a29c70eb01c1a8c1ae957" category="paragraph">在每个 EF80 阵列和 Lustre 服务器上配置管理访问和基本设置，然后准备 Ansible 控制节点以部署解决方案。</block>
+  <block id="f264ece3aaeed3db20a2b300f28e9fbe" category="section-title">准备 E 系列阵列</block>
+  <block id="015845bc306336e251ba0d56cc71e4f8" category="list-text">在每个控制器上配置管理接口，并验证 SANtricity System Manager 是否可访问。</block>
+  <block id="e8cd3a67fd7e717452047c8319f2779d" category="list-text">设置 Ansible 清单将使用的阵列名称和管理凭据。</block>
+  <block id="8f105d1078a3f1fc3858fca41ae18caa" category="list-text">确认阵列处于最佳状态，并且所有驱动器均存在且报告正常。</block>
+  <block id="5f93f381aa8df330451fa5b834f54def" category="inline-link-macro">E-Series 文档</block>
+  <block id="cf9c8969a8f36b71a631549cd210c8af" category="paragraph">有关配置管理连接的说明，请参见 <block ref="2cc0659a11dd150e4355ca76ab859281" category="inline-link-macro-rx"></block>。</block>
+  <block id="202d68e6f10e849c503adec016a54186" category="section-title">准备 Lustre 服务器</block>
+  <block id="1d9ade1a525ab17b4d5a1b8d2b09a87c" category="list-text">在每台服务器上配置基板管理控制器 (BMC) 以进行带外访问，并设置 UEFI 系统设置以实现最高性能。</block>
+  <block id="8547ee8ccbab16fc1313ea67f7c1cbc5" category="list-text">安装受支持的操作系统（RHEL 或 Rocky Linux），然后配置主机名和管理网络端口。</block>
+  <block id="e6b3b756a9c5d91c12715f63dabbe816" category="list-text">准备所有固件和软件包，以满足 *E-Series Lustre* 解决方案的要求，如 <block ref="50dec6b1119ecf8040454f42ce24288c" category="inline-link-macro-rx"></block> 中所述。</block>
+  <block id="c905fe3dcc47b0021bfb73ee3d615d27" category="section-title">准备 Ansible 控制节点</block>
+  <block id="5452fd954c3588ac163c8a0e4d94d46f" category="paragraph">指定具有对所有 Lustre 服务器和 E-Series 阵列的管理网络访问权限的虚拟或物理 Linux 系统作为 Ansible 控制节点。</block>
+  <block id="3db8211c26067646b30239b42a6650cf" category="inline-link-macro">Ansible 安装文档</block>
+  <block id="6624f68bd1c684f6278be9cf8e5c73ab" category="paragraph">以下步骤使用 Ubuntu 24.04。有关其他 Linux 发行版的说明，请参见 <block ref="75aed5bdfff6643a132a6cb6627cfa57" category="inline-link-macro-rx"></block>。</block>
+  <block id="45d8e08cbdfb0c80051d2252faf66e2e" category="list-text">安装 Python、pip 和 Python 虚拟环境包：</block>
+  <block id="85c7fc2b5251a2a1047b7bd19243340f" category="list-text">创建并激活 Python 虚拟环境：</block>
+  <block id="8d61a1feedbb860ef24ffeeb121b3a8f" category="list-text">在激活的虚拟环境中安装 Ansible 和所需的 Python 包：</block>
+  <block id="4b252920722abdb27a58fce5f6847b75" category="list-text">安装 NetApp E-Series Lustre Ansible collection。collection 安装还会安装其依赖 collection，包括 SANtricity 和 Host collection：</block>
+  <block id="58d742766289ad9f8a66eae3f38d58c1" category="list-text">验证已安装的 Ansible、Python 和集合版本：</block>
+  <block id="c361abe3eb19c6b2c20c934ad698ed99" category="list-text">配置从控制节点到每个 Lustre 服务器的无密码 SSH。将 <block ref="1b0e31c855bd7a5dc464ccf21906bea7" prefix=" " category="inline-code"></block> 替换为服务器的管理 IP 地址或主机名：</block>
+  <block id="c52ff3210c41c4071bbf9378ddfef945" category="paragraph">对每个 Lustre 服务器重复<block ref="d1fd123ca1c739243e073c2b1cd2ea8a" prefix=" " category="inline-code"></block>上述步骤。</block>
+  <block id="cc9b0c78a14caf25a8424a58645f2ba1" category="admonition">请勿为 E 系列阵列配置无密码 SSH。Ansible 使用清单中定义的凭据，通过 SANtricity Web Services API 管理阵列。</block>
+  <block id="8f8e00f4ddf518b4c8df4259e2c96208" category="inline-link-macro">自定义 Ansible 清单</block>
+  <block id="0661c0c85897475266fb322dc1e1c329" category="paragraph"><block ref="5c3c79c91f4421395a6e039ca5ce5cf6" category="inline-link-macro-rx"></block>。</block>
+  <block id="f512fd62623fb95c7da02e83def540a0" category="summary">验证 Lustre 集群运行状况、挂载和容量，并使用其他构建块扩展文件系统。</block>
+  <block id="9b1a211e28c27e7be6ab33ec7f15870e" category="doc">验证和扩展 Lustre 部署</block>
+  <block id="bdc457d598b68edd5d84a1f89228d39f" category="paragraph">在生产使用之前确认集群运行状况、Lustre 挂载和文件系统容量，然后在需要时使用相同的清单添加构建块。</block>
+  <block id="7b36e2b8da7242fb8b3aeff6be03faee" category="list-text">在 Lustre 服务器上，确认所有 Pacemaker 资源均已在预期节点上启动：</block>
+  <block id="56591ae2fa4dc3003f3bfbad61e9823b" category="list-text">从 Lustre 客户端，确认 Lustre 文件系统已挂载：</block>
+  <block id="72ead98bd79a33a5c23a9e1b1fd24877" category="list-text">从 Lustre 客户端，确认文件系统容量以及 MDT 和 OST 目标可见：</block>
+  <block id="7cb7830e5b9c67652611ea466146a806" category="paragraph">有关使用 IOR、mdtest 和 fio 进行性能验证，请参见 <block ref="fd37d50a703eb90bca5592e7cf7939cb" category="inline-link-macro-rx"></block>。</block>
+  <block id="6c94763c7d8df828ecbe010cceec9cfb" category="paragraph">对于受控目标迁移或 HA 故障转移测试，请按照 <block ref="366b62f6dcea4b62f9ab1e6c11adfdc9" category="inline-link-macro-rx"></block> 中的步骤进行操作。</block>
+  <block id="a0bbb5f8f21362b9d8f4cddff6521b69" category="section-title">扩展文件系统</block>
+  <block id="a71551e38a5b0644628ff55a32469baf" category="paragraph">要增加容量或元数据性能，请使用额外的构建块扩展现有库存。请勿为新构建块创建单独的库存。该手册自动分配唯一的 MDT 和 OST 索引，并根据现有 MGS 注册新目标。</block>
+  <block id="fac470f4d13ddc18a7024f7bd30076b8" category="list-text">将新的构建基块主机、阵列和资源组（MDT+OST 或仅限 OST）添加到用于原始部署的相同清单以及<block ref="3342582e194d63e4c91b56623752c9c6" prefix=" " category="inline-code"></block>和<block ref="96fa973cda8809ad84f646e3d8fbbc1c" prefix=" " category="inline-code"></block>文件中。</block>
+  <block id="7d471dc171c1928c93a04c7faff513b5" category="list-text">根据更新的清单重新运行主要部署 playbook。</block>
+  <block id="1b0203b9d370708b33f381a1b31a295f" category="paragraph">有关扩展规则，请参阅 <block ref="f6c91e3cd1480b3865622c5a1b7e2c1a" category="inline-link-macro-rx"></block>；有关何时添加每种构建基块类型的指导，请参阅 <block ref="fd37d50a703eb90bca5592e7cf7939cb" category="inline-link-macro-rx"></block>。</block>
+  <block id="2e548b4b0ee367c75017120d19fdefad" category="summary">按照工作流程使用 NetApp Ansible 自动化来部署 Lustre with NetApp E-Series Storage。</block>
+  <block id="c4fa415b14936859bd30c244373b8719" category="doc">使用 NetApp E-Series 存储部署 Lustre</block>
+  <block id="e7c5f4d355b794ab148c3e19c9065406" category="paragraph">通过按顺序完成硬件、环境准备、清单、Ansible 部署和验证任务，使用 NetApp E-Series 存储部署 Lustre。</block>
+  <block id="634c8a03e1c23b6e01567d5c131eda80" category="paragraph">在开始部署之前，请确保满足以下条件：</block>
+  <block id="96db7f03b12a89b0ca45058db1871021" category="list-text">您遵循了 <block ref="fd37d50a703eb90bca5592e7cf7939cb" category="inline-link-macro-rx"></block> 中的规格调整和构建块指南，并选择了与 <block ref="b951df04c708233bd0e6aa30024a444e" category="inline-link-macro-rx"></block> 匹配的硬件。</block>
+  <block id="9ed4a475dd3705157a9fed8811f63ce2" category="inline-link-macro">NetApp 互操作性表工具</block>
+  <block id="bdf6a8b01b09cea74e4188812c710058" category="list-text">您确认服务器、HCA、E-Series、操作系统、Lustre、SANtricity OS 和 DOCA-OFED 组合已在 <block ref="27dc27dbb2e442190a59a9d515bed42e" category="inline-link-macro-rx"></block> 的 *E-Series Lustre* 中列出。</block>
+  <block id="fb184c2f31e921caeb46e135904d297e" category="list-text">计划构建模块的所有 OSS/MDS 服务器节点和 E-Series 阵列都已就位并准备上架。</block>
+  <block id="19e4234fd56bba4caeddc4973c4bb493" category="list-text">您具有服务器 BMC、阵列管理端口以及将用作 Ansible 控制节点的主机的凭据和网络访问权限。</block>
+  <block id="41991ae5fa9af370516bc6e8e7699edf" category="inline-link-macro">NetApp E-Series Lustre Ansible 集合</block>
+  <block id="51e937517ed052afa113ee31f25e669e" category="admonition">NetApp 支持使用 <block ref="8e2a23bd15e3969732c3c3c02b7e888d" category="inline-link-macro-rx"></block> 部署 Lustre HA 集群和 Lustre 客户端。请勿手动配置 Lustre 目标、LNet、NVMe-oF 主机连接或 Pacemaker 资源。</block>
+  <block id="ab3ccb0be518e752d20f706d36d252c9" category="section-title">部署工作流</block>
+  <block id="6446de4e3a4c91eb5ceee947cddbf2cd" category="paragraph">按顺序完成以下任务：</block>
+  <block id="f8d0621bfc76e98c8da3e8ec2c60a9de" category="list-text"><block ref="18bea05bda8ed8f518d518ea28b4f1ab" category="inline-link-macro-rx"></block>。</block>
+  <block id="384ec04c02303d55f04afb8625c2cd78" category="paragraph">架设 Lustre 服务器和 EF80 阵列，然后连接后端 NVMe-oF 和前端 LNet 结构。</block>
+  <block id="05b3aade2a55147217f8d5b60d082545" category="inline-link-macro">准备 Lustre 部署环境</block>
+  <block id="5ecfb2411abb9ae2f27e3c2bc8e2a772" category="list-text"><block ref="4188895c156711220c815e9a4b2ea443" category="inline-link-macro-rx"></block>。</block>
+  <block id="7081aacf6f5e2318d2326d72a27d2a97" category="paragraph">配置阵列和服务器，然后在控制节点上安装 Ansible 及其依赖项。</block>
+  <block id="0d6f2ba2a2f5a52bdfd841cd1db512eb" category="list-text"><block ref="48fa4fcc6ef309525d67cfc2e71da78c" category="inline-link-macro-rx"></block>。</block>
+  <block id="f3b74c1b0b29400dbfc46e03b50c19fb" category="paragraph">选择站点结构的模板，并填充服务器、阵列、网络、构建基块和凭据。</block>
+  <block id="a2a52db1796cdf539ddfd27ef5732c90" category="paragraph">准备服务器操作系统、安装 NVIDIA DOCA-OFED、运行主部署 playbook，以及配置 Lustre 客户端。</block>
+  <block id="2b054a0aa93c332a143e0cec3ff9e061" category="inline-link-macro">验证和扩展 Lustre 部署</block>
+  <block id="0b1521677ac3664d94ae25b3d6d4c5c2" category="list-text"><block ref="6c60201ff84ef475bbfc690252f1172f" category="inline-link-macro-rx"></block>。</block>
+  <block id="a50a203162e3224c31f5fe2ef16a4ef6" category="paragraph">在生产使用前确认集群运行状况、挂载和容量。当文件系统需要另一个构建基块时，扩展现有清单。</block>
+  <block id="30f60d67f457bb040dffde52197a54da" category="section-title">相关信息</block>
+  <block id="8e2a23bd15e3969732c3c3c02b7e888d" category="list-text"><block ref="8e2a23bd15e3969732c3c3c02b7e888d" category="inline-link-macro-rx"></block></block>
+  <block id="b9de6db7191a1a0d0e04fa49d4199e02" category="inline-link-macro">NetApp Lustre 源库</block>
+  <block id="e7ef2acb3680391a121a9687c0ebe804" category="list-text"><block ref="e7ef2acb3680391a121a9687c0ebe804" category="inline-link-macro-rx"></block></block>
+  <block id="366b62f6dcea4b62f9ab1e6c11adfdc9" category="list-text"><block ref="366b62f6dcea4b62f9ab1e6c11adfdc9" category="inline-link-macro-rx"></block></block>
+  <block id="1062a9f69fedd03cf5c196062584b354" category="inline-link-macro">性能调整指南</block>
+  <block id="9f4631b80a285f37169fdf4b4c652838" category="list-text"><block ref="9f4631b80a285f37169fdf4b4c652838" category="inline-link-macro-rx"></block></block>
+  <block id="e4af092b71f831178fefaea6eb1922ef" category="inline-link-macro">Lustre 客户端部署模板</block>
+  <block id="59da7ad32ac5797f6501497f3975d0e0" category="list-text"><block ref="59da7ad32ac5797f6501497f3975d0e0" category="inline-link-macro-rx"></block></block>
+  <block id="caa95fe7ebded3747d511825fc6fcc8f" category="summary">查看 Lustre with NetApp E-Series Storage 的服务器、E-Series 阵列、存储布局和网络要求。</block>
+  <block id="b7ea201d504ea6f080678b3c979de443" category="doc">基于 NetApp E 系列存储的 Lustre - 硬件组件</block>
+  <block id="81991feaf6923c4fd9b81edeb70dd9a3" category="paragraph">在使用 NetApp E 系列存储调整和订购 Lustre 时，请参考服务器、NetApp E 系列阵列、存储布局和网络的硬件要求。有关软件组件，请参见<block ref="50dec6b1119ecf8040454f42ce24288c" category="inline-link-macro-rx"></block>。</block>
+  <block id="a54c13ad42512dbfec4e8a44d793a52e" category="section-title">服务器要求</block>
+  <block id="78ed065cb3df976744e0d46f7e1f97ca" category="paragraph">该解决方案使用自带服务器 (BYOS) 模型。每个构建模块需要两个符合或超过以下规范的 OSS/MDS 服务器节点。</block>
+  <block id="e452931b6e576f590cdc2132f39b130b" category="section-title">节点规格</block>
+  <block id="e139714fc2ea5bd9ac8bcdd636991cf7" category="paragraph">下表列出了每个 OSS/MDS 节点的最低服务器要求。</block>
+  <block id="9b97b7bd5e0a87be7bf218224ada83cf" category="cell">需求</block>
+  <block id="b93c1e71d0cc69036373fec0dcd00014" category="cell">每个构建基块 2 个节点</block>
+  <block id="2b55387dd066c5bac646ac61543d152d" category="cell">CPU</block>
+  <block id="a049576965d96442d114a03d817a5b2d" category="cell">AMD EPYC 或 Intel Xeon，32 核或更高</block>
+  <block id="9fada4ad196fc991729d77da6a8f7048" category="cell">256 GB DDR5（最低）</block>
+  <block id="3174063e7fab5fd01a8dc7e162d83800" category="cell">网络 HCA</block>
+  <block id="91115ee144fbc5c7db04ab01cfaae42f" category="inline-xref">HCA 连接</block>
+  <block id="94f5d4bd00c39175401b53e3083fa6e7" category="cell">6 个双端口 200Gb HCA（请参见 <block ref="91d5ecc9eeeedc6f912504c692ce76ae" category="inline-xref-macro-rx"></block>）</block>
+  <block id="ed3de05402aeebdbbd72a1163c6ef0c3" category="cell">PCIe插槽</block>
+  <block id="136f2ccfc4df7464cd2d8d3d3151a5a2" category="inline-xref">PCIe插槽要求</block>
+  <block id="a73df56899af925e823f65941bf78d66" category="cell">2× PCIe Gen5 x16 和 4× PCIe Gen5 x8（请参阅 <block ref="9fdc123f380db06577db86c231cb801c" category="inline-xref-macro-rx"></block>）</block>
+  <block id="73bd40fbfbb43e05a7d49999490cd8b5" category="cell">启动驱动器</block>
+  <block id="a07db6ed1ccb81d8757e348f8e12761f" category="cell">2× 个驱动器，采用 RAID 1（建议使用软件或硬件 RAID）</block>
+  <block id="34a0cba450633565dd8edc33b276814e" category="paragraph">NetApp 使用 Lenovo ThinkSystem SR665 V3 服务器验证了该解决方案。当其他供应商的等效服务器满足这些要求时，即可获得支持。</block>
+  <block id="b42ad946fa28ef06221a22e36921c258" category="paragraph">下表列出了每个 OSS/MDS 服务器节点的 HCA、LNet 前端端口和 NVMe-oF 路径要求。</block>
+  <block id="04f79ca300c4ecd33c5fc70e94db8b78" category="cell">每个节点的 HCA</block>
+  <block id="6fe54bd087eedf5557a8a15a2b3c5581" category="cell">每个 Lustre 节点的 LNet 端口</block>
+  <block id="bebcb9fa822ce49b099df7de2dc692df" category="cell">每个 Lustre 节点的 NVMe-oF 路径</block>
+  <block id="36a2b5ba460d59f9fe9b9c905e14fadb" category="cell">示例 HCA</block>
+  <block id="e50ec4a698a66b4fa259974f9cf281c9" category="cell">6（12 个端口）</block>
+  <block id="361cc1d48f74d44920aa8753cff62bbf" category="cell">共 8 个（每个数组 4 个）</block>
+  <block id="6a518eec4f4f044ae9b8e1d68f7d75a5" category="cell">MCX755106AS-HEAT （双端口 200Gb PCIe gen5 卡）</block>
+  <block id="2e5bc4227e7487d5c5f3e4c7198a7aa6" category="paragraph">NetApp 建议每个节点配置六个 HCA，以最大化 EF80 存储阵列的带宽。</block>
+  <block id="b816d84857aedb981d87478ded2591fe" category="paragraph">EF80 构建模块中的每个 OSS/MDS 服务器节点容纳六个双端口 HCA：两个用于 LNet，四个用于 NVMe-oF。插槽宽度决定了每个 HCA 可用的带宽，因此请确认每个插槽和转接卡的电气宽度，而不仅仅是卡本身的宽度。安装在 Gen5 x8 插槽中的 Gen5 x16 卡以 x8 速度运行。</block>
+  <block id="017880590506bf9828d8a6d8ed843069" category="list-text">*LNet HCAs:* 安装在 PCIe Gen5 x16 插槽中，以达到完整的前端吞吐量。</block>
+  <block id="d9b61efd07bfce373a3d6debb3e68ca1" category="list-text">*NVMe-oF HCAs:* 安装在 PCIe Gen5 x8 或 PCIe Gen5 x16 插槽中。</block>
+  <block id="4b924cd64cab85a53d7c8707226caff4" category="list-text">*NUMA balance：*在两个 NUMA 区域之间均匀划分 HCA，以便每个区域托管两个 LNet 接口和四个 NVMe-oF 接口。</block>
+  <block id="e81dc46e61b8efa1caeebc8fa2cf1de2" category="paragraph">下表列出了 EF80 构建块中每个 OSS/MDS 服务器节点的最小插槽数。</block>
+  <block id="89652e228f31afd994aaf865c5a3cf43" category="cell">流量类型</block>
+  <block id="59065c8586207fb91f7f3a7d2f6585ff" category="cell">最小插槽宽度</block>
+  <block id="9c57a7a0125988664fa9e571e956761c" category="cell">每个 NUMA 区域的插槽数</block>
+  <block id="7adc9aaf7a709c04465b8be2b625ac55" category="cell">LNet</block>
+  <block id="4879ce833a0d9c6f3525586e5c17574f" category="cell">PCIe Gen5 x16</block>
+  <block id="6151632541dcd80356c6c76b34d69d0c" category="cell">NVMe-oF</block>
+  <block id="c8e9eae5723730c0a28c5c18050509bd" category="cell">PCIe Gen5 x8</block>
+  <block id="93e46d5be1dfcebf5a0312e47dd1a08b" category="paragraph">您也可以选择在双端口 HCA 上拆分端口，以便一个端口传输 LNet 流量，另一个端口传输 NVMe-oF 流量。将所有四个 HCA 安装在 PCIe Gen5 x16 插槽中，以便每个 LNet 端口达到完整吞吐量，然后在 Gen5 x8 或 Gen5 x16 插槽中为其余 NVMe-oF 端口额外添加两个 HCA。</block>
+  <block id="e57447ad8a8d0ad93aa00fa69630452e" category="example-title">联想 ThinkSystem SR665 V3 的转接卡配置示例</block>
+  <block id="bbd4d047c88735bc852c18bf4819702e" category="paragraph">以下两种提升管组合均满足 EF80 构建模块的插槽要求。</block>
+  <block id="25bc9491897a5c4b24406688428aacdd" category="paragraph">*最小插槽宽度*</block>
+  <block id="42fae264b9f290a4ad9a2fa547be6583" category="paragraph">在转接卡位置 1 和 2 中安装 BPQU 转接卡。每个 BPQU 转接卡提供一个 PCIe Gen5 x16 插槽和两个 PCIe Gen5 x8 插槽。这两个转接卡合计为 LNet 提供两个 Gen5 x16 插槽，为 NVMe-oF 提供四个 Gen5 x8 插槽，在 NUMA 区域之间均匀分配。</block>
+  <block id="f16e60a24a1ac25de0216c5166cf683e" category="inline-image-macro">Lenovo ThinkSystem SR665 V3 后视图，BPQU 提升板位于位置 1 和 2，每个 NUMA 区域显示一个 PCIe Gen5 x16 插槽和两个 PCIe Gen5 x8 插槽</block>
+  <block id="6358b3e11dc1f96b2a895c64c974eff1" category="paragraph"><block ref="6358b3e11dc1f96b2a895c64c974eff1" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="24f23035dc6e8677da9c4b9c43b6025b" category="paragraph">*所有第5代 x16 插槽*</block>
+  <block id="068285d2f7495639d808b09bf2243a36" category="paragraph">在提升板位置 1 和 2 安装 BPQV 提升板，在提升板位置 3 安装 BLL9 提升板。每个 BPQV 提升板提供两个 PCIe Gen5 x16 插槽。BLL9 提升板在 NUMA 区域 0 上提供插槽 7，在 NUMA 区域 1 上提供插槽 8，两者均为 PCIe Gen5 x16。此组合提供六个 Gen5 x16 插槽，每个 NUMA 区域三个插槽，并支持在同一 HCA 的端口上分流 LNet 和 NVMe-oF 流量。</block>
+  <block id="fff0668328c6d36b56cf8e5ed7f4e84d" category="inline-image-macro">Lenovo ThinkSystem SR665 V3 后视图，BPQV 提升板位于位置 1 和 2，BLL9 提升板位于位置 3，显示 6 个 PCIe Gen5 x16 插槽在两个 NUMA 区域之间均衡分布</block>
+  <block id="e441b41777f230105bc86ea39e8563ca" category="paragraph"><block ref="e441b41777f230105bc86ea39e8563ca" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="1765c02ab7d15d86df8ef8035ababf81" category="section-title">EF80 标准构建块</block>
+  <block id="099068557034096e5947c45a5a4f8ac4" category="paragraph">EF80 是此解决方案版本经过验证的标准平台。</block>
+  <block id="ed8b6a4496f4b1a82c54ccc9cab580f6" category="section-title">阵列规格</block>
+  <block id="fc020f5d89405a936b2cf9f0537596ce" category="paragraph">下表列出了构建基块（两个阵列）的 EF80 阵列规格。</block>
+  <block id="875b0e30e76428bc0706b781b36b31aa" category="cell">规格</block>
+  <block id="68ecd453fb43d227d49c318213fb28a9" category="cell">NetApp EF80</block>
+  <block id="9efd743b10abbfb56a447d476d84417e" category="cell">外形规格</block>
+  <block id="55d943f8f4869a46a33edc808c11baee" category="cell">2U 基本机箱，24 个内置 NVMe SSD 插槽</block>
+  <block id="cbfb14f470701bf93424d757c624369a" category="cell">控制器</block>
+  <block id="9f115c37b3c44c920f538bc7bae444e4" category="cell">双控制器（A 和 B）</block>
+  <block id="63a6b9b3b5de50d32228700cfe042610" category="cell">驱动器</block>
+  <block id="3316683fedafa7e596384f15ab9f7aa4" category="cell">每个阵列 24× NVMe SSD</block>
+  <block id="115d5fe153ac0eb60c5da1768094f759" category="cell">I/O 连接</block>
+  <block id="8e219b200e3c81e016857500975f1dda" category="cell">在经过验证的 Lustre 设计中，每个阵列 8 个 200Gb NVMe/IB 或 NVMe/RoCE 主机端口</block>
+  <block id="6c5426ec4b27eee4669fb4c94b380c1b" category="paragraph">当每个控制器中安装三个双端口主机 I/O 模块时，EF80 平台每个阵列最多支持十二个主机端口。经过验证的 Lustre 设计将插槽 1 和 2 中的主机 I/O 模块用于每个阵列八个主机端口。</block>
+  <block id="731ebee23e331d859e88ac080271361b" category="paragraph">每个 EF80 阵列还使用专用插槽 4 I/O 模块进行控制器间镜像。将控制器 A 端口 4a 连接到控制器 B 端口 4a，将控制器 A 端口 4b 连接到控制器 B 端口 4b。这些连接提供缓存镜像和 I/O 传输，不用于主机 NVMe-oF 流量。请参阅 <block ref="2167f991eb9981359d79aa07afa06edc" category="inline-link-macro-rx"></block>。</block>
+  <block id="75accf3dcef2d9c3e9dbe705113b051c" category="inline-link-macro">NetApp EF-Series 全闪存阵列数据表</block>
+  <block id="45a1a3c9bbfbafab9bafe87965faab9d" category="paragraph">有关所有型号的完整 EF 系列规格，请参见 <block ref="3763b875a199c9f3b55717ee21ea1a75" category="inline-link-macro-rx"></block>。</block>
+  <block id="99630099f424a9c7b805230d850190ba" category="section-title">驱动器布局（每个阵列24个驱动器）</block>
+  <block id="d54adc2cb5e2aaad6185dd7d1713c006" category="paragraph">基本构建基块中的每个 EF80 阵列都使用全部 24 个 NVMe 驱动器插槽：</block>
+  <block id="48ad878bc96958eff82106474f087415" category="list-text">4 个驱动器位于 RAID 1 中，用于 MGS/MDT 存储（共享卷组或 DDP 分配）</block>
+  <block id="7210016fbf7fd878170c76c8afaf4eb5" category="list-text">RAID 6 中的 10 个驱动器用于 OST 存储（第一个 OST 池）</block>
+  <block id="728458f10c65d1d220b2cb8a581bbbd2" category="list-text">RAID 6 中的 10 个驱动器用于 OST 存储（第二个 OST 池）</block>
+  <block id="c1691d3196804b2efabd5f48c29c6d4c" category="paragraph">此布局适用于将 3.84 TB、7.68 TB 或 15.3 TB 驱动器与传统卷组一起使用时。使用 30.7 TB 或 61.4 TB 容量闪存 (QLC) 驱动器时，在所有 24 个驱动器上配置单个动态磁盘池，并在池内为 MGS 和 MDT 卷创建 RAID 1 卷，同时为 OST 使用默认 RAID 6 卷。</block>
+  <block id="edb5641665bc486497fd9e7920923bc2" category="admonition">目前不建议将 1.92 TB 驱动器用于此解决方案。请使用上面列出的经过验证的驱动器容量之一。</block>
+  <block id="b419fbdf2d118176e0f6adcbb1d99bc7" category="inline-image-macro">每个 EF80 阵列具有 24 个 NVMe 驱动器的 Lustre 驱动器布局</block>
+  <block id="55c3520d74000136762b9bb0923e6628" category="paragraph"><block ref="55c3520d74000136762b9bb0923e6628" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="17dc4581092a0978deb62717a11f5a3e" category="section-title">卷和目标计数（基本构建块）</block>
+  <block id="3cbc775f08ccfdf141850e7218d0f13a" category="paragraph">下表列出了基本构建基块的 MGS、MDT 和 OST 计数。</block>
+  <block id="4b5c3b58ede7a0d491ab1747a82d7023" category="cell">目标类型</block>
+  <block id="eb2c08111c5fdf7a89eae6bfd370ee67" category="cell">每 BB 计数</block>
+  <block id="18554b17590a7acfecccce391f155585" category="cell">RAID / 池</block>
+  <block id="b570b356e451561b543910c162ea4887" category="cell">RAID 1</block>
+  <block id="57d92c72fa5a1925944e22ec1e8b3152" category="cell">仅基础构建基块；数组 1</block>
+  <block id="c9b9ae1b4267024d489995d8371bbb3b" category="cell">MDT</block>
+  <block id="214543128bd54d1f5b887d33e6ed5822" category="cell">每个阵列 4 个</block>
+  <block id="d4f3255a163ffc89a90dcfc1275787b4" category="cell">OST</block>
+  <block id="2b116cf8287ed646770b256104ded46d" category="cell">RAID 6 (TLC) 或 DDP (QLC)</block>
+  <block id="d8fb23be0a5d01a77e3a1526fa67fd05" category="cell">每个阵列 16 个</block>
+  <block id="88169d5f5a6db17cadad8063250cac84" category="paragraph">使用以下卷大小调整准则作为 Ansible 清单的起点。</block>
+  <block id="7ab06248edcf5ef00ed9c5a20078e126" category="cell">建议大小</block>
+  <block id="774b7401cbec0cc0c0bf37d0ed482e68" category="cell">5–10 GiB</block>
+  <block id="2f4ef260f2a93a460aad488814320f77" category="cell">仅配置数据</block>
+  <block id="16ff1695f2688f1eb59ab2b823782d38" category="cell">RAID 1 容量 ÷ MDT 数</block>
+  <block id="513a2f16127f2b1cd1d4ead9d0a1d6fe" category="cell">每个约 1–2 TiB（典型值）</block>
+  <block id="1c1a315b0fb2350dba8a0994704e9f25" category="cell">RAID 6或DDP容量÷每个池的OST计数</block>
+  <block id="1a73114d8c2cae924ffbb4e56b0be00c" category="cell">随驱动器容量扩展；请参见 <block ref="fd37d50a703eb90bca5592e7cf7939cb" category="inline-link-macro-rx"></block></block>
+  <block id="c9e4f284ea4bc6ee4ffef88655c3ec75" category="section-title">主要构建块卷分布</block>
+  <block id="abfa81f45567e6183dbe69416b85863f" category="paragraph">下图显示了基本 EF80 构建块中 OSS/MDS 服务器节点和 E-Series 阵列的首选 Lustre 目标放置和 NVMe-oF 连接。该图将管理目标标记为 *MGT*（管理目标）；一个 MGT 托管本文档其他地方引用的 MGS（管理服务器）服务。</block>
+  <block id="9dcfed954e3861ba5d3ad8eec8977a30" category="paragraph-title">基础构建块目标分布（EF80）</block>
+  <block id="6b63b075c2fe3eec9fadad4d1dff1934" category="inline-image-macro">在基本 EF80 构建块中跨 OSS/MDS 服务器节点和 E-Series 阵列的 Lustre 目标分布和 NVMe-oF 路径</block>
+  <block id="ba71f32a6a7ae638d1f32be405bdc274" category="paragraph"><block ref="ba71f32a6a7ae638d1f32be405bdc274" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="4f9d21caea706bcb18efb4c63bd62aca" category="paragraph">下表列出了卷在两个阵列上的分布方式以及每个目标首选的服务器。</block>
+  <block id="e7900a0eb431a2b052bcd3085cce0913" category="cell">阵列 1</block>
+  <block id="f908fa5126d6544f1ab00e51870f0d03" category="cell">阵列 2</block>
+  <block id="d6215740bda3784681fb145c37570b01" category="cell">服务器 1</block>
+  <block id="4c9e921e05ec66314d5aca64cd2089b0" category="cell">服务器 2</block>
+  <block id="f7462993267777388adc7b523aa91283" category="cell">仅基础构建基块</block>
+  <block id="3c5a7a9a6658ef9ca0bc3285cedd12fd" category="cell">每个服务器首选来自每个阵列的 2 个 MDT</block>
+  <block id="7720a0a093547746fb9c28fa647bdc4a" category="cell">每个 RAID 6 池 8 个 × 每个阵列 2 个池，或等效的 DDP 分配</block>
+  <block id="a4737e750a3cc072e2de0cbfed013a9f" category="cell">*总卷数*</block>
+  <block id="5361a4a31f16c2727eea74663d43cfef" category="cell">*21*</block>
+  <block id="cc9c3e7ef1ccd7735f183b0f85fabbc5" category="cell">*20*</block>
+  <block id="87115ea827e568992ff6254262182fad" category="section-title">存储池选择：TLC 与 QLC</block>
+  <block id="8a1a8395aadef29e919648e2370bc2e5" category="paragraph">根据阵列中的 NVMe 驱动器容量选择 E-Series 池类型：</block>
+  <block id="312b3904d397e8acaf0dc33e9634b0f2" category="list-text">*3.84 TB、7.68 TB 和 15.3 TB 驱动器：* 对 OST 卷使用 *RAID 6 卷组*，对 MGS 和 MDT 卷使用 *RAID 1 卷组*，或对共享驱动器池使用 DDP。</block>
+  <block id="fbdc62c247ebc132cdd9a5e831996143" category="list-text">*30.7 TB 和 61.4 TB 容量闪存 (QLC) 驱动器：* 仅使用 *动态磁盘池 (DDP)*。在 DDP 中为 MGS 和 MDT 存储创建 RAID 1 卷。从 DDP 为 OST 存储创建 RAID 6 卷。</block>
+  <block id="ccfefb464f5df4d6ebb06b1724291f0b" category="paragraph">有关按驱动器大小和布局的每个构建块可用容量估计，请参见 <block ref="fd37d50a703eb90bca5592e7cf7939cb" category="inline-link-macro-rx"></block>。</block>
+  <block id="bdd8837c5f5666c1f37ec05326aa385f" category="section-title">网络要求</block>
+  <block id="b374c02c23c43b6770829fceebc42fac" category="section-title">后端(NVMe-oF)</block>
+  <block id="b3d563e4241c1f8fa7c8d5c9fec4bdc2" category="list-text">每个 OSS/MDS 节点和每个 E-Series 阵列之间的 NVMe/InfiniBand 或 NVMe/RoCE</block>
+  <block id="94a30a8068a5aa4b74271a8f9bc93215" category="list-text">NVMe/RoCE 后端接口上的 MTU 9000（典型值）</block>
+  <block id="011be5d8aea7d6a0794481da8e0c780e" category="list-text">从每个 Lustre 节点到存储阵列的八个路径（每个阵列四个）</block>
+  <block id="0f01398befdf8b3a5f7516261c268a54" category="inline-link-macro">EF80 六 HCA 后端布线</block>
+  <block id="82fee62126751ddf3305ff61f08a0be1" category="list-text">EF80 每个节点使用六个 HCA（NVMe-oF 使用 i2、i3、i5 和 i6；LNet 使用 i1 和 i4）。将节点 A 的电缆连接到标签末尾为<block ref="0cc175b9c0f1b6a831c399e269772661" prefix=" " category="inline-code"></block>的控制器端口，例如<block ref="efaa153b0f682ae5170a3184fa0df28c" prefix=" " category="inline-code"></block>和<block ref="e36314e624d2b2ca257e1f1ecb381f93" prefix=" " category="inline-code"></block>。将节点 B 的电缆连接到标签末尾为<block ref="92eb5ffee6ae2fec3ad71c777531578f" prefix=" " category="inline-code"></block>的控制器端口，例如<block ref="a35aea60fe097c885568babb48ee7d1e" prefix=" " category="inline-code"></block>和<block ref="f8bc2fbe2c937ea5b5e8839cbea69491" prefix=" " category="inline-code"></block>。请参阅 <block ref="edb65af51b5b76af78c51b3678ad8402" category="inline-link-macro-rx"></block>。</block>
+  <block id="8a4b8798ab4caa9e54e6dcd1741f20ef" category="section-title">前端(LNet)</block>
+  <block id="86adc200b8e8c47e240f8017eb6b489d" category="list-text">IPoIB 或 RoCE（LNet <block ref="c49f0c3c2926c11287cf9b9355c7aa1f" prefix="(" category="inline-code"></block> 网络类型）</block>
+  <block id="2abb61ccfc9e540001c985b539006316" category="list-text">RoCE 前端接口上的 MTU 9000（典型值）</block>
+  <block id="2f7a335df40dbc598eb3769a68a65bbe" category="list-text">当有四个前端端口可用时，建议使用多轨 LNet（EF80：i1 和 i4 HCA，两个端口）</block>
+  <block id="61c21286db2f11dbaf60ba2e64e10212" category="list-text">专用 InfiniBand 或 RoCE 交换机架构，连接 OSS/MDS 服务器节点和 Lustre 客户端</block>
+  <block id="5ee35a82d01497dffb5640490e92fcea" category="list-text">建议在 RoCE 网络中使用无损 RoCE（PFC）</block>
+  <block id="fe4dbcab9b910577e5035e97ac068dae" category="section-title">管理</block>
+  <block id="31e5d6897cccc36b8c5b264d6d06d17e" category="list-text">用于服务器 BMC 和阵列管理端口的带外管理网络</block>
+  <block id="f3b30a75854b3cd35b00f6633c1cb4e1" category="list-text">专用 Corosync 网络或共享前端结构（取决于站点）</block>
+  <block id="a971692564529effd1b1270a2a6d1be7" category="summary">Lustre with NetApp E-Series Storage 使用具有 NetApp E-Series 全闪存阵列的可重复构建块架构，为 AI 和 HPC 工作负载提供经过验证的可扩展并行文件系统。</block>
+  <block id="888fbbb67b463874639198729553a2c5" category="doc">基于 NetApp E 系列存储的 Lustre - 简介</block>
+  <block id="551e8f9c00e2572dd220f4af7e5590a5" category="paragraph">Lustre with NetApp E-Series Storage 是针对 AI 和 HPC 工作负载的经过验证的并行文件系统解决方案，由 HA 服务器对和 E-Series 全闪存阵列的可重复构建块构建而成。</block>
+  <block id="721d467e631ca0b407762c8ded76ad2b" category="paragraph">Lustre 与 NetApp E 系列存储将开源 Lustre 并行文件系统与 NetApp E 系列块存储相结合，为数据密集型工作负载提供可扩展的高性能基础。每个构建块将两个配置为高可用性 (HA) 的 OSS/MDS 服务器节点与两个 E 系列全闪存阵列配对。后端 NVMe-oF 连接将块 I/O 传输到阵列，独立的 LNet 网络连接客户端和 OSS/MDS 服务器节点以进行并行文件系统访问。</block>
+  <block id="90dcc7ba481f73de6e19244d8cb3faa1" category="paragraph">基本构建块托管管理服务器 (MGS)、初始元数据目标 (MDTs) 和对象存储目标 (OSTs)。额外的构建块向基本 MGS 注册，以随着工作负载需求的增长扩展元数据容量、数据容量和聚合吞吐量。</block>
+  <block id="fc867d1b66dc4bfa1fcc5398878562a3" category="paragraph">下图显示了通过 LNet 连接的多个构建基块和 Lustre 客户端的部署示例。</block>
+  <block id="bbaa0bd4e33c53fb27a995509baf9809" category="paragraph-title">Lustre with NetApp E-Series 存储解决方案概述</block>
+  <block id="3de9beda22b5738ed507f4320ebd16d2" category="inline-image-macro">Lustre with NetApp E-Series 存储解决方案概述，包括构建模块和客户端</block>
+  <block id="d18cd12ca955a0d4461a8bd26b4a62b6" category="paragraph"><block ref="d18cd12ca955a0d4461a8bd26b4a62b6" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="e5a4a25c986e70bef8837211beda74c5" category="summary">查找适用于 Lustre with NetApp E-Series Storage 的相关文档、工具和软件。</block>
+  <block id="80456a973884931f76f18e20f1b88d92" category="doc">使用 NetApp E-Series 存储的 Lustre - 相关资源</block>
+  <block id="4102f0b5b086858fa22e676362d1b795" category="paragraph">在规划或扩展 Lustre with NetApp E-Series Storage 部署时，请使用这些链接获取相关文档、工具和软件。有关调整大小和部署步骤，请参阅 <block ref="fd37d50a703eb90bca5592e7cf7939cb" category="inline-link-macro-rx"></block> 和 <block ref="8f49e9bdbd514d6a8081d8c90c9f306a" category="inline-link-macro-rx"></block>。</block>
+  <block id="ed08ca4078374e76c6df3f1999af7274" category="section-title">NetApp 资源</block>
+  <block id="e016dafca1cca24ab39f1acf3f59ca72" category="list-text"><block ref="27dc27dbb2e442190a59a9d515bed42e" category="inline-link-macro-rx"></block>。搜索 *E-Series Lustre*。</block>
+  <block id="3763b875a199c9f3b55717ee21ea1a75" category="list-text"><block ref="3763b875a199c9f3b55717ee21ea1a75" category="inline-link-macro-rx"></block></block>
+  <block id="b84be9aeeb7d442b640d3bd848f311a8" category="inline-link-macro">NetApp SANtricity System Manager 文档</block>
+  <block id="c342c84ee7efec3704a54620e4065b6d" category="list-text"><block ref="c342c84ee7efec3704a54620e4065b6d" category="inline-link-macro-rx"></block></block>
+  <block id="801fb9c6d060327b67b48b4b980fba6c" category="inline-link-macro">NetApp ansible-lustre 集合</block>
+  <block id="dc7f6a9434c69a7d96a27eaf8f6a5810" category="list-text"><block ref="de7ef047282cd8f5c2a6e192940a1ba6" category="inline-link-macro-rx"></block>。有关清单字段指南，请参见 <block ref="48fa4fcc6ef309525d67cfc2e71da78c" category="inline-link-macro-rx"></block>。</block>
+  <block id="91a4557f9eb7d50540382e1f00258306" category="list-text"><block ref="e7ef2acb3680391a121a9687c0ebe804" category="inline-link-macro-rx"></block>。NetApp 为 Rocky Linux 9.8 和 Red Hat Enterprise Linux 9.8 提供预构建的 Lustre 服务器 RPM。从 NetApp 源代码为客户端操作系统和内核构建 Lustre 客户端包。</block>
+  <block id="272e2791266a1c05b53f467fd4e215fc" category="section-title">Lustre 社区</block>
+  <block id="20d075262dba6c66c6b234942f75e15c" category="inline-link-macro">Lustre 文件系统</block>
+  <block id="213e36085425d4e1da968c8691faa4ed" category="list-text"><block ref="213e36085425d4e1da968c8691faa4ed" category="inline-link-macro-rx"></block></block>
+  <block id="4c0ee2e702465cabf84aca52c40af703" category="list-text"><block ref="612e690bea76796aad3a16779b18be6e" category="inline-link-macro-rx"></block> 适用于客户端操作系统和内核</block>
+  <block id="572d7d4c247e39abc81276ad61bda94d" category="inline-link-macro">Lustre Wiki：Lustre Tuning</block>
+  <block id="f20d6276bdb17320fda3a696111a0d9c" category="list-text"><block ref="f20d6276bdb17320fda3a696111a0d9c" category="inline-link-macro-rx"></block></block>
+  <block id="49ba65b58125bde5c701c1152dbdb41d" category="section-title">相关 NetApp AI 基础设施解决方案</block>
+  <block id="345d569e2c898b48aaaa804d305550c7" category="list-text"><block ref="345d569e2c898b48aaaa804d305550c7" category="inline-link-macro-rx"></block></block>
+  <block id="1db760587a86f5c1b9ab39aa8cf8cf3d" category="inline-link-macro">利用 NetApp E-Series 存储部署 IBM Spectrum Scale</block>
+  <block id="f11bce155d611798d1912aa61e8901b3" category="list-text"><block ref="f11bce155d611798d1912aa61e8901b3" category="inline-link-macro-rx"></block></block>
+  <block id="9b31c43608a903b3b7af19106b8ccc40" category="list-text"><block ref="9b31c43608a903b3b7af19106b8ccc40" category="inline-link-macro-rx"></block></block>
+  <block id="7e756b7eef65f36227a7b85af8135456" category="summary">根据容量和元数据需求调整 Lustre 与 NetApp E-Series 存储构建块的规模，决定何时进行扩展，并审查影响性能的因素。</block>
+  <block id="59c3f54c9a0cecdea180a6456551f46d" category="doc">基于 NetApp E 系列存储的 Lustre - 规模调整指南</block>
+  <block id="d0251bd1f80532046cdfdcea7bc1ab03" category="paragraph">根据容量和元数据需求调整 Lustre 与 NetApp E-Series 存储构建块的规模，决定何时增加容量，并审查影响性能的因素。</block>
+  <block id="12e479a1ce559951ecb94cea66c585f3" category="section-title">容量估算</block>
+  <block id="74d91d3e01704d33bc05d0aee3fb1378" category="paragraph">包含两个 EF80 阵列的基础构建块可提供以下 Lustre 目标布局。有关首选目标位置和 NVMe-oF 路径的信息，请参见 <block ref="b951df04c708233bd0e6aa30024a444e" category="inline-link-macro-rx"></block> 中的 <block ref="8bc00f55bad76f62eced17332034b2aa" category="inline-link-macro-rx"></block>。</block>
+  <block id="e93f994f01c537c4e2f7d8528c3eb5e9" category="cell">计数</block>
+  <block id="a1973c341c7bad553b2bd00820b204be" category="cell">典型卷大小（每个目标）</block>
+  <block id="1a47456e43cf15df911f2376bbaee476" category="cell">5-10 GiB</block>
+  <block id="37da030cbd42d7475398218adf8b3f1d" category="cell">大小因驱动器容量和RAID布局而异</block>
+  <block id="a79871208c930b8bcf98799a0c2e1b03" category="paragraph">每个 EF80 阵列使用 24 个 NVMe 驱动器。传统卷组（MGS/MDT 为 RAID 1，OST 为 RAID 6）或 DDP 支持的容量为 3.84 TB、7.68 TB 和 15.3 TB，仅 DDP 支持 30.7 TB 或 61.4 TB 容量闪存（QLC）驱动器。目前不建议将 1.92 TB 驱动器用于此解决方案。有关驱动器插槽布局和池选择，请参阅 <block ref="b951df04c708233bd0e6aa30024a444e" category="inline-link-macro-rx"></block>。</block>
+  <block id="9de6a58c633ced695e7f35182e4f9c63" category="paragraph">下表列出了 EF80 构建基块（两个阵列，48 个驱动器）的大致可用容量。阵列可用容量与最终 Lustre 文件系统可用容量不同。MDT inode 分配、日志、过度配置和库存量百分比会降低应用程序的可用容量。</block>
+  <block id="bf4f4c18d7c050df8976c2158378f211" category="cell">驱动器容量</block>
+  <block id="b014e19abb88d7a6895fa9a4978359c2" category="cell">布局（每个数组）</block>
+  <block id="24de389e1b80346cfc5655dde589d264" category="cell">大致可用性（构建基块）</block>
+  <block id="841ea7afe795b1f98fa361e5a937261b" category="cell">3.84 TB</block>
+  <block id="504badece79df74e1ca6a1943d9ea638" category="cell">RAID 1 (2+2) + RAID 6 (10) + RAID 6 (10)</block>
+  <block id="a4a7870bd0f30a501a3bc37f298069e2" category="cell">138.08 TB</block>
+  <block id="f9ee319553daeb50ac9c1bd728f141cc" category="cell">DDP（24个驱动器，2个保留）</block>
+  <block id="6bb2f6c5e4d96bf8ece28ee94d769d61" category="cell">133.63 TB</block>
+  <block id="905eb11b1164dde7de88ccc095db332a" category="cell">7.68 TB</block>
+  <block id="e3c57404bad7f03d0fad7d2667cc4d18" category="cell">276.35 TB</block>
+  <block id="8db55378b1ad856c51cbced3a802cf51" category="cell">DDP（24）</block>
+  <block id="c5ec564364fe6f3a8f4127941faf6a13" category="cell">267.47 TB</block>
+  <block id="a9773e9c4005724e36e58faf83312b93" category="cell">15.3 TB</block>
+  <block id="fff2b38f6568264c123f485d4712b2ec" category="cell">552.88 TB</block>
+  <block id="7e75112ad5c27d9638d9c377e68c1cef" category="cell">535.15 TB</block>
+  <block id="655523e8b6dc97cc5f09578f26864c6b" category="cell">30.7 TB</block>
+  <block id="f5feb804f8feca4de703cdcdb2289ade" category="cell">仅限 DDP</block>
+  <block id="08de6cc45bdd714c2a30c46236813c5b" category="cell">1,070.35 TB</block>
+  <block id="c9bba9d9690235f20292e75cb68c184f" category="cell">61.4 TB</block>
+  <block id="ea54dfd3b77728997ed3f50f00001833" category="cell">2,162.70 TB</block>
+  <block id="19e92cc95f52bcadee0ac5af136e0e4d" category="paragraph">分别调整元数据和数据的大小，然后在 Ansible 库存中设置卷大小。部署模板使用 ldiskfs 格式化目标；MDT 使用 Lustre 默认 inode 比率，OST 模板设置<block ref="3c645790e3726dcf6be13baa9c1e56c2" prefix=" " category="inline-code"></block>。</block>
+  <block id="a06df10f2c87a60cbc7cb20ae5ce2661" category="list-text">*元数据（MDT）：* 按预期文件计数调整 MDT 大小。规划大约为预期文件数量两倍的增长空间。MDT 过小可能会导致无法创建新文件，即使 OST 容量仍有剩余。</block>
+  <block id="935cb846bf7018be2b36205354a885cb" category="list-text">*数据（OST）：* 根据可用容量和吞吐量需求确定 OST 大小。</block>
+  <block id="0a280617c3c5d75f5cad72b4d235544a" category="list-text">*MGS：* 仅对文件系统配置使用小管理目标（5-10 GiB）。</block>
+  <block id="d78f2c10b39a4de8134e05cbbeef88cf" category="paragraph">为所选驱动器容量调整清单中的 MDT 和 OST 卷大小。仅当站点需要不同的 inode 比率时，才更改<block ref="cacffef7307ad1ca469fde6b5578422a" prefix=" " category="inline-code"></block>中的<block ref="11493f05b06ee0c05f68413399f7a704" prefix=" " category="inline-code"></block>或<block ref="c5d13f36ab0941dd19bdbf0e007c972b" prefix=" " category="inline-code"></block>。有关 inode 比率的背景知识，请参见<block ref="f20d6276bdb17320fda3a696111a0d9c" category="inline-link-macro-rx"></block>。有关何时添加构建基块的信息，请参见<block ref="bf0eac056881e080673af3338260e54f" category="inline-xref-macro-rx"></block>。</block>
+  <block id="bc967dc2d57e6eff184a821bf7577a80" category="section-title">缩放</block>
+  <block id="b5165c065ecd6f7df456195a5837649f" category="paragraph">在容量或元数据负载需要时，添加构建基块：</block>
+  <block id="c6016c4989752ac4ba0c1bc2d37771ea" category="list-text">*仅限 OST：* 文件计数和元数据加载在现有 MDT 容量范围内，您需要更多数据容量或聚合吞吐量。添加 32 个 OST 和两个 OSS/MDS 服务器节点。</block>
+  <block id="0542b35a0c887339c1b730319191a84e" category="list-text">*MDT+OST:* 文件计数或元数据速率接近 MDT 容量，或者您需要更多元数据吞吐量和数据容量。增加 8 个 MDT 和 32 个 OST。</block>
+  <block id="188e8b041d8de5566b88189f59e809fc" category="paragraph">在现有 MDT 上使用<block ref="b1a5bd8baac9f30b53cd68f65243f1b5" prefix=" " category="inline-code"></block>以确认元数据是否饱和。将每个 Pacemaker/Corosync 集群限制为五个构建块（十个 OSS/MDS 服务器节点）。对于较大的部署，将构建块均匀分布在多个 HA 集群中。有关扩展规则，请参阅<block ref="f6c91e3cd1480b3865622c5a1b7e2c1a" category="inline-link-macro-rx"></block>。</block>
+  <block id="ed50a739e29323312b31bff9a6ed12c7" category="paragraph">以下示例显示了一个 HA 集群中带有基本构建块和仅 OST 构建块的文件系统。</block>
+  <block id="fdd0fa6524b4c92bc95af5176461013e" category="cell">构建基块</block>
+  <block id="ac659513b2353187192e88c5d1988228" category="cell">服务器</block>
+  <block id="ff43b8de4f41d5103405ddb62eb8d34e" category="cell">数组</block>
+  <block id="a3781aed953e0188563e879828c56061" category="cell">BB1</block>
+  <block id="32fbcabed73ba199a63dd1a684d58a39" category="cell">BB2</block>
+  <block id="96b0141273eabab320119c467cdcaf17" category="cell">总计</block>
+  <block id="48af2a85fb5e9a78b7eb6d081635f7cc" category="paragraph">BB2 使用<block ref="19f18f5b36600af4ea17354c94083b4d" prefix=" " category="inline-code"></block>针对 BB1 中的 MGS 注册其 OST 目标。BB2 的 OST 索引是全局分配的（例如，OST0032 到 OST0063），因此没有索引与 BB1 冲突。</block>
+  <block id="26a885a8b3e010fc6e8077dfd984fec6" category="paragraph">正式验证使用来自 Lustre 客户端的 IOR、mdtest 和 fio 来表征相对吞吐量、IOPS 和元数据行为，并验证 HA 故障转移。这些测试不会发布有保证的性能数据。综合基准测试衡量最佳情况下的行为，可能无法反映实际的应用程序性能。</block>
+  <block id="a25fc9d39767010278f116fa1cdd1f0a" category="paragraph">性能大致随构建块的数量而扩展。实现的结果取决于驱动器类型和池布局、NVMe-oF 路径计数、LNet 结构和客户端计数，以及数据与元数据 I/O 的混合。</block>
+  <block id="7f7e308769861daef896f945c6a341be" category="paragraph">请联系您的 NetApp 客户团队，以获取特定于工作负载的规模和性能建议。</block>
+  <block id="c5c2ea62983e1e188786ad8bfa88f7fb" category="paragraph">有关驱动器布局和卷计数，请参见<block ref="b951df04c708233bd0e6aa30024a444e" category="inline-link-macro-rx"></block>。有关部署步骤，请参见<block ref="8f49e9bdbd514d6a8081d8c90c9f306a" category="inline-link-macro-rx"></block>。有关现场级库存指导，请参见<block ref="48fa4fcc6ef309525d67cfc2e71da78c" category="inline-link-macro-rx"></block>。</block>
+  <block id="dae2d3f855359018480bd9e9ef676792" category="summary">查看用于使用 NetApp E-Series 存储部署 Lustre 的软件组件和 Ansible 自动化。</block>
+  <block id="2fed2b0537192296a3697912cd2d3b32" category="doc">使用 NetApp E 系列存储的 Lustre - 软件组件</block>
+  <block id="8d0e3a3ae8f0b6693431338ff101e9f3" category="paragraph">查看使用 NetApp E-Series Storage 部署 Lustre 的软件堆栈和 Ansible 自动化。有关服务器、存储和网络，请参见 <block ref="b951df04c708233bd0e6aa30024a444e" category="inline-link-macro-rx"></block>。</block>
+  <block id="3ddeb7b39d4e1ebdeff20c88b90f8118" category="section-title">构建块软件</block>
+  <block id="444ad67e0ba1ebc75540bd3505333dbb" category="paragraph">下表列出了 E 系列阵列和 OSS/MDS 服务器节点使用的软件组件。使用 <block ref="dea5a7fef452493e48f46a815b88571f" category="inline-link-macro-rx"></block> 作为支持的版本和组件组合的权威来源。搜索 *E-Series Lustre* 并在部署之前确认操作系统、Lustre、SANtricity 操作系统、DOCA-OFED、HCA 固件和 HA 软件包版本。</block>
+  <block id="86408593c34af77fdd90df932f8b5261" category="cell">功能</block>
+  <block id="e791d47d690cbc6aa7c7f9434ebd2fa1" category="cell">SANtricity OS</block>
+  <block id="5ca4fd1919e76260b3d43547bad111d4" category="cell">在每个 E-Series 阵列上运行，并提供 SANtricity System Manager、具有自动 I/O 路径故障转移的双活动控制器高可用性、自动负载平衡和路径监控、动态磁盘池和传统 RAID、自动驱动器重建、镜像缓存保护、数据保证、主动驱动器运行状况监控以及在线软件、固件和配置更改。</block>
+  <block id="af33584349c4303df5160e032fea6eb8" category="cell">Lustre</block>
+  <block id="7dcb13804687bff071f09fb210b81adf" category="cell">为客户端提供符合 POSIX 标准的单个命名空间，同时跨多个目标分发元数据和文件数据以进行并行访问。管理服务器 (MGS) 存储文件系统配置，元数据目标 (MDT) 管理命名空间，对象存储目标 (OST) 在 E-Series 卷上存储文件数据。这种分离可通过添加构建块来扩展性能和容量。</block>
+  <block id="943819b5da243944c1ae08b5be94436e" category="cell">Red Hat Enterprise Linux (RHEL) 或 Rocky Linux</block>
+  <block id="0690c5e2cfb58ff86b8cbecd26a64a9e" category="cell">为 Lustre 目标服务、HA 集群、存储和网络连接提供内核、系统服务和包框架。受支持的操作系统存储库还提供 Pacemaker、Corosync、fence agents、NVMe-oF 和多路径软件包，这些软件包作为解决方案堆栈一起进行测试。</block>
+  <block id="56c886c423386e51f9242611a3ddd86b" category="cell">高可用性集群服务（Pacemaker、Corosync 和 fence agent）</block>
+  <block id="e4661564e283a6f5a615b5c108f2ee9f" category="cell">这些服务共同为 OSS/MDS 服务器节点上的 Lustre 目标提供协调的高可用性。它们维护集群成员资格和仲裁，监控资源，协调有序故障转移，并在其他位置激活共享目标之前隔离无响应的节点。这种协调可防止对 E-Series 卷的脑裂访问，并在故障期间保护文件系统的完整性。</block>
+  <block id="cd88c8c03aeba4f72c5636c4e1345954" category="cell">NVIDIA DOCA-OFED</block>
+  <block id="ed24c241434368c2bbaf242ddd3ab0b2" category="cell">为 InfiniBand 和 RoCE 结构提供 HCA 驱动程序、RDMA 库和管理实用程序。相同的软件堆栈支持对 E-Series 阵列的低延迟后端 NVMe-oF 访问以及与 Lustre 客户端的高吞吐量前端 LNet 通信。</block>
+  <block id="419b231880de9252ac834d52a075d58e" category="paragraph">NetApp 为 Rocky Linux 9.8 和 Red Hat Enterprise Linux 9.8 提供预构建的 Lustre 服务器 RPM。</block>
+  <block id="f309660aa7ddccfcd74a91e5e1eba500" category="section-title">Ansible 自动化</block>
+  <block id="89a844364f22dcf7fdcf1bce0e4507d5" category="paragraph">Lustre with NetApp E-Series Storage 通过控制节点使用 Ansible 自动化进行交付和部署，该控制节点具有对 E-Series 阵列和 OSS/MDS 服务器节点的管理访问权限。Ansible 清单模拟所需的解决方案，包括阵列、服务器、存储分配、网络接口和 HA 集群资源。</block>
+  <block id="2a8fd198917f5b8e5bf2c5e099545a35" category="paragraph">The NetApp E-Series Lustre Ansible 集合通过使用 SANtricity 和 Host 集合来协调端到端部署。这些集合一起配置和映射 E-Series 存储，准备服务器操作系统，配置 NVMe-oF 和 LNet 连接，部署 Lustre 目标，并创建 Pacemaker 资源。这种自动化使配置可重复，并简化了向现有文件系统添加构建基块的过程。</block>
+  <block id="ca90e19253cf2e48ef5424e516ec986b" category="paragraph">下表总结了 Ansible 控制节点上使用的主要软件包。有关当前软件包依赖项，请参见 <block ref="d1a1b24c47947abfae4f7a836682839e" category="inline-link-macro-rx"></block>。</block>
+  <block id="209802fb858e2c83205027dbbb5d9e6c" category="cell">套餐</block>
+  <block id="bf45656cff8cabbcedd92fb1ca66bdd4" category="cell">依赖关系或目的</block>
+  <block id="e697f15cbb321abdd59018a4ea71f66a" category="cell">提供 Ansible 和所需 Python 模块的运行时。</block>
+  <block id="38ffe3e951cbcb69b273ce33552fd9d1" category="cell">ansible-core</block>
+  <block id="a702c09b535302cbc6561c203cb0f4a8" category="cell">需要 Python 并运行 NetApp E-Series Ansible 集合。</block>
+  <block id="d35d779fe31977939a0a72c5c962d2af" category="cell">其他 Python 包</block>
+  <block id="f22c7fea934a6eb824b3f4b041e9f534" category="cell"><block ref="e0d00b9f337d357c6faa2f8ceae4a60d" prefix="" category="inline-code"></block>、<block ref="6d14525117cc12ced056e2289c5669ab" prefix=" " category="inline-code"></block>、<block ref="6ed1630535e149ee97279a775dccb954" prefix=" " category="inline-code"></block>、<block ref="1aa69b45474a1c5cc94422f60a915609" prefix=" " category="inline-code"></block>、<block ref="bc54684915644d97a72624e17a72eef6" prefix=" " category="inline-code"></block>、<block ref="45e959010cbec742b865b68a40fdb3d7" prefix=" " category="inline-code"></block>和<block ref="a29a14b370fd47fe2a7d1c665bcba045" prefix=" " category="inline-code"></block></block>
+  <block id="97246c2acb58fd6b8e955f919adb0923" category="cell">配置 Lustre、LNet、NVMe-oF 主机连接和 Pacemaker 资源。</block>
+  <block id="0db654f6b4a67eb4049f1fd501c9f7be" category="cell">NetApp E-Series SANtricity Ansible 集合</block>
+  <block id="0ec973c334798e2f0a5118cb9157c765" category="cell">通过 SANtricity Web Services API 配置 E 系列阵列、存储池、卷和主机映射。</block>
+  <block id="23c28d851624a5f8fa634080658c4707" category="cell">NetApp E-Series 主机 Ansible 集合</block>
+  <block id="42098180c27d0c4f6030713a975ebe6b" category="cell">为 LNet 和 NVMe-oF 与 E 系列阵列连接准备 OSS/MDS 服务器节点。</block>
+  <block id="16a82006af64f2b5bee8ebe98b80a248" category="section-title">Lustre 客户端软件</block>
+  <block id="b849bf31bf12a9824d75fbf4f2c31f7e" category="paragraph">Lustre 客户端软件使系统能够通过前端 LNet 结构访问并行文件系统。每个客户端都需要与其运行的内核和服务器上部署的 Lustre 版本兼容的 Lustre 内核模块和 Lustre 客户端实用程序。</block>
+  <block id="793bd0e5fbfc31c0292029e837a76450" category="paragraph">使用<block ref="612e690bea76796aad3a16779b18be6e" category="inline-link-macro-rx"></block>查找与 Lustre 版本兼容的客户端操作系统和内核。NetApp 不提供预构建的 Lustre 客户端包。从<block ref="a26fe5a6450900f32fdc60abe5f6c5e6" category="inline-link-macro-rx"></block>中 NetApp 提供的 Lustre 源代码为客户端操作系统和内核构建客户端包。安装 Lustre 客户端软件包后，<block ref="99fc42f6ce60cac70cab6ee0f8f2330f" prefix=" " category="inline-code"></block>角色可以配置网络接口、LNet，并为 Lustre 文件系统创建持久的 systemd 挂载单元。</block>
+  <block id="5bdf49c5dd95c601fd517185f5df6e15" category="paragraph">有关客户端部署步骤，请参见 <block ref="8f49e9bdbd514d6a8081d8c90c9f306a" category="inline-link-macro-rx"></block>。</block>
+  <block id="a805c2d846a91199e3cb54800e713f68" category="summary">为了评估所提出的架构的性能，进行了多次测试。有六种不同的工作负载，如图像分类、对象检测（小型）、对象检测（大型）、医学成像、语音转文本和自然语言处理 NLP，您可以在三种不同的场景中运行——离线、单流和多流。</block>
+  <block id="beca071ad49a9c68928cfdd7e5db33c2" category="inline-link"><block ref="beca071ad49a9c68928cfdd7e5db33c2" category="inline-link-rx"></block></block>
+  <block id="939097de2d6ac448a6a39221d1b90a3f" category="paragraph"><block ref="939097de2d6ac448a6a39221d1b90a3f" category="inline-link-rx"></block></block>
+  <block id="cfcb27d55de1a05460222aaae2ce5968" category="inline-link"><block ref="cfcb27d55de1a05460222aaae2ce5968" category="inline-link-rx"></block></block>
+  <block id="c87a795ad50945fa0e730c7c01ccac47" category="paragraph"><block ref="c87a795ad50945fa0e730c7c01ccac47" category="inline-link-rx"></block></block>
+  <block id="a92e88134d3accfc1d9920721715f966" category="inline-link"><block ref="a92e88134d3accfc1d9920721715f966" category="inline-link-rx"></block></block>
+  <block id="ef854b81531246a9b4dcf221a58cc76e" category="paragraph"><block ref="ef854b81531246a9b4dcf221a58cc76e" category="inline-link-rx"></block></block>
+  <block id="d0a5c98873d3d051dc52621664b65724" category="paragraph">🔗 <block ref="14d1afb05a5bd011ea59181d58fb4ae4" category="inline-link-rx"></block></block>
+  <block id="4c589e0b8589cef9be14170911c5f09b" category="paragraph">NetApp 不提供对 Apache Airflow、JupyterHub、MLflow、Kubeflow 或 Kubernetes 的企业支持。如果您对完全支持的 MLOps 平台感兴趣，<block ref="0dd3a80d3a14a1d362eb2892c01dba52" category="inline-link-macro-rx"></block>了解 NetApp 与合作伙伴联合提供的完全支持的 MLOps 解决方案。</block>
+  <block id="8580f71d04f7cf5070bef20ec7f9399d" category="sidebar">使用 E-Series 的 Lustre 并行文件系统</block>
+  <block id="7968dca1c563e638b3f7b4f92c64484f" category="sidebar">Lustre 与 NetApp E-Series 存储</block>
+  <block id="f0b169ab419064a5528cbd15cf20888e" category="sidebar">机架和电缆硬件</block>
+  <block id="f816bb441bc6fff2071c78484140ef17" category="sidebar">准备部署环境</block>
+  <block id="8e9935960e71710f3253321e54a9e37c" category="sidebar">部署 HA 集群和客户端</block>
+  <block id="a6d0a294c308f6406404b87b69662279" category="sidebar">验证并扩展部署</block>
+  <block id="ef6a7f3bd6d67f44f7bd0323fa734758" category="sidebar">相关资源</block>
 </blocks>

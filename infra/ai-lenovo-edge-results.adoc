@@ -2,7 +2,7 @@
 sidebar: sidebar 
 permalink: infra/ai-lenovo-edge-results.html 
 keywords: test, results, aff, offline, single-stream, ef 
-summary: '我们进行了大量的测试来评估所提出的架构的性能。有六种不同的工作负载（图像分类、对象检测 [小]、对象检测 [大]、医学成像、语音转文本和自然语言处理 [NLP]），您可以在三种不同的场景中运行 - 离线、单流和多流。' 
+summary: 为了评估所提出的架构的性能，进行了多次测试。有六种不同的工作负载，如图像分类、对象检测（小型）、对象检测（大型）、医学成像、语音转文本和自然语言处理 NLP，您可以在三种不同的场景中运行——离线、单流和多流。 
 ---
 = 测试结果
 :hardbreaks:

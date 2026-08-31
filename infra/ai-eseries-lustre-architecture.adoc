@@ -1,0 +1,111 @@
+---
+sidebar: sidebar 
+permalink: infra/ai-eseries-lustre-architecture.html 
+keywords: Lustre, NetApp E-Series, EF80, building block, NVMe-oF, LNet, Pacemaker, HA, scaling, clients 
+summary: 了解 Lustre 与 NetApp E-Series 存储构建块设计、扩展规则、HA 模型、网络拓扑和客户端集成。 
+---
+= Lustre 与 NetApp E 系列存储 - 解决方案架构
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+了解 Lustre with NetApp E-Series Storage 如何使用构建块、高可用性、网络拓扑和客户端，以便您可以规划容量、性能和故障转移。
+
+
+
+[[building-block-design]]
+== 构建块设计
+
+构建模块是 NetApp E 系列 Lustre 解决方案的基本可扩展单元。每个构建块由两个服务器节点组成，配置为提供 Lustre 对象存储服务器 (OSS) 和元数据服务器 (MDS) 功能的高可用性 (HA) 对，两个 NetApp E 系列全闪存阵列，服务器和阵列之间的专用后端 NVMe over Fabrics (NVMe-oF) 连接，以及用于客户端和节点间通信的专用前端 Lustre 网络 (LNet) 连接。Pacemaker 和 Corosync HA 集群可以包含一个或多个构建块中的服务器对。NetApp `ansible-lustre`集合使用 Ansible 自动化来部署和配置 Lustre 服务。
+
+.Lustre 构建块
+image:eseries-lustre-building-block.png["具有两个 OSS/MDS 服务器节点和两个 E-Series EF80 阵列的 Lustre HA 构建块"]
+
+构建块可根据文件系统的增长需求进行扩展。每个文件系统都需要一个基本构建块。基本构建块在管理目标 (MGT) 上托管管理服务器 (MGS)，并提供初始元数据目标 (MDT) 和对象存储目标 (OST) 容量。其他构建块可扩展文件系统，并将其 MDT 和 OST 目标注册到基本构建块的 MGS 中。模块化方法允许根据工作负载需求独立扩展容量和性能。
+
+NetApp 建议在大多数部署中使用以下构建块配置文件。列出的 MGS、MDT 和 OST 计数是推荐的默认值，经过优化以最大化 E-Series 存储阵列的性能和容量。调整 Ansible 清单中的目标计数、卷大小和 E-Series 驱动器分配，以满足工作负载需求。例如，需要更大元数据存储容量的部署可以在同一构建块硬件中配置更多 MDT 和更少 OST。
+
+下表总结了构建基块类型和建议的目标计数。
+
+|===
+| 类型 | MGS | MDT | OSTs | 用途 
+
+
+| 基础 | 1 | 8 | 32 | 文件系统中的第一个构建块。托管 MGS 和初始 MDT 和 OST 容量。 
+
+
+| MDT+OST | 0 | 8 | 32 | 添加元数据和数据容量。根据基本构建基块 MGS 进行注册。 
+
+
+| 仅限 OST | 0 | 0 | 32 | 仅添加数据容量。根据基础构建块 MGS 进行注册。 
+|===
+* *驱动器类型和池布局：* E-Series 支持传统的 RAID 卷组和动态磁盘池 (DDP)。对于 TLC NVMe 驱动器，将 RAID 6 卷组用于 OST 存储，将 RAID 1 卷组用于 MGS 和 MDT 存储。对于 QLC NVMe 驱动器，请将 DDP 用于共享驱动器池。
+* *目标分布：* 每个构建块中的 Lustre 目标在两个 OSS/MDS 服务器节点和两个 E-Series 阵列之间进行平衡。该布局跨服务器 CPU 和阵列控制器分布 I/O，以提高 NVMe-oF 路径性能并保持冗余。请参阅 link:ai-eseries-lustre-hw.html#_primary_building_block_volume_distribution["目标分布和 NVMe-oF 连接"] 中的 link:ai-eseries-lustre-hw.html["硬件组件"]。
+
+
+支持的操作系统、Lustre 版本、阵列固件和相关构建块组件列于 link:https://imt.netapp.com/imt/#welcome["NetApp 互操作性矩阵工具 (IMT)"^] 的 *E-Series Lustre* 下。有关详细的卷计数、驱动器布局和大小调整指南，请参阅 link:ai-eseries-lustre-hw.html["硬件组件"]。有关软件组件，请参阅 link:ai-eseries-lustre-sw.html["软件组件"]。
+
+
+
+[[scaling-recommendations]]
+== 扩展建议
+
+当元数据容量、数据容量或两者都变得有限时，Lustre 文件系统通过添加构建基块进行扩展。根据文件计数和元数据 IOPS 扩展 MDT；根据容量和聚合吞吐量需求扩展 OST。
+
+. *每个文件系统一个基本构建块：* 仅部署一个基本构建块；它托管 MGS 以及初始 MDT 和 OST 目标。
+. *其他构建基块配置文件：* 当现有 MDT 容量足够且数据容量或吞吐量必须增加时，添加仅限 OST 的构建基块。当元数据性能或命名空间容量成为瓶颈时，添加 MDT+OST 构建基块。
+. *HA 集群限制：*将每个 Pacemaker 和 Corosync HA 集群限制为五个构建块（十个 Lustre 服务器节点）。将较大的部署均匀拆分为多个 HA 集群，以避免大型配置中的资源限制。
+
+
+下图显示了堆叠在 42U 机架中的最多五个构建模块（每个机架一个 Pacemaker HA 集群）。多个机架可以参与单个 Lustre 文件系统；只有基本构建模块托管 MGS。
+
+.Lustre并行文件系统机架扩展
+image:eseries-lustre-2x2-rack-scaling.png["Lustre 并行文件系统跨多个 42U 机架扩展，每个机架在一个 Pacemaker HA 集群中最多包含五个构建块"]
+
+有关尺寸示例，请参见 link:ai-eseries-lustre-sizing.html["尺寸指南"]。
+
+
+
+[[ha-architecture]]
+== HA 架构
+
+Lustre with NetApp E-Series Storage 使用与 NetApp E-Series 存储集成的共享磁盘高可用性 (HA) 架构。Pacemaker 管理 HA 资源，Corosync 提供集群成员资格和消息传递。它们共同管理每个构建块中两个 OSS/MDS 服务器节点之间的 Lustre 目标故障转移。多路径 NVMe-oF 将两个 OSS/MDS 服务器节点连接到相同的 E-Series 卷，因此任一节点都可以在需要时接管目标服务。
+
+每个 MGS、MDT 和 OST 都配置为 HA 资源，其依赖关系位于 Pacemaker 资源组中。Pacemaker 确保资源以正确的顺序启动和停止，保持在同一节点上并置，一次仅在一个节点上运行。从两个节点并发访问同一目标可能会损坏底层文件系统。
+
+* *目标故障转移：* 两个 OSS/MDS 服务器节点都是集群中的对等节点，但每个 Lustre 目标一次仅在一个节点上处于活动状态。Pacemaker 监控资源监视每个目标及其依赖项的运行状况，并在目标在其当前节点上不可用时触发故障转移。发生故障时，Pacemaker 会按正确顺序在伙伴节点上重新启动受影响的资源组，一旦服务恢复，客户端将透明地重新连接到目标的新位置。由于每个目标仅在单个节点上激活，因此文件系统永远不会面临来自两个节点的并发写入风险。
+* *共享存储访问：* 多路径 NVMe-oF 路径将每个 OSS/MDS 服务器节点连接到构建块中的所有 E 系列控制器，因此每个目标卷都可以从任一节点访问。如果服务器节点发生故障，合作伙伴节点已具有指向相同卷的活动路径，无需重新配置存储连接即可接管目标的所有权。如果阵列控制器或路径发生故障，多路径会将 I/O 重定向到存活的控制器。这种双重冗余使 Lustre 目标能够在 OSS/MDS 服务器节点或阵列控制器之间进行故障切换，而不会丢失对后备卷的访问权限。
+* *STONITH 隔离：* 发生故障时，Pacemaker 有时无法与故障节点通信以确认其目标已停止。在其他位置重新启动这些目标之前，Pacemaker 会隔离故障节点（理想情况下通过断电），以确保其处于关闭状态。隔离可防止脑裂情况的发生——即两个节点同时访问同一目标并损坏底层文件系统——从而在故障转移期间保持数据完整性。NetApp 建议将 `fence_redfish`用于配备支持 Redfish 的基板管理控制器 (BMC) 的服务器。其他隔离代理（例如 `fence_apc`）也受支持。
+
+
+有关集群管理和隔离配置，请参见 link:https://github.com/NetApp/ansible-lustre/blob/release/1.0.0/roles/lustre/docs/ha_user_guide.md["HA用户指南"^] 中的 link:https://github.com/NetApp/ansible-lustre/tree/release/1.0.0["ansible-lustre 集合"^]。
+
+
+
+[[network-architecture]]
+== 网络架构
+
+该解决方案对存储后端流量和 LNet 前端流量使用单独的网络路径。
+
+* *后端 (NVMe-oF)：* OSS/MDS 服务器节点使用 NVMe/InfiniBand 或 NVMe/RoCE 通过 NVMe-oF 连接到 E-Series 阵列。NVMe-oF 路径在 Lustre 目标服务和 E-Series 卷之间传输块 I/O。有关 EF80 六 HCA 后端布线的信息，请参见 link:ai-eseries-lustre-deploy-hardware.html["机架和线缆 Lustre 硬件"]。有关跨节点和阵列的首选目标放置，请参见 link:ai-eseries-lustre-hw.html["硬件组件"] 中的 link:ai-eseries-lustre-hw.html#_primary_building_block_volume_distribution["目标分布"]。
+* *前端 (LNet)：* Lustre 客户端和 OSS/MDS 服务器节点使用 NVIDIA OFED 堆栈通过 LNet 以 `@o2ib`网络类型进行通信。InfiniBand 和 RoCE 都是经过验证的前端传输协议。ansible-lustre 集合为多轨 LNet 配置所有前端接口，通过聚合多个端口来增加带宽，并为客户端及节点间流量提供路径冗余。
+* *管理和集群：* 带外管理网络提供服务器管理、BMC 访问和阵列管理。STONITH 隔离代理（例如 `fence_redfish`）使用此网络访问服务器 BMC 并从故障节点切断电源。Corosync 还可以在此网络上运行集群通信，作为前端结构旁边的附加环。使用多个环配置 Corosync 可增加集群消息传递的冗余，并降低单个网络故障中断仲裁的风险。
+
+
+
+
+[[lustre-clients]]
+== Lustre 客户端
+
+Lustre 客户端加载客户端内核模块，建立到 OSS/MDS 服务器节点的 LNet 连接，并挂载文件系统，以向应用程序提供单一、一致、符合 POSIX 的命名空间。I/O 跨活动 OST 并行分布。客户端节点位于构建块的外部，并通过前端 LNet 结构使用文件系统。此解决方案的 IMT 中未列出客户端操作系统；请使用 link:https://wiki.whamcloud.com/display/PUB/Lustre+Support+Matrix["Lustre 支持表"^] 查找已部署的 Lustre 版本所支持的已测试客户端发行版和内核版本（例如，Red Hat Enterprise Linux 9、SUSE Linux Enterprise Server 15 和 Ubuntu 24.04）。
+
+客户端节点需要连接到与 OSS/MDS 服务器节点相同的 LNet 结构和网络类型。如果需要，LNet 路由器可以桥接单独的 LNet 子网或结构。
+
+NetApp 为 Rocky Linux 9.8 和 Red Hat Enterprise Linux 9.8 提供预构建的 Lustre 服务器 RPM。NetApp 不提供预构建的客户端软件包。从 link:https://github.com/NetApp/netapp-lustre["netapp-lustre 存储库"^] 中的 Lustre 源代码为客户端操作系统和内核构建客户端软件包。
+
+安装客户端软件包后，link:https://github.com/NetApp/ansible-lustre/tree/release/1.0.0["ansible-lustre 集合"^] 中的可选  `lustre_client` 角色会配置客户端网络接口和 LNet，在选中时启用 multi-rail LNet，验证连接性，并管理持久的 systemd 挂载单元。该角色不会构建 Lustre。仅当  `lustre_client_packages` 已填充时，它才会安装客户端软件包。如果需要，可以手动配置客户端。有关分步步骤，请参见 link:ai-eseries-lustre-deploy.html["部署解决方案"] 和 link:https://github.com/NetApp/ansible-lustre/blob/release/1.0.0/roles/lustre_client/README.md["lustre_client角色文档"^]。

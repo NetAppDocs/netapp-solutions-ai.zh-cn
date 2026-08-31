@@ -1,0 +1,103 @@
+---
+sidebar: sidebar 
+permalink: infra/ai-eseries-lustre-deploy-inventory.html 
+keywords: Lustre, NetApp E-Series, Ansible inventory, EF80, deployment 
+summary: 自定义 Lustre 服务器、EF80 阵列、网络和 HA 资源的 NetApp Ansible 部署清单。 
+---
+= 自定义 Lustre Ansible 清单
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+创建 EF80 部署模板的工作副本，并为服务器、阵列、网络和 Lustre 构建基块自定义其清单。
+
+将选定的清单保留在其 fabric 和平台目录下。保留  `playbooks` 根目录下的 shared 目录和  `passwords.yml` 文件 `building_blocks`。
+
+
+
+[[select-a-deployment-template]]
+== 选择部署模板
+
+从与站点的网络结构匹配的模板开始：
+
+* *InfiniBand:* link:https://github.com/NetApp/ansible-lustre/tree/release/1.0.0/getting_started/lustre_deployment_template/building_blocks/IB_H2_IB_DAC_A2_EF80/lustre_building_block_cluster_1["IB_H2_IB_DAC_A2_EF80/lustre_building_block_cluster_1"^]
+* *RoCE:* link:https://github.com/NetApp/ansible-lustre/tree/release/1.0.0/getting_started/lustre_deployment_template/building_blocks/ROCE_H2_ROCE_DAC_A2_EF80/lustre_building_block_cluster_1["ROCE_H2_ROCE_DAC_A2_EF80/lustre_building_block_cluster_1"^]
+
+
+
+
+[[configure-site-specific-settings]]
+== 配置特定于站点的设置
+
+在清单中设置站点特定的值，以及本地存储库和 udev 规则设置。表中的行引用指向  `ansible-lustre` `release/1.0.0` 标记中的 RoCE EF80 模板文件。InfiniBand 模板使用相同的变量名称和结构，但 LNet 接口变量除外，该变量在表中注明。
+
+[cols="2,3,4,2,4"]
+|===
+| 字段 | Ansible 变量 | 模板文件 (`release/1.0.0`) | 范围 | 备注 
+
+
+| 文件系统名称 | `eseries_lustre_filesystem_mgt.format_options.fsname`, `eseries_lustre_filesystem_mdt.format_options.fsname`, `eseries_lustre_filesystem_ost.format_options.fsname` | link:https://github.com/NetApp/ansible-lustre/blob/release/1.0.0/getting_started/lustre_deployment_template/building_blocks/ROCE_H2_ROCE_DAC_A2_EF80/lustre_building_block_cluster_1/group_vars/ha_cluster.yml#L76["ha_cluster.yml#L76"^], link:https://github.com/NetApp/ansible-lustre/blob/release/1.0.0/getting_started/lustre_deployment_template/building_blocks/ROCE_H2_ROCE_DAC_A2_EF80/lustre_building_block_cluster_1/group_vars/ha_cluster.yml#L90["#L90"^], link:https://github.com/NetApp/ansible-lustre/blob/release/1.0.0/getting_started/lustre_deployment_template/building_blocks/ROCE_H2_ROCE_DAC_A2_EF80/lustre_building_block_cluster_1/group_vars/ha_cluster.yml#L110["#L110"^] | 集群范围 | 嵌套在 MGT、MDT 和 OST 映射下的 `format_options`。最多 8 个字符。在所有三个位置使用相同的值。顶级 `fsname`键无效。 
+
+
+| 用于目标注册的 MGS NIDs | `eseries_lustre_filesystem_mdt.format_options.mgsnode`, `eseries_lustre_filesystem_ost.format_options.mgsnode` | link:https://github.com/NetApp/ansible-lustre/blob/release/1.0.0/getting_started/lustre_deployment_template/building_blocks/ROCE_H2_ROCE_DAC_A2_EF80/lustre_building_block_cluster_1/group_vars/ha_cluster.yml#L98["ha_cluster.yml#L98"^], link:https://github.com/NetApp/ansible-lustre/blob/release/1.0.0/getting_started/lustre_deployment_template/building_blocks/ROCE_H2_ROCE_DAC_A2_EF80/lustre_building_block_cluster_1/group_vars/ha_cluster.yml#L118["#L118"^] | 集群范围 | 嵌套在 MDT 和 OST 下 `format_options`。包括 HA 对中两个节点的前端 LNet NID。首先列出配置为首选 MGS 所有者的节点的 NID，然后列出合作伙伴节点的 NID。 
+
+
+| Pacemaker 集群名称 | `eseries_lustre_pacemaker_cib_properties_overrides.cluster_properties.cluster-name` | link:https://github.com/NetApp/ansible-lustre/blob/release/1.0.0/getting_started/lustre_deployment_template/building_blocks/ROCE_H2_ROCE_DAC_A2_EF80/lustre_building_block_cluster_1/group_vars/ha_cluster.yml#L228["ha_cluster.yml#L228"^] | 集群范围 | 嵌套在 Pacemaker CIB 属性覆盖下。HA 集群的唯一名称。 
+
+
+| BMC 隔离地址 | `eseries_lustre_pacemaker_fencing_agents.fence_redfish.ip` | link:https://github.com/NetApp/ansible-lustre/blob/release/1.0.0/getting_started/lustre_deployment_template/building_blocks/ROCE_H2_ROCE_DAC_A2_EF80/lustre_building_block_cluster_1/group_vars/ha_cluster.yml#L211["ha_cluster.yml#L211"^], link:https://github.com/NetApp/ansible-lustre/blob/release/1.0.0/getting_started/lustre_deployment_template/building_blocks/ROCE_H2_ROCE_DAC_A2_EF80/lustre_building_block_cluster_1/group_vars/ha_cluster.yml#L214["#L214"^], link:https://github.com/NetApp/ansible-lustre/blob/release/1.0.0/getting_started/lustre_deployment_template/building_blocks/ROCE_H2_ROCE_DAC_A2_EF80/lustre_building_block_cluster_1/group_vars/ha_cluster.yml#L217["#L217"^], link:https://github.com/NetApp/ansible-lustre/blob/release/1.0.0/getting_started/lustre_deployment_template/building_blocks/ROCE_H2_ROCE_DAC_A2_EF80/lustre_building_block_cluster_1/group_vars/ha_cluster.yml#L220["#L220"^] | 每个 Lustre 服务器重复 | 每个服务器节点的 Redfish BMC IP 地址。 
+
+
+| 警报电子邮件收件人 | `eseries_lustre_alert_email_list` | link:https://github.com/NetApp/ansible-lustre/blob/release/1.0.0/getting_started/lustre_deployment_template/building_blocks/ROCE_H2_ROCE_DAC_A2_EF80/lustre_building_block_cluster_1/group_vars/ha_cluster.yml#L233["ha_cluster.yml#L233"^] | 集群范围 | HA 资源和故障通知的收件人。 
+
+
+| 邮件域 | `eseries_lustre_mail_service_overrides.conf.mydomain` | link:https://github.com/NetApp/ansible-lustre/blob/release/1.0.0/getting_started/lustre_deployment_template/building_blocks/ROCE_H2_ROCE_DAC_A2_EF80/lustre_building_block_cluster_1/group_vars/ha_cluster.yml#L240["ha_cluster.yml#L240"^] | 集群范围 | 用于发送警报电子邮件的后缀域。 
+
+
+| NTP 时间源 | `eseries_lustre_time_sync_overrides.server_pools` | link:https://github.com/NetApp/ansible-lustre/blob/release/1.0.0/getting_started/lustre_deployment_template/building_blocks/ROCE_H2_ROCE_DAC_A2_EF80/lustre_building_block_cluster_1/group_vars/ha_cluster.yml#L250["ha_cluster.yml#L250"^] | 集群范围 | 集群节点的时间源。指定一个 NTP 池或一个或多个单独的 NTP 服务器。包括所需的 `pool`或 `server`指令和选项，例如 `iburst`。 
+
+
+| 接口 PCI 到名称 udev 映射 | `eseries_ip_udev_rules` | link:https://github.com/NetApp/ansible-lustre/blob/release/1.0.0/getting_started/lustre_deployment_template/building_blocks/ROCE_H2_ROCE_DAC_A2_EF80/lustre_building_block_cluster_1/group_vars/ha_cluster.yml#L172["ha_cluster.yml#L172"^] | 每个 HCA 插槽布局重复 | 将每个 PCI 插槽映射到持久接口名称（L182 处的值）。使用 `lspci -nnvmm`收集。 
+
+
+| 本地包存储库（可选） | `eseries_common_yum_repos` | link:https://github.com/NetApp/ansible-lustre/blob/release/1.0.0/getting_started/lustre_deployment_template/building_blocks/ROCE_H2_ROCE_DAC_A2_EF80/lustre_building_block_cluster_1/group_vars/ha_cluster.yml#L256["ha_cluster.yml#L256"^], link:https://github.com/NetApp/ansible-lustre/blob/release/1.0.0/getting_started/lustre_deployment_template/building_blocks/ROCE_H2_ROCE_DAC_A2_EF80/lustre_building_block_cluster_1/group_vars/ha_cluster.yml#L261["#L261"^] | 集群范围 | 对于气隙安装，请取消注释该块并设置存储库 `url`（L264）。 
+
+
+| 服务器管理 IP | `ansible_host` | link:https://github.com/NetApp/ansible-lustre/blob/release/1.0.0/getting_started/lustre_deployment_template/building_blocks/ROCE_H2_ROCE_DAC_A2_EF80/lustre_building_block_cluster_1/host_vars/lustre_01.yml#L10["host_vars/lustre_01.yml#L10"^] | 每个 Lustre 服务器重复 | 每台服务器一个 `host_vars/lustre_NN.yml`文件。 
+
+
+| NVMe-oF 后端接口 | `eseries_nvme_roce_interfaces` (RoCE) /  `eseries_nvme_ib_interfaces` (InfiniBand) | link:https://github.com/NetApp/ansible-lustre/blob/release/1.0.0/getting_started/lustre_deployment_template/building_blocks/ROCE_H2_ROCE_DAC_A2_EF80/lustre_building_block_cluster_1/host_vars/lustre_01.yml#L21["RoCE host_vars/lustre_01.yml#L21"^]、link:https://github.com/NetApp/ansible-lustre/blob/release/1.0.0/getting_started/lustre_deployment_template/building_blocks/IB_H2_IB_DAC_A2_EF80/lustre_building_block_cluster_1/host_vars/lustre_01.yml#L17["InfiniBand host_vars/lustre_01.yml#L17"^] | 每个 Lustre 服务器重复 | 用于连接 E 系列阵列的 NVMe-oF 存储流量的后端接口地址。 
+
+
+| LNet 集群接口 | `eseries_roce_interfaces` (RoCE) /  `eseries_ipoib_interfaces` (InfiniBand) | link:https://github.com/NetApp/ansible-lustre/blob/release/1.0.0/getting_started/lustre_deployment_template/building_blocks/ROCE_H2_ROCE_DAC_A2_EF80/lustre_building_block_cluster_1/host_vars/lustre_01.yml#L47["RoCE host_vars/lustre_01.yml#L47"^]、link:https://github.com/NetApp/ansible-lustre/blob/release/1.0.0/getting_started/lustre_deployment_template/building_blocks/IB_H2_IB_DAC_A2_EF80/lustre_building_block_cluster_1/host_vars/lustre_01.yml#L38["InfiniBand host_vars/lustre_01.yml#L38"^] | 每个 Lustre 服务器重复 | 前端 LNet 接口地址（RoCE 值在 L56；InfiniBand 值在 L47）。 
+
+
+| Corosync 节点 IP | `eseries_lustre_corosync_node_ips` | link:https://github.com/NetApp/ansible-lustre/blob/release/1.0.0/getting_started/lustre_deployment_template/building_blocks/ROCE_H2_ROCE_DAC_A2_EF80/lustre_building_block_cluster_1/host_vars/lustre_01.yml#L58["host_vars/lustre_01.yml#L58"^] | 每个 Lustre 服务器重复 | 列出 HA 集群中的所有节点 IP（L62 处的值）。 
+
+
+| Lustre 目标服务 NID | `lustre_target_service_nodes` | link:https://github.com/NetApp/ansible-lustre/blob/release/1.0.0/getting_started/lustre_deployment_template/building_blocks/ROCE_H2_ROCE_DAC_A2_EF80/lustre_building_block_cluster_1/host_vars/lustre_01.yml#L64["host_vars/lustre_01.yml#L64"^] | 每个 Lustre 服务器重复 | 包括 HA 对中两个节点的前端 LNet NID (`@o2ib`），以便在故障转移后仍可访问目标服务（L67 处的值）。 
+
+
+| 阵列管理 IP | `ansible_host` | link:https://github.com/NetApp/ansible-lustre/blob/release/1.0.0/getting_started/lustre_deployment_template/building_blocks/ROCE_H2_ROCE_DAC_A2_EF80/lustre_building_block_cluster_1/host_vars/netapp_01.yml#L13["host_vars/netapp_01.yml#L13"^] | 每个 E 系列阵列重复 | 一个控制器的管理 IP；API URL 从中派生。 
+
+
+| 构建基块组成员身份 | `mgs` / `mds_NN` / `oss_NN` | link:https://github.com/NetApp/ansible-lustre/blob/release/1.0.0/getting_started/lustre_deployment_template/building_blocks/ROCE_H2_ROCE_DAC_A2_EF80/lustre_building_block_cluster_1/lustre_inventory.yml#L1["lustre_inventory.yml"^] | 每个构建基块 | 每个库存主机名必须与其相应的 `host_vars`文件的基本名称匹配。例如，主机 `lustre_01`使用 `host_vars/lustre_01.yml`，而 `netapp_01`使用 `host_vars/netapp_01.yml`。仅在第一个构建基块中包含 MGS 组。在基本构建基块和每个 MDT+OST 扩展构建基块中包含 MDS 组；仅从纯 OST 扩展构建基块中省略 MDS 组。使用 `mgsnode`将扩展目标注册到现有 MGS。 
+|===
+重复每个主机和构建基块的设置。每个 Lustre 服务器创建一个 `host_vars/lustre_NN.yml`文件，每个阵列创建一个 `host_vars/netapp_NN.yml`文件，并为每个额外的构建基块重复清单组。
+
+部署 playbook 从共享 `building_blocks/passwords.yml`文件加载阵列、Pacemaker 和 BMC 凭据。在部署之前填充此文件并使用 Ansible Vault 对其进行加密，或在运行时使用 `--extra-vars`安全地覆盖值。请勿将纯文本凭据提交到源代码管理。
+
+
+NOTE: 部署模板中的 IP 地址、主机名、接口名和卷大小均为示例。在运行任何 playbook 之前，请修改环境的所有清单文件。
+
+
+
+[[after-you-finish]]
+== 完成后
+
+link:ai-eseries-lustre-deploy-cluster.html["部署 Lustre HA 集群和客户端"]。

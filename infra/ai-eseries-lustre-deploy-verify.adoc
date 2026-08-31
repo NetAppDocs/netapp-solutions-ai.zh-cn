@@ -1,0 +1,61 @@
+---
+sidebar: sidebar 
+permalink: infra/ai-eseries-lustre-deploy-verify.html 
+keywords: Lustre, NetApp E-Series, deployment verification, Pacemaker, scaling 
+summary: 验证 Lustre 集群运行状况、挂载和容量，并使用其他构建块扩展文件系统。 
+---
+= 验证和扩展 Lustre 部署
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+在生产使用之前确认集群运行状况、Lustre 挂载和文件系统容量，然后在需要时使用相同的清单添加构建块。
+
+
+
+[[verify-the-deployment]]
+== 验证部署
+
+.步骤
+. 在 Lustre 服务器上，确认所有 Pacemaker 资源均已在预期节点上启动：
++
+[source, cli]
+----
+pcs status
+----
+. 从 Lustre 客户端，确认 Lustre 文件系统已挂载：
++
+[source, cli]
+----
+mount -t lustre
+----
+. 从 Lustre 客户端，确认文件系统容量以及 MDT 和 OST 目标可见：
++
+[source, cli]
+----
+lfs df -h
+----
+
+
+有关使用 IOR、mdtest 和 fio 进行性能验证，请参见 link:ai-eseries-lustre-sizing.html["尺寸指南"]。
+
+对于受控目标迁移或 HA 故障转移测试，请按照 link:https://github.com/NetApp/ansible-lustre/blob/release/1.0.0/roles/lustre/docs/ha_user_guide.md["HA 管理用户指南"^] 中的步骤进行操作。
+
+
+
+[[expand-the-file-system]]
+== 扩展文件系统
+
+要增加容量或元数据性能，请使用额外的构建块扩展现有库存。请勿为新构建块创建单独的库存。该手册自动分配唯一的 MDT 和 OST 索引，并根据现有 MGS 注册新目标。
+
+.步骤
+. 将新的构建基块主机、阵列和资源组（MDT+OST 或仅限 OST）添加到用于原始部署的相同清单以及 `host_vars`和 `group_vars`文件中。
+. 根据更新的清单重新运行主要部署 playbook。
+
+
+有关扩展规则，请参阅 link:ai-eseries-lustre-architecture.html["解决方案架构"]；有关何时添加每种构建基块类型的指导，请参阅 link:ai-eseries-lustre-sizing.html["尺寸指南"]。
