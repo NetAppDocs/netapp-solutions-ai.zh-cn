@@ -1,0 +1,86 @@
+---
+sidebar: sidebar 
+permalink: infra/ai-pipeline-operational-guide.html 
+keywords:  
+summary:  
+---
+= 9.操作指南
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+Karthikeyan Nagalingam， NetApp
+
+本指南涵盖日常执行、监控、事件分类、培训恢复、存档验证、容量调整和数据保护。将其与第 8 节中的配置场景结合使用，以在本地、ONTAP S3 和 LustreFS 培训模式下一致地运行相同的管道。
+
+
+
+[[9-1-execution-walkthrough]]
+== 9.1 执行演练
+
+通过 `trigger++_++and++_++wait++_++ai++_++pipeline++_++sklearn.sh`使用 `CONF++_++JSON`有效载荷触发运行。该脚本提交一个唯一命名的手动运行，轮询直到其达到终止状态，并在可用时打印失败任务的本地日志尾部。每个主要任务在启动时发出一条 `effective++_++config`记录，以便操作员可以验证已评估的配置，而不是仅依赖提交的有效负载。
+
+
+
+[[9-2-monitoring-and-observability]]
+== 9.2 监测和可观察性
+
+在 Airflow UI 或 CLI 中监控 DAG 状态，并将其与运行 ID 和 `run++_++stamp`相关联。防护日志对 grep 友好： `++[++data++_++prep++]++ effective++_++config`、 `++[++model++_++training++]++ effective++_++config`、 `++[++xcp++_++copy++]++ effective++_++config`和 `++[++checkpoint++]++ resume++_++summary`。查看这些条目，以验证每次运行的转换引擎、选定的 XCP 目标、训练源和检查点重用决策。
+
+
+
+[[9-3-troubleshooting-quick-reference]]
+== 9.3 故障排除快速参考
+
+使用此表将常见任务故障与首要纠正措施对应起来。在重试运行之前，请先解决源连接和挂载问题；在未纠正无效配置或不可用端点的情况下重试将重现相同的故障。
+
+[cols="34%,33%,33%"]
+|===
+| 症状 | 可能的原因 | 解决方法 
+
+
+| `Could not resolve XCP S3 credentials` | 缺失/不正确 `xcp++_++s3++_++profile`，位于 `xcp++_++s3++_++profiles` | 验证配置文件名称和凭据映射 
+
+
+| `no readable Lustre source directory` | LustreFS 未挂载或错误 `xcp++_++lustrefs++_++dest++_++path` | 使用 `findmnt -T /mnt/lustre/client -o FSTYPE,TARGET -n`验证文件系统类型；正确路径 
+
+
+| `Missing required text dataset files` | 原始 S3 前缀中缺少文本 JSON | 上传 `text++_++base.json`, `text++_++finetune.json`, `text++_++infer.json` 
+
+
+| 预检退出代码 1 | SSH 无法访问 | 验证 `ssh++_++default`连接和主机/用户 
+
+
+| 预检退出代码 2 | NFS 路径未导出/不可见 | 验证导出方式 `xcp show ++<++ip++>++` 
+|===
+
+
+[[9-4-checkpoint-operations]]
+== 9.4 检查点操作
+
+检查点仅适用于 `model++_++training`。设置 `training++_++checkpoint++_++reuse++_++mode=resume++_++if++_++exists`以重复使用有效的已完成训练结果并跳过冗余模型训练，或使用 `verify++_++only`在不跳过的情况下验证检查点资格。在初始测试期间或每当训练输入、配置或预期工件发生更改时，请保持禁用重用(`off`）。
+
+
+
+[[9-5-manual-archive-operations]]
+== 9.5 手动归档操作
+
+设置 `manual++_++archive++_++enabled=true`并有意识地选择 `manual++_++archive++_++stage`。当治理要求在训练成功后立即使用核心模型基线时，使用 `model++_++training`；当存档必须包含最终预测时，使用 `inferencing`。选定了 `model++_++training`的运行在存档分支之后继续进行微调和推理；它只是不会存档其后续输出。验证运行标记的 StorageGRID 前缀下的上传内容，并查看 `++[++manual++_++archive++]++`日志，以了解所选阶段、找到的文件和上传计数。
+
+
+
+[[9-6-scaling-guidance]]
+== 9.6 缩放指导
+
+将 `sample++_++count`、 `spark++_++driver++_++memory`、 `spark++_++executor++_++memory`和 `spark++_++timeout++_++secs`调整到输入量和服务级别目标。从有界样本开始验证数据形状和路由，然后在 StorageGRID、ONTAP NAS、XCP 和所选训练层具有足够的容量和吞吐量后，使用 `sample++_++count=0`进行全行运行。
+
+
+
+[[9-7-backup-and-recovery]]
+== 9.7 备份和恢复
+
+使用 ONTAP 快照和备份保护 ONTAP NAS 准备好的数据桶。将 StorageGRID 保护和保留策略应用于原始和存档存储桶；存档存储桶独立于管道重新执行而保留历史记录。将这些存储保护与训练检查点记录相结合，以在任务、主机或站点级别中断后恢复正确的运行范围数据和基线工件。

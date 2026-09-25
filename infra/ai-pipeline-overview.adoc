@@ -1,0 +1,37 @@
+---
+sidebar: sidebar 
+permalink: infra/ai-pipeline-overview.html 
+keywords:  
+summary:  
+---
+= 跨 NetApp 存储平台（StorageGRID、ONTAP 和 E-Series）简化 AI 管道
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+Karthikeyan Nagalingam， NetApp
+
+这种经过验证的架构呈现了由 Apache Airflow 编排的受管理、存储层感知的 AI 数据管道。解决方案从 NetApp StorageGRID 提取原始表格和文本数据，在 ONTAP NAS 存储桶上准备确定性数据集和清单，并根据运行时配置使用 NetApp XCP 将准备好的数据移动到 NetApp ONTAP S3 或 LustreFS。然后，它训练并逐步微调 scikit-learn 模型，生成预测，对成功的训练输出设置检查点，并将模型、指标、清单和预测证据归档到 StorageGRID。该架构提供可重现的执行、可配置的存储放置、故障防护、基于检查点的恢复以及跨 AI 生命周期的可审计溯源。它适用于需要跨 NetApp 存储层 AI 管道可重复部署和验证模式的架构师、数据工程师、机器学习工程师和基础设施团队。
+
+'''
+
+
+[[table-of-contents]]
+=== 目录
+
+. link:ai-pipeline-executive-summary.html["内容提要"]
+. link:ai-pipeline-solution-overview.html["解决方案概述、业务价值和客户优势"]
+. link:ai-pipeline-architecture.html["架构概述"]
+. link:ai-pipeline-netapp-components.html["NetApp、第三方和开源技术组件"]
+. link:ai-pipeline-solution-design-and-storage-architecture.html["解决方案设计和存储架构详细信息"]
+. link:ai-pipeline-data-mobility.html["使用 NetApp XCP 实现数据移动"]
+. link:ai-pipeline-deployment-architecture.html["部署架构"]
+. link:ai-pipeline-configuration-reference.html["配置参考"]
+. link:ai-pipeline-operational-guide.html["操作指南"]
+. link:ai-pipeline-security-considerations-validation-testing.html["安全注意事项、验证和测试"]
+. link:ai-pipeline-differentiation-appendices.html["NetApp 差异化和竞争定位，附录"]
+

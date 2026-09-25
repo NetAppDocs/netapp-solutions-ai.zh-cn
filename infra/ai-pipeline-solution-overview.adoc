@@ -1,0 +1,106 @@
+---
+sidebar: sidebar 
+permalink: infra/ai-pipeline-solution-overview.html 
+keywords:  
+summary:  
+---
+= 2.解决方案概述、业务价值和客户利益
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+Karthikeyan Nagalingam， NetApp
+
+
+
+[[2-1-solution-description]]
+== 2.1 解决方案说明
+
+该管道实现为 Airflow DAG `example++_++ai++_++pipeline++_++sklearn`，由任务 `ingestion`、 `data++_++prep`、 `xcp++_++preflight++_++source`、 `xcp++_++copy++_++prep++_++to++_++training`、 `model++_++training`、 `fine++_++tuning`、 `inferencing`、 `checkpoint++_++model++_++training`、 `route++_++manual++_++archive++_++stage`和 `manual++_++archive`组成。
+
+
+
+[[2-2-use-case-and-problem-statement]]
+== 2.2 用例和问题陈述
+
+客户必须使用来自 StorageGRID 的原始数据定期训练和刷新表格回归和文本分类模型。管道在 ONTAP NAS 存储桶中准备该数据，然后根据每次运行的目标选择，使用 NetApp XCP 将其传输到 ONTAP S3 或 LustreFS 进行训练。
+
+
+
+[[2-3-target-customer-profile-and-industry-applicability]]
+== 2.3 目标客户概况和行业适用性
+
+金融服务（风险/欺诈模型）、制造（预测性维护）、医疗保健（分类/分诊）、零售（需求预测）——任何需要在 NetApp 基础设施上进行受管控、可重复 ML 训练的企业。
+
+
+
+[[2-4-solution-scope-and-boundaries]]
+== 2.4 解决方案范围和边界
+
+*范围内：* 摄取门控、数据准备（Python/Spark）、XCP 数据移动（S3/LustreFS）、scikit-learn 训练和增量微调、推理、检查点、手动归档。*超出范围：* 实时模型服务 API、流式摄取、基于 GPU 的深度学习框架。
+
+
+
+[[2-5-assumptions-and-prerequisites]]
+== 2.5 假设和前提条件
+
+* 可从 Airflow 访问的 StorageGRID S3 兼容端点，用于原始数据访问和存档。
+* ONTAP NAS 存储桶可从 Airflow 访问，用于写入已准备好的数据，并通过 NFS 向 XCP 主机公开。
+* NetApp ONTAP S3 兼容端点，当选择 ONTAP S3 作为训练目标时，可从 Airflow 和 XCP 访问该端点。
+* NetApp XCP 已安装，可通过 SSH （Airflow 连接 `ssh++_++default`）访问。
+* 当选择 LustreFS 时，LustreFS 客户端已挂载到 XCP 主机上。
+* Airflow 2.x，带 `boto3`、 `scikit-learn`；可选 PySpark &#43; Delta/Iceberg 软件包。
+
+
+
+
+[[2-6-business-drivers]]
+== 2.6 业务驱动因素
+
+通过增量训练缩短建模时间，降低基础架构成本，消除一次性脚本编写风险。
+
+
+
+[[2-7-value-proposition-summary]]
+== 2.7 价值主张摘要
+
+StorageGRID、ONTAP NAS、ONTAP S3、LustreFS 和 XCP 与 Airflow 编排相结合，可提供存储层感知、可观察、弹性的 AI 管道。
+
+
+
+[[2-8-stakeholder-benefits]]
+== 2.8 利益相关者的利益
+
+[cols="50%,50%"]
+|===
+| 利益相关者 | 优势 
+
+
+| 数据工程 | 声明式、参数驱动的准备；自动文件发现；Spark/Delta/Iceberg 支持 
+
+
+| 数据科学/机器学习 | 增量微调；跨阶段一致的制品源；可重复的拆分 
+
+
+| IT运营 | 运行时存储选择；保护/有效配置日志；基于检查点的恢复 
+
+
+| 合规/治理 | 清单和存档记录提供可审计的沿袭；可配置的保留阶段 
+|===
+
+
+[[2-9-tco-considerations]]
+== 2.9 TCO注意事项
+
+增量微调和检查点恢复可降低经常性计算成本；存储层灵活性可避免为所有工作负载过度配置高性能存储。
+
+
+
+[[2-10-roi-considerations]]
+== 2.10 ROI 考量因素
+
+更快的模型刷新周期，减少手动维护，缩短每次故障事件的恢复时间。

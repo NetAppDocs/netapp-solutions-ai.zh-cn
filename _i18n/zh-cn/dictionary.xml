@@ -6385,4 +6385,879 @@
   <block id="8e9935960e71710f3253321e54a9e37c" category="sidebar">部署 HA 集群和客户端</block>
   <block id="a6d0a294c308f6406404b87b69662279" category="sidebar">验证并扩展部署</block>
   <block id="ef6a7f3bd6d67f44f7bd0323fa734758" category="sidebar">相关资源</block>
+  <block id="158133d0e61258a781ca3530584f50bc" category="doc">3.架构概述</block>
+  <block id="8d538805fd68ab903235f7bccd88d2be" category="paragraph">本节介绍经过验证的人工智能管道的逻辑工作流程、组件交互、物理部署和数据沿袭。这些图表共同显示了 Apache Airflow 如何协调从 StorageGRID 到 ONTAP NAS 的数据移动，可选地使用 NetApp XCP 将数据放置在 ONTAP S3 或 LustreFS 上进行模型执行，并将受管控的结果返回到 StorageGRID 归档存储。</block>
+  <block id="78eeca8a2ba4b9274cb36efa6d59ac6a" category="section-title">3.1 高层三层 AI 存储架构</block>
+  <block id="cb646951a6f20d69bbd4d8c107e01469" category="paragraph">NetApp AI 存储架构将数据放置在与每个生命周期阶段最匹配的存储层上。StorageGRID 用于可扩展、成本优化的原始数据摄取和受管归档。ONTAP NAS 和 ONTAP S3 用作主动准备、数据移动暂存和基于对象的训练工作流。当需要高吞吐量、并行训练 I/O 时，将使用配备 LustreFS 的 E-Series。Apache Airflow 负责编排生命周期，而 NetApp XCP 将准备好的数据从 ONTAP NAS 层移动到所选的活动训练层。</block>
+  <block id="9a839b7373492e326162d1aa61afac4f" category="image-alt">高层三层 AI 存储架构</block>
+  <block id="e73478fd1b199f0b72d6f664c454ae83" category="section-title">3.2 高级解决方案架构</block>
+  <block id="8e95cf1a1222d609ec06c7334ed74e17" category="paragraph">此工作流程图显示了由 Airflow 控制的生命周期，从原始 StorageGRID 数据经过准备、可选 XCP 移动性、模型执行、检查点和归档。<block ref="fd4d34e32e9bc5c210335d5fd6df15d7" prefix=" " category="inline-code"></block>确定在训练前是否将准备好的数据从 ONTAP NAS 存储桶复制到 ONTAP S3 或 LustreFS。归档分支是独立的：<block ref="5c8219c19f8a15ee0794b9138756ef33" prefix=" " category="inline-code"></block>在训练后立即归档基线，而<block ref="120019114158613cfa6cf13ef4bdf7f8" prefix=" " category="inline-code"></block>在生成预测后归档完整结果。</block>
+  <block id="5da449e6e3f5d803ce1171c96eac6565" category="image-alt">高级解决方案架构</block>
+  <block id="40537ba1c2d0199268928353a283a55b" category="section-title">3.3 组件交互图</block>
+  <block id="63659446b0b29f6a666fbce7b4a3aece" category="paragraph">此序列图标识执行每个交换的平台组件。Airflow 从 StorageGRID 读取原始对象，并将准备好的数据写入 ONTAP NAS 存储桶；然后通过 SSH 调用 XCP。XCP 读取 ONTAP NAS NFS 导出并写入配置的训练层。最终条件块显示 StorageGRID 归档内容取决于所选的手动归档阶段。</block>
+  <block id="ffd987e8264d979550746f18ab10cab0" category="image-alt">组件交互关系图</block>
+  <block id="3af0467b350949319bcea90a74ffcfb7" category="section-title">3.4 物理/部署架构</block>
+  <block id="032b0e59bb804d370e7f1cb96d540730" category="paragraph">此部署图显示所需的主机、存储端点和网络接口。Airflow 主机对 StorageGRID、ONTAP NAS 存储桶和所选的 ONTAP S3 目标使用 S3 API，并使用 SSH 控制 XCP 主机。XCP 主机通过 NFS 访问准备好的数据源，并写入 ONTAP S3 或 LustreFS 挂载；选择 LustreFS 时，Airflow 主机还必须挂载它以读取训练数据并实现工件。</block>
+  <block id="0e6cc2ec82643a41d9cf7bfd54062a28" category="image-alt">物理/部署架构</block>
+  <block id="164977a231e19fbb82fb26835b84b869" category="section-title">3.5 数据流概述</block>
+  <block id="48c0f40b831c7ee67094c5a856088379" category="paragraph">此精简流程总结了数据和制品溯源信息。每次运行都会收到一个唯一的<block ref="f8fa1cd8b7e66ffd748bc457b500b439" prefix=" " category="inline-code"></block>，使已准备好的数据、XCP 输出、模型工件、预测结果和存档对象均可追溯至同一次执行。XCP 目标选择控制训练数据和模型工件层，而<block ref="2878a1b91d2fb362479266e9dec90bdc" prefix=" " category="inline-code"></block>则控制 StorageGRID 接收基线训练包还是完整推理包。</block>
+  <block id="f08d03437beff1b3d497c5e454ba09d1" category="image-alt">数据流概述</block>
+  <block id="ec0cb73b0d5abdc756bb2373d57e2853" category="doc">8.配置参考</block>
+  <block id="a6e79493d5bb9bb413a1bd28efd70172" category="paragraph">配置参考描述了控制数据摄取、数据准备、XCP 移动性、训练、检查点和存档的运行时参数。ONTAP NAS 存储桶主要用作可支持性和可移植性的预备数据和 XCP 暂存层。在实时生产使用中，当更符合工作负载和延迟要求时，也可以通过支持 RDMA 的直接访问路径使用相同的预备数据。</block>
+  <block id="81fc6043cd0691b150e06fdd852117b8" category="paragraph">所有运行时行为均通过<block ref="ab705a77421e8c7b3037722d58fe2675" prefix=" " category="inline-code"></block>提供，使同一 DAG 能够服务于不同的源系统、转换引擎、存储目标、恢复策略和归档范围。仅配置所选工作流所需的参数组，将凭据保存在 Airflow Connections 或 secrets 后端中，并将示例用作非生产模板，而非凭据值。</block>
+  <block id="6fe31ae61c0bdd95f59e3615429b2773" category="section-title">8.1 采集参数</block>
+  <block id="1aa076252468591df8b36dacd9479fd7" category="paragraph">使用这些设置来选择和配置上游摄取机制。<block ref="8152603d62286c8bf3a5e38e9783e25a" prefix=" " category="inline-code"></block> 使用数据准备组中配置的 StorageGRID 原始数据对象；仅当选择了相应的摄取工具时，才需要 Airbyte 和 NiFi 设置。</block>
+  <block id="83f499a540b1323009c200d6f8cc9396" category="cell">参数</block>
+  <block id="7a1920d61156abc05a60135aefe8bc67" category="cell">默认</block>
+  <block id="b651efdb98a5d6bd2b3935d0c3f4a5e2" category="cell">必填项</block>
+  <block id="0a52730597fb4ffa01fc117d9e71e3a9" category="cell">示例</block>
+  <block id="348a1c4e4ccecfb12590c206dbb3fc5f" category="cell"><block ref="a9ba0ac6818f785f16c4ec33a68daae2" prefix="" category="inline-code"></block></block>
+  <block id="3eff42010b88d106f8f4e949f2bea91d" category="cell"><block ref="8152603d62286c8bf3a5e38e9783e25a" prefix="" category="inline-code"></block></block>
+  <block id="ade0694229d9b7206a4c6531c029374b" category="cell">选择摄取模式</block>
+  <block id="f3fbde79e5e72b6bd754b1d304b571a4" category="cell"><block ref="cf51deb83d01f9d3eb59898a891be5fa" prefix="" category="inline-code"></block></block>
+  <block id="22b433d589c54a66f66b721a05b1de90" category="cell"><block ref="a3a512d0af8a2fdd8f31bc414c0de95f" prefix="" category="inline-code"></block></block>
+  <block id="6adf97f83acf6453d4a6a4b1070f3754" category="cell">无</block>
+  <block id="0c173a5a46cd5563724bba1226b9c384" category="cell">仅限 Airbyte</block>
+  <block id="8f85041d65a05fcf4aa86bac553ba06b" category="cell">Airbyte API 端点</block>
+  <block id="b504732b213a87187231baca605c29f1" category="cell"><block ref="b5ed70381f808bcc66b89342ab2e2293" prefix="" category="inline-code"></block></block>
+  <block id="c029885170856d38cb96f1deb6962e65" category="cell"><block ref="e4a2252aaabe1c06633e050a04a69f8f" prefix="" category="inline-code"></block></block>
+  <block id="4588e115490a73489db338f3abe4c6bd" category="cell">Airbyte 连接 ID</block>
+  <block id="d9dcd04c76a6d70dbf288e5225b0bb4f" category="cell"><block ref="e4bc78c6caa0b02bfcece185c21ee922" prefix="" category="inline-code"></block></block>
+  <block id="49b36067de2b8e7a2cafa50945920400" category="cell"><block ref="ff0c833f37cf23695b04cbf7160c6c00" prefix="" category="inline-code"></block></block>
+  <block id="ebb061953c0454b2c8ee7b0ac615ebcd" category="cell">可选</block>
+  <block id="25d95961a44037e555767a429cb7864e" category="cell">Bearer 令牌</block>
+  <block id="f7d44098a8d808a29da9e45a59b53a91" category="cell"><block ref="9ec92ad7f9e9a7435546c7eec389f19b" prefix="" category="inline-code"></block></block>
+  <block id="9b95ccc8531d009364cbe47940f84bd6" category="cell"><block ref="b4c413ca446d24992e11ac3b6d75182d" prefix="" category="inline-code"></block></block>
+  <block id="f29961598a6ef18678cd21502ad448be" category="cell"><block ref="34173cb38f07f89ddbebc2ac9128303f" prefix="" category="inline-code"></block></block>
+  <block id="624409fd5bc261b99b28044d8c26d4ac" category="cell">Airbyte 超时</block>
+  <block id="3659b8b4c0a792d3f143e11a3ba64e5d" category="cell"><block ref="072b030ba126b2f4b2374f342be9ed44" prefix="" category="inline-code"></block></block>
+  <block id="89ec7fed32196b93e9a01ccaac58b005" category="cell"><block ref="2f124d3655fe6808cf036887019a3c32" prefix="" category="inline-code"></block></block>
+  <block id="272c8e289e61bb24f2c69ba19a02b482" category="cell">NiFi 专用</block>
+  <block id="202d2bc1d26456b2dcfc0336a9dc9536" category="cell">NiFi API 端点</block>
+  <block id="b5dcb8135460b155a13cf3a5d7981ac3" category="cell"><block ref="ab7d663aca954c12cd496c6608da9431" prefix="" category="inline-code"></block></block>
+  <block id="07fb86dcb4d19a46f2c31fe92c4de2ff" category="cell"><block ref="b239cfc9da9c5e4d9e029958a5cd7e9d" prefix="" category="inline-code"></block></block>
+  <block id="a394e04923e4a70365f7119a44b40b2b" category="cell">NiFi 流程组</block>
+  <block id="a034a722ab767ec80bd8df6b148a62dd" category="cell"><block ref="aefc0b9b3fcccdaea347b2cb3c72ea58" prefix="" category="inline-code"></block></block>
+  <block id="e01497d25c5c253261340cf7517087cd" category="cell"><block ref="243eb95fe6ada2a629ca1f0094b8df29" prefix="" category="inline-code"></block></block>
+  <block id="6f78769ea4e73895e9650319bdb00ad0" category="cell">NiFi 超时</block>
+  <block id="337a7fd6980c8641e959afd0f995ca78" category="section-title">8.2 数据准备参数</block>
+  <block id="6c3d44fd52b223fad61aab780b7ac7b5" category="paragraph">这些设置控制原始数据访问、准备好的数据输出、输入发现和转换行为。<block ref="3223c12f695625701b873ce04fe3c432" prefix=" " category="inline-code"></block> 参数指的是 StorageGRID，而代码兼容的 <block ref="9832221282433f8c95fcd8f8408caabd" prefix=" " category="inline-code"></block> 参数标识写入已准备数据、运行标记数据和清单的 ONTAP NAS 存储桶。</block>
+  <block id="168effe8ab542239eab7a42fbe28e887" category="paragraph">*原始 StorageGRID / 准备好的数据 ONTAP NAS 存储桶：*</block>
+  <block id="61aee82e27bacdc5dcfbba33461af2b2" category="paragraph">当 StorageGRID 与 ONTAP NAS 存储桶使用不同的 S3 兼容服务或访问策略时，请配置单独的端点和凭据。通用回退密钥仅在缺少更具体的原始数据或准备好的数据设置时才适用。</block>
+  <block id="129c49d60e20de7f7664b36bfa43870a" category="cell"><block ref="c264f93945231acec7e85748664ee309" prefix="" category="inline-code"></block></block>
+  <block id="27f05c33bb6d80e003f95ac3a43062ff" category="cell"><block ref="0eeafd8ee4f4a7d9aeb44f71a01fcfed" prefix="" category="inline-code"></block></block>
+  <block id="167778a3c06004961771286f3e4d4d69" category="cell">StorageGRID 原始输入存储桶</block>
+  <block id="a3997043d93a6429f4a5d9dd8fff03d3" category="cell"><block ref="039d508ae5fde5a28724a9d203d28521" prefix="" category="inline-code"></block></block>
+  <block id="ad1f5dca5b5b81778ebfbcb29365cb8f" category="cell"><block ref="d9073f930b78a3eb9d11fa2659a09dca" prefix="" category="inline-code"></block></block>
+  <block id="69a74a982eb2be1af429ef8f3387282f" category="cell"><block ref="fba152f2defb0a51a52b0adfc4af9fa7" prefix="" category="inline-code"></block></block>
+  <block id="8cf19178a694ca56a5b1cde39c7d91c6" category="cell">StorageGRID 原始数据前缀</block>
+  <block id="7c8fc1d9bc8531be3c8133d7070840e4" category="cell"><block ref="2e8fde81604825f1ae809fef4ca785fc" prefix="" category="inline-code"></block></block>
+  <block id="d79555fd00bf36b3e3b0a2471779f26e" category="cell"><block ref="b23533f663d430471eaed559acbfa256" prefix="" category="inline-code"></block></block>
+  <block id="5f11531631fdca99428373c14b3ba9f6" category="cell">后备链</block>
+  <block id="b509a12563f65c8eaac8686246eeb99a" category="cell">StorageGRID S3 端点</block>
+  <block id="f16ea29d0dcf84343e0e1fcd216582c6" category="cell"><block ref="179d2a8b2c7155e29cdf9e4c94d507bd" prefix="" category="inline-code"></block></block>
+  <block id="87de63722ed89331f253338844994b77" category="cell"><block ref="be99e7ada656f2e039f8b8cc5b1e42bd" prefix="" category="inline-code"></block></block>
+  <block id="a11f945134d654a1129d9a61fdf87923" category="cell">原始访问密钥</block>
+  <block id="41c0431ecaad16e483b40c209f259d91" category="cell"><block ref="769f1c8003c357411a4fbda807f1388a" prefix="" category="inline-code"></block></block>
+  <block id="2427909c19df5c5a9d02803e088e5424" category="cell"><block ref="fdfbea47cae283d16b375762e13ed0e3" prefix="" category="inline-code"></block></block>
+  <block id="82dc192f877c0935e062a8d36fe6c0eb" category="cell">原始密钥</block>
+  <block id="c9d4c1577313f35279eec25ea11a6ecd" category="cell"><block ref="c79ed3b4227b8b0f87b3bffe9324a376" prefix="" category="inline-code"></block></block>
+  <block id="30f53b66dfcfad6f0472e964f1e3aeb8" category="cell"><block ref="b6253fd93efaf30faf86ec8c9d987683" prefix="" category="inline-code"></block></block>
+  <block id="9cebc99a21f8302fda7c69dd3c83be25" category="cell"><block ref="8b1e9746aa84620f8cb6ae38de05c055" prefix="" category="inline-code"></block></block>
+  <block id="0378efc4aedfdc453ccf5c64c4918871" category="cell">原始区域</block>
+  <block id="d90a6a8ba9dbc7034eb3e8cc3ce92926" category="cell"><block ref="5cddea25c1b8550d5466712e0ea921f7" prefix="" category="inline-code"></block></block>
+  <block id="735d333c64b4ffd8a6b2634a59756c29" category="cell"><block ref="83d5df48bbb01e156632c65d6dc5039e" prefix="" category="inline-code"></block></block>
+  <block id="b985ac477660efbd3ef82f8a9aed766e" category="cell"><block ref="9b4e6952cc0d064a095dc685338d7399" prefix="" category="inline-code"></block></block>
+  <block id="8fb023518b15949baa936821fb0cea9b" category="cell">ONTAP NAS 准备好的数据输出桶</block>
+  <block id="b0df16ec4b170822a8ed8d5fd7188f7b" category="cell"><block ref="54a7643247bb913c349ffd8ec60ef720" prefix="" category="inline-code"></block></block>
+  <block id="f669cf5de621fe4e17332316d8226241" category="cell"><block ref="f57c1f4ba2c821f0d9d15dd91699d491" prefix="" category="inline-code"></block></block>
+  <block id="72fb01835c1928f2b95c4ab8be3b4521" category="cell"><block ref="79563c6f5e6db0137d91e1c247f5d61c" prefix="" category="inline-code"></block></block>
+  <block id="d146a764f23cc82c59de0e5b2a394a90" category="cell">ONTAP NAS 准备好的数据前缀</block>
+  <block id="6621fbc7bb1cbf9782916c72e03e7ebc" category="cell"><block ref="154d6a9e85892f250a404bb27c33749a" prefix="" category="inline-code"></block></block>
+  <block id="c1a8137914fafc0cb4125308e7eba8b6" category="cell"><block ref="49da7ce448447803fd22d74ce6666c9d" prefix="" category="inline-code"></block></block>
+  <block id="35472e7dd7b96b12c380fab83dd9b3ce" category="cell">ONTAP NAS bucket S3 端点</block>
+  <block id="9340498ebb03f9be30e2d49c75c6b31a" category="cell"><block ref="484c412c1990c81422c11505b4aa20f9" prefix="" category="inline-code"></block></block>
+  <block id="d234aa2c960b985c770afa7b0f753416" category="cell"><block ref="f3671ca86798d8159ebced9dcdc14111" prefix="" category="inline-code"></block></block>
+  <block id="aa12838400e9140bea618855a04fdc6d" category="cell">ONTAP NAS 存储桶访问密钥</block>
+  <block id="e2f012be683672f48e365b31f927fa89" category="cell"><block ref="7b95dd21f8366508eb26b44477e6ca53" prefix="" category="inline-code"></block></block>
+  <block id="e4e78ff28b5d3c87d4dd5a291e34d977" category="cell">ONTAP NAS 存储桶密钥</block>
+  <block id="a7cd95cc16ae5ed2b92ba8c18a330d9d" category="paragraph">*一般回退：*<block ref="f7144cc259d5abd35eabdc2be810a4bb" prefix=" " category="inline-code"></block>，<block ref="1d17ba19b79de9ef7540308069d9fafe" prefix=" " category="inline-code"></block>，<block ref="f7c9b94eb6c33dee57f09d7e27d8861f" prefix=" " category="inline-code"></block>，<block ref="68152e22fa38ab9f483c5a6eb8716e50" prefix=" " category="inline-code"></block>，<block ref="1c7349e310bcc2928ca6667936a717ff" prefix=" " category="inline-code"></block>，<block ref="8b1e9746aa84620f8cb6ae38de05c055" prefix=" " category="inline-code"></block>，<block ref="992148d1af4adbe8f4d437848b55b2e2" prefix=" " category="inline-code"></block>，<block ref="c42ff3e88bfd9d5b40102ebda45794c8" prefix=" " category="inline-code"></block>，<block ref="8e3496add8222d59a7f1365031676a56" prefix=" " category="inline-code"></block>。</block>
+  <block id="5cf6e20eff9855dc2957c10f00cf41c0" category="paragraph">*输入选择：*</block>
+  <block id="f4e74114a6c5633aa4ede9f05ddae1d8" category="paragraph">使用显式对象键设置来处理已知的 CSV 输入；否则，任务会在配置的 StorageGRID 原始前缀下发现合格的表格对象。</block>
+  <block id="8d1eee2026e127efe193374baca79c66" category="cell"><block ref="ea8041c6af489a1a25b1a095f9ff8da1" prefix="" category="inline-code"></block></block>
+  <block id="b5fac60116712074e4581a0451a7d934" category="cell">自动发现</block>
+  <block id="7a240361bb2796eb78b47b9c88e43b0a" category="cell">CSV 密钥的显式列表</block>
+  <block id="0344404b3b1443ab3518c9f73fdb3b7c" category="cell"><block ref="c2cde11638ea45b44f46660a0c043e27" prefix="" category="inline-code"></block></block>
+  <block id="6cadc40a5938154834e863c0ba526e2a" category="cell"><block ref="838c47ae240d20e9f5fa6df78bf53c88" prefix="" category="inline-code"></block></block>
+  <block id="6f81ad49ce3f49045ce0f2535f7fec0d" category="cell">单个显式CSV密钥</block>
+  <block id="a307aad40342892bdd845a060ba103d3" category="cell"><block ref="75491dc07464569ed16d0fa991c90214" prefix="" category="inline-code"></block></block>
+  <block id="fc339e14cc57c2dfd014e84eda025aa9" category="paragraph">*转型：*</block>
+  <block id="e7d8eccf5a47ff157b8a996e8c5a31f2" category="paragraph">选择 Python 路径进行轻量级本地准备，或选择 Spark 进行分布式准备。采样和种子可重复地应用于生成的训练、验证和推理拆分。</block>
+  <block id="afae541444780623a6263cac126c0f98" category="cell"><block ref="b91be537caa62c99f9e78b21434bb1e7" prefix="" category="inline-code"></block></block>
+  <block id="e3ef6ab535c097f0be06489a7838949d" category="cell"><block ref="23eeeb4347bdd26bfc6b7ee9a3b755dd" prefix="" category="inline-code"></block></block>
+  <block id="fe1fc4d4aa0871665f7eb9ca05c52271" category="cell"><block ref="23eeeb4347bdd26bfc6b7ee9a3b755dd" prefix="" category="inline-code"></block> 或 <block ref="98f11b7a7880169c3bd62a5a507b3965" prefix=" " category="inline-code"></block></block>
+  <block id="2c8a1c688b3c55cb4a4608bae9eb2540" category="cell"><block ref="926789435e51415605e04023ab323f82" prefix="" category="inline-code"></block></block>
+  <block id="27f4029d65edf8633ec2f03d7b5de704" category="cell"><block ref="435e8af8130aca438536a2efb6286d95" prefix="" category="inline-code"></block></block>
+  <block id="249091efa412cf5e332461c484b979d0" category="cell"><block ref="68934a3e9455fa72420237eb05902327" prefix="" category="inline-code"></block></block>
+  <block id="2a5ffef480b5b2c2ead2605a053d16e8" category="cell">失败而非回退</block>
+  <block id="22cfef4d87bd251ba39dd92d08a6b0bb" category="cell"><block ref="b326b5062b2f0e69046810717534cb09" prefix="" category="inline-code"></block></block>
+  <block id="e56ef258ff89887d63390431c5280d40" category="cell"><block ref="45d673dbfef8c0b98875498503901c0b" prefix="" category="inline-code"></block></block>
+  <block id="56d058c51fcd79545706c62569ba5a19" category="cell"><block ref="334c4a4c42fdb79d7ebc3e73b517e6f8" prefix="" category="inline-code"></block></block>
+  <block id="47a4a02cf875a2b030053a3871a6e2b0" category="cell"><block ref="334c4a4c42fdb79d7ebc3e73b517e6f8" prefix="" category="inline-code"></block><block ref="63bcabf86a9a991864777c631c5b7617" prefix="/" category="inline-code"></block><block ref="46ebfdc1519946f436cd1081b525d98f" prefix="/" category="inline-code"></block></block>
+  <block id="ca873a54535e00d202019cc8ee2d01db" category="cell"><block ref="929ccda19514701081c152ef8fcfed07" prefix="" category="inline-code"></block></block>
+  <block id="4af996c414ae1b8e0ce0304ef14cca64" category="cell"><block ref="ecda157cf83513b7c14dcd5d41a3840d" prefix="" category="inline-code"></block></block>
+  <block id="f7897e1fe84dc355fee6f6e00268479b" category="cell">格式不可用时失败</block>
+  <block id="c45b741a346b7cb6a31d6760a5892a67" category="cell"><block ref="e2dfdfe902add95b4f3a18f63b340ca5" prefix="" category="inline-code"></block></block>
+  <block id="ee7babec50034a7da0cc9ee8363c72b0" category="cell">所有行</block>
+  <block id="c230cbaa834792e353f938b157bf5b42" category="cell">行限制（≤0 = 全部）</block>
+  <block id="d9be3139547ba5ff94d298ff890faf84" category="cell"><block ref="f827b5406c7aa5b4fe10062ae06a137b" prefix="" category="inline-code"></block></block>
+  <block id="0646e7fb28021b86d9307ca2d6282852" category="cell"><block ref="fe4c0f30aa359c41d9f9a5f69c8c4192" prefix="" category="inline-code"></block></block>
+  <block id="3b696ab764c3d6e91780a4926d7d29b3" category="cell"><block ref="8f14e45fceea167a5a36dedd4bea2543" prefix="" category="inline-code"></block></block>
+  <block id="7cf9eefadfe3b77b8a38198dee5b07f9" category="cell">可重复的随机种子</block>
+  <block id="52db4c2ae3c00f9b299855de1565acc8" category="cell"><block ref="6512bd43d9caa6e02c990b0a82652dca" prefix="" category="inline-code"></block></block>
+  <block id="1a09daf2be803ccd9e9a55fdb3a1fe94" category="paragraph">*Spark:*</block>
+  <block id="30e78355bda10681a94714b99127e819" category="paragraph">这些设置仅适用于<block ref="17834bd5ee93c281806ceaf8327c6b86" prefix=" " category="inline-code"></block>。它们控制 Spark 进程放置、资源分配、时间限制和可选的 Delta Lake 或 Iceberg 运行时依赖项。</block>
+  <block id="a1387f2c095dc4a81d8b6a41be36ad2e" category="cell"><block ref="51e57266a3dac8c47e491110f4996df6" prefix="" category="inline-code"></block></block>
+  <block id="c00decc140d919a411a4352c34c6995f" category="cell"><block ref="78d07f07ead3482e696c0c224c2a7ed5" prefix="" category="inline-code"></block></block>
+  <block id="400409aff3a5f0e2d96272b1d1254735" category="cell">Spark 二进制文件</block>
+  <block id="e647323263ad4bfd01661e8c1fba8dcd" category="cell"><block ref="db56f687a0d57f6ff15c0c304f58ebea" prefix="" category="inline-code"></block></block>
+  <block id="fde80f8d8a57c4e71bab37167bfebce3" category="cell"><block ref="66a7c0511b787df4a82d69c708850709" prefix="" category="inline-code"></block></block>
+  <block id="ab787ac1783e6ceda33aa15689004a87" category="cell"><block ref="987757c3f156154cbc6ad24cc90509c1" prefix="" category="inline-code"></block></block>
+  <block id="2abf997c87f8d9beaa7fdc7fb41fcb96" category="cell">Spark master</block>
+  <block id="c809714fc5938cb0fe11668c823a078c" category="cell"><block ref="a78e9ff6c249edb158138300564e8173" prefix="" category="inline-code"></block></block>
+  <block id="42c65fece76b798acec03912e0f5dd62" category="cell"><block ref="5257ab466c539326517ed6aa66482386" prefix="" category="inline-code"></block></block>
+  <block id="410675e49ff663783dfc02324cbd7d01" category="cell"><block ref="39965b619c09bdf7eeab87e689da2529" prefix="" category="inline-code"></block></block>
+  <block id="4b4a672aaed5048dfecdb663147014d7" category="cell">驱动程序内存</block>
+  <block id="28115e4ae83d7be87337f60e5cf00bff" category="cell"><block ref="707c743d8b121fc6ba570c238a349a7c" prefix="" category="inline-code"></block></block>
+  <block id="e5a56c9cbdeb0c84e32ca7d6bd4ac9d5" category="cell"><block ref="dfd5910097d39d53f81cb0f40aae61dc" prefix="" category="inline-code"></block></block>
+  <block id="e2d597feb2118b2678d781706a1942e1" category="cell">执行器内存</block>
+  <block id="77825b251eb4d13fa35d2f5e81dd3526" category="cell"><block ref="1570a0563cfe735ca4167b38ba5dd2db" prefix="" category="inline-code"></block></block>
+  <block id="4576ab6ce001e4038dde42cc67b14874" category="cell"><block ref="acf4b89d3d503d8252c9c4ba75ddbf6d" prefix="" category="inline-code"></block><block ref="2354c276f1c9156f4b97a11a7aa41254" prefix="/" category="inline-code"></block></block>
+  <block id="53b6130c2039a7f6da80533032079da0" category="cell">超时（0 = 禁用）</block>
+  <block id="2911e600bbad981e24b3e2a2b3a03f82" category="cell"><block ref="cfcd208495d565ef66e7dff9f98764da" prefix="" category="inline-code"></block></block>
+  <block id="591d7bb6b814c889b5e31b4b9525806b" category="cell"><block ref="4cb87f85d2d245568a685778ebd6c83b" prefix="" category="inline-code"></block></block>
+  <block id="c3164e00570073a99dacf8222c61acfc" category="cell">Delta 3.2.0</block>
+  <block id="5463b8b630e5ec1421d12183249b8493" category="cell">Delta 运行时包</block>
+  <block id="80087016a6f8b57b9be371127bf48e20" category="cell"><block ref="1b4fb66449c09cd0e50449824067d0fb" prefix="" category="inline-code"></block></block>
+  <block id="9c84180e29b07ed889fdad307629814d" category="cell"><block ref="5bfc5adc60879ddc4fa32e3010e17e00" prefix="" category="inline-code"></block></block>
+  <block id="fe909eef58dee906812dad114af8a2e2" category="cell">Iceberg 1.5.2</block>
+  <block id="1ddb70552868f63cda36da5ae44eaeec" category="cell">Iceberg 运行时软件包</block>
+  <block id="ee0738e9f9d148c9c3e805c8cf7b4458" category="cell"><block ref="678c98ad75cd9e6bca8960bd5dd037d5" prefix="" category="inline-code"></block></block>
+  <block id="f5a129d0ad99f9a73ecdcbf97e0c8cbe" category="cell"><block ref="19f37e6dde1d98c4fcf927a2ad1fed02" prefix="" category="inline-code"></block></block>
+  <block id="d6bec99ccdddde168dbad2d446f3136a" category="cell"><block ref="f5ddaf0ca7929578b408c909429f68f2" prefix="" category="inline-code"></block></block>
+  <block id="a34cedc2faee98b4fa009ff9ed9d93f3" category="cell">Iceberg 目录名称</block>
+  <block id="5ad0f8029aaecb8a4e398e5d828f51b0" category="cell"><block ref="74d71383ef2ec2704f84d8b19da501ae" prefix="" category="inline-code"></block></block>
+  <block id="0d28b1b7ab15374e0af1883fd53250ca" category="section-title">8.3 XCP 和 Training 目标参数</block>
+  <block id="e88ade248a20201e174526b0c6182d41" category="paragraph">在<block ref="4cb7fb5c858deba7c9c4234ea87ca5ff" prefix=" " category="inline-code"></block>验证 ONTAP NAS NFS 源、调用 XCP 主机并选择活动训练层时使用此组。<block ref="4674a08755fd498fb7f7b950ac4069cd" prefix=" " category="inline-code"></block>是控制开关：它选择下面的 ONTAP S3 特定或 LustreFS 特定设置，下游模型阶段使用相同的选定层。</block>
+  <block id="9b376582892ab72487a0ffba3efe17a6" category="cell"><block ref="fd4d34e32e9bc5c210335d5fd6df15d7" prefix="" category="inline-code"></block></block>
+  <block id="8b86669a12705f10e36f4c1b59fc36fd" category="cell">是，适用于 XCP</block>
+  <block id="eedc6661ff343ba476c211ccddaf3eda" category="cell">启用 XCP 分支</block>
+  <block id="b090d2edf2e186119116053c22232d4e" category="cell"><block ref="4674a08755fd498fb7f7b950ac4069cd" prefix="" category="inline-code"></block></block>
+  <block id="bdc082f71db11ac595b2f5bf4dd64213" category="cell"><block ref="c0828e0381730befd1f7a025057c74fb" prefix="" category="inline-code"></block></block>
+  <block id="a4ecd36db295426de6c7a8c6b5dd965c" category="cell"><block ref="c0828e0381730befd1f7a025057c74fb" prefix="" category="inline-code"></block> 或 <block ref="c1ab44fd888254255acf3ece33dfe88e" prefix=" " category="inline-code"></block></block>
+  <block id="1568d4912db7ddf1ce555194b7c9dc3c" category="cell"><block ref="4dfec3f2cc573299511c2c2a776dad11" prefix="" category="inline-code"></block></block>
+  <block id="9e0796f88902838461a43dce526ff2cf" category="cell"><block ref="bc1901b980c76fd3702c1677b27e6168" prefix="" category="inline-code"></block></block>
+  <block id="c576a5ebcd60477b0567e469bab15be6" category="cell"><block ref="3be7dd8550d76283dff709f47491257d" prefix="" category="inline-code"></block></block>
+  <block id="78b4ce2e4404e28ff74f674ba757cc43" category="cell">XCP 预检</block>
+  <block id="ebe149cd1d0e7286447178e8bdf3b31c" category="cell">NFS 服务器 IP</block>
+  <block id="11213ec9a66e988babf7813d0efd5c8d" category="cell"><block ref="16cea69ba78e414af5c2801b17ca9f90" prefix="" category="inline-code"></block></block>
+  <block id="98e14ecada163dcc1825f46fafe654ac" category="cell"><block ref="4fdcc627b79a9749af52ba5b6764d70c" prefix="" category="inline-code"></block></block>
+  <block id="ca6a10a53073d3f5d22741d258ec7618" category="cell"><block ref="9a6f567f91a1d3e0e8dbf5be620b284b" prefix="" category="inline-code"></block></block>
+  <block id="ff028153b12c7cfa74e4fe531953058c" category="cell">NFS 导出路径</block>
+  <block id="4caf78ac9902b9add4d49108f7182aaa" category="cell"><block ref="fe8df3baf8dc354e7538dcade2c056ee" prefix="" category="inline-code"></block></block>
+  <block id="f20aa6015da3f3412fe60c261e13ba24" category="cell"><block ref="a2d0b30c3e921543604b6305267b467e" prefix="" category="inline-code"></block></block>
+  <block id="253edb9e361b0c8b87301dff7d39a058" category="cell"><block ref="63a9f0ea7bb98050796b649e85481845" prefix="" category="inline-code"></block></block>
+  <block id="f4214febd8cfabda02545f48324f696d" category="cell">XCP 主机 SSH 用户</block>
+  <block id="ec62b19d80a377baf073d81e4f995dda" category="cell"><block ref="eb76094059feda9f811de9a47a1307ac" prefix="" category="inline-code"></block></block>
+  <block id="c12276fa7485251bb07072fbd03291c7" category="cell"><block ref="a006819e13cbc96432b8e085874dbc2c" prefix="" category="inline-code"></block></block>
+  <block id="f9bf8b2c8695427edf284f0dd43f663c" category="cell"><block ref="dfb1f2805e7737588cd20bd267e45171" prefix="" category="inline-code"></block></block>
+  <block id="c0a21952b1aec9c6a3aadeae85519566" category="cell">XCP 主机地址</block>
+  <block id="539252aaa4bb46b0b501fa59eb088a21" category="cell"><block ref="2856dca6375834636f7b6c47aa02150e" prefix="" category="inline-code"></block></block>
+  <block id="14cf3c2a36dcd3ca122af92e9c3c356b" category="paragraph">*S3 目标（以下情况为必填项<block ref="844946f00330d539ab98657463980437" prefix=" " category="inline-code"></block>）：*</block>
+  <block id="9257c5edb9c09f617c5ed826500302f1" category="paragraph">仅为 ONTAP S3 培训路径提供这些设置。配置文件或直接凭据允许 XCP 和模型工件同步逻辑访问所选的 ONTAP S3 存储桶和前缀。</block>
+  <block id="92dd3e6b8597368025c32f3319f35716" category="cell"><block ref="520e5c4a40204a6d876f879e9061e6a4" prefix="" category="inline-code"></block></block>
+  <block id="c21f969b5f03d33d43e04f8f136e7682" category="cell">默认</block>
+  <block id="51ece400f31f0eacb7ab2b530c0b68ce" category="cell">XCP S3 端点</block>
+  <block id="7aaebcf06a23d45837fdb2eedbd2d192" category="cell"><block ref="950cc6a11a1facee6b896331385554a6" prefix="" category="inline-code"></block></block>
+  <block id="3adff7c120fce460018f4201a14efe0c" category="cell"><block ref="4bd25776c125c54aa9a5a98b3c33a34d" prefix="" category="inline-code"></block></block>
+  <block id="72afa7cbe3a3f98840e7502583acc45b" category="cell">XCP 目标 Bucket</block>
+  <block id="9226707718c970f88a8c7ef67ca9d9d0" category="cell"><block ref="b67c8a9384f3a214b1351d552939b1ad" prefix="" category="inline-code"></block></block>
+  <block id="4472a0b84356f16aecaa9f8c31aa709b" category="cell"><block ref="f73e3c0b5ca6804f248b1c3fd4dc9981" prefix="" category="inline-code"></block></block>
+  <block id="c3d3ca19c132b20ef944483b45c39e6b" category="cell"><block ref="16575977987ae8cd13e639dd796ab9bd" prefix="" category="inline-code"></block></block>
+  <block id="863c77cdde59b9dc631f98f0d80d2f58" category="cell">目标前缀</block>
+  <block id="bd60e9e3f15ad1ad4df817ebf5cfd9b6" category="cell"><block ref="90df1fc4a2b72745baf6f2034d4428df" prefix="" category="inline-code"></block></block>
+  <block id="f1f7644f8cd7688eb4fa6da29a68dd32" category="cell"><block ref="8c54337013d3f35fe4e958fe46784653" prefix="" category="inline-code"></block></block>
+  <block id="d289495fbf7daa1c30e91c77aa85a5bb" category="cell">训练发现前缀</block>
+  <block id="309cd796c1e0c57f1693572912da0fc0" category="cell"><block ref="67920c3d3dc2fcbbb0511988f98ac5d5" prefix="" category="inline-code"></block></block>
+  <block id="7971060b959f8093b37f8bdc89baca62" category="cell"><block ref="b0f9dfefa7f37df34c1221617845151b" prefix="" category="inline-code"></block></block>
+  <block id="0d53ea1fa24653f102da58682c74a96d" category="cell">已命名凭据配置文件</block>
+  <block id="fdb4e6b025b91ffb047ebfed01dd242e" category="cell"><block ref="ef8a1c575b2f95bc34e780719721ba74" prefix="" category="inline-code"></block></block>
+  <block id="b06f1cf07ca627ce2f2c73a62952bf7a" category="cell"><block ref="c0c7a5ec9a483e3ad0b879fd4fd64242" prefix="" category="inline-code"></block></block>
+  <block id="154b65e77f1823d1ce449a6c21cf0e57" category="cell">配置文件映射</block>
+  <block id="8c435b8b5a72b1c52118cb4745561ff7" category="cell"><block ref="883e80ff1c1fa688c7981f5e30d9f965" prefix="" category="inline-code"></block></block>
+  <block id="58322c0191ca15dd389695c5fcdf5f83" category="cell"><block ref="cd8d4507c10c19976f480853f79a2d70" prefix="" category="inline-code"></block></block>
+  <block id="68dd5423908cd88692f985d47f09e77c" category="cell">直接密钥回退</block>
+  <block id="0b22715afba27552a971102b2f2b8725" category="cell"><block ref="ad6678b85f0105a30b54188dd94565de" prefix="" category="inline-code"></block></block>
+  <block id="0829506f88df093599dff49bdc8d9ad8" category="cell">直接秘密回退</block>
+  <block id="786af8d90090973f61c612449e511421" category="cell"><block ref="9c80f11c95c615641412cc3a9fb8c4d3" prefix="" category="inline-code"></block></block>
+  <block id="bb17fd4e4aeaa948edae2c8223b1637d" category="cell">XCP S3 区域</block>
+  <block id="f6e207ea2cd4bc1184c85559e4cbea07" category="paragraph">*LustreFS 目标（当<block ref="43aa42fc620874f288d9782d47a176ca" prefix=" " category="inline-code"></block>时为必填项）：*</block>
+  <block id="9cc26a83d2c824c7fd0dd7a6a642d910" category="paragraph">仅为 LustreFS 培训路径提供这些设置。源和目标必须在 XCP 主机上挂载并可访问；运行模型阶段的 Airflow worker 也必须可访问目标。</block>
+  <block id="474e9fb18014f8199098cd5ab07b68f1" category="cell"><block ref="e2b53e69309249547236ebc1d1a5a6ef" prefix="" category="inline-code"></block></block>
+  <block id="974d56da9ba2c4c28922898e3cf56d49" category="cell">XCP 复制源</block>
+  <block id="455ebf85a5fd04b2df7fc28f2cb62234" category="cell"><block ref="d4baa9abe0f21e414ec3b460845aa4f2" prefix="" category="inline-code"></block></block>
+  <block id="d09e53ca6375b3101a5e6e64e1c24556" category="cell"><block ref="b40de2b2e3e07215603910854fb41ac2" prefix="" category="inline-code"></block></block>
+  <block id="5fd321331c28961b2cbd5daecd80346c" category="cell">LustreFS 挂载目标</block>
+  <block id="0f9d80d64aede1e50396bcd76f2b6f40" category="cell"><block ref="8934f45b17fe5ed1b173c62cb12cd0e1" prefix="" category="inline-code"></block></block>
+  <block id="c6b7ea17737a5094077fb5ae91abc425" category="cell"><block ref="5ed5394c9fafffd537105f56f47c2fb1" prefix="" category="inline-code"></block></block>
+  <block id="f92150abafb353b3f40d624c57f706e6" category="cell">挂载下的训练子目录</block>
+  <block id="fe832155a6b3520aba6e6865506075b3" category="cell"><block ref="a685d9909b31c77360e6c550d65b7ece" prefix="" category="inline-code"></block></block>
+  <block id="f474474c7f96e1a024045c16009c071d" category="cell"><block ref="392989018ea1a795a5a4c97dcb3d88f3" prefix="" category="inline-code"></block> 运行 stamp</block>
+  <block id="50a497024a132bcc2fe6c6fa3c1193ce" category="cell">XCP 作业标识符</block>
+  <block id="c7edb75dce68ae497a49d23b99f7c83e" category="cell"><block ref="a2d70bb7983afca55b1ecb0f7e517045" prefix="" category="inline-code"></block></block>
+  <block id="a33f1d7f4b4c9bce707c695562376710" category="paragraph">*文本源行为：*</block>
+  <block id="f6b0fa156eba979ffb8f85f0ee29fc8f" category="paragraph">这些选项控制在 XCP 移动性之后如何找到三个文本数据集。显式键覆盖发现；可以禁用本地回退，以要求文本输入来自所选 XCP 目标。</block>
+  <block id="0de671c3d1d4635fc74206c6af7e82be" category="cell"><block ref="2ad8f7e067fb574a7f31ee0922631796" prefix="" category="inline-code"></block></block>
+  <block id="636ba56b1d77196b52f71d64475e16d9" category="cell">允许本地文本回退</block>
+  <block id="f17f761923cbb5e7e5c4cb338cc2481a" category="cell"><block ref="347dd65ae6c044ac01a5caf722f950d0" prefix="" category="inline-code"></block></block>
+  <block id="06b9281e396db002010bde1de57262eb" category="cell">自动</block>
+  <block id="e4134d8beec54e81ea1da46113a92ba7" category="cell">显式基准文本位置</block>
+  <block id="1ad99fba25f4c94316eb0a8ba00d55ba" category="cell"><block ref="922709bd3930aaf3a2518859ed4914e2" prefix="" category="inline-code"></block></block>
+  <block id="23cc12f1b3415c52c2f1dffdf8d2a37c" category="cell"><block ref="6a1be6200eb45ebac012bddfafa2cb97" prefix="" category="inline-code"></block></block>
+  <block id="e10ccad882a84519728ba237679c5a04" category="cell">显式微调文本位置</block>
+  <block id="39aadd00d30527a3ca819abcb543d077" category="cell"><block ref="f47ee3bfe8d61654c5917c00daebc021" prefix="" category="inline-code"></block></block>
+  <block id="f26eeb39a2c1703b4111bb646951c0dd" category="cell"><block ref="c86b3bce38cf6e1412d19fa0551a6fee" prefix="" category="inline-code"></block></block>
+  <block id="f0ea370f40bfef504de68721580509c8" category="cell">显式推理文本位置</block>
+  <block id="4439b33ee7b703ad69ea2b46da098ddd" category="cell"><block ref="cf883eb00f270b352d5fdc1e070cbbb0" prefix="" category="inline-code"></block></block>
+  <block id="b8db10ebf856309f781a64a7bfda5910" category="section-title">8.4 模型训练参数</block>
+  <block id="0e8ad2f1afc634725740d36fe32f3c67" category="paragraph">这些设置选择本地或 XCP 提供的源，限制训练量，并保留可重现的数据排序。启用 XCP 后，训练将读取所选的 ONTAP S3 或 LustreFS 层，并将基线工件发布回同一目标。</block>
+  <block id="d886048c38bddcc2b3d7708643395812" category="cell">选择XCP或本地源</block>
+  <block id="8b9009050a3dcb0c4a506c65734a95c9" category="cell">选择源层</block>
+  <block id="1f32e4828524b687ab34ce2df8f236f6" category="cell">训练样本限制</block>
+  <block id="82b31e75546660294c097281d85b2c4c" category="cell">可重现的随机播放</block>
+  <block id="13f246b8c556be8fab0dd1101c520ba9" category="paragraph">产生：<block ref="07c9091af56a867b94e87b12338934d3" prefix=" " category="inline-code"></block>、<block ref="4f801ad7ef04bc6937f342d5c8231669" prefix=" " category="inline-code"></block>、<block ref="6642fa1c6f2710c44f023b7377e6eeb8" prefix=" " category="inline-code"></block>、<block ref="7ea5e9049cfd7967a4e9e8a1595b8dc2" prefix=" " category="inline-code"></block>。</block>
+  <block id="670f0e52a55ebfa9a1b3c6d319a16664" category="section-title">8.5 微调参数</block>
+  <block id="34673baa4e3b749c92521feb2b981f86" category="paragraph">微调从所选 XCP 目标实现基线文本工件，将增量学习应用于微调数据集，并重新发布经过调整的分类器及其指标。保持其 XCP 设置与模型训练一致，以维护工件溯源。</block>
+  <block id="55561a93861b62b9e5fd848f5fbffefe" category="cell">启用制品物化/发布</block>
+  <block id="33ae9dc1cd0d00493d6347aba692444f" category="cell">选择制品来源/目的地</block>
+  <block id="364aed335c31cc41da4f65dcca2ce6ce" category="paragraph">消耗：<block ref="4f801ad7ef04bc6937f342d5c8231669" prefix=" " category="inline-code"></block>，<block ref="6642fa1c6f2710c44f023b7377e6eeb8" prefix=" " category="inline-code"></block>，<block ref="2ca834a656a179410acd72087d3e1bd5" prefix=" " category="inline-code"></block>。产生：<block ref="ec0cc1867b2a3504e6a04ea71043e1b5" prefix=" " category="inline-code"></block>，<block ref="ff6c46df37ea393281f31f41ffe6b679" prefix=" " category="inline-code"></block>。</block>
+  <block id="8f8b8c2e9ad24a31eb9cd89ccd0baa03" category="section-title">8.6 推理参数</block>
+  <block id="723ae5a894e779b34a0686f4b5f9dd20" category="paragraph">这些标志控制从所选训练层实现调优模型后的评分范围。当验证或业务需求需要超出默认推理拆分和推理文本输入的输出时，启用任一选项。</block>
+  <block id="b0e1f899692060512f6c3c9141541750" category="cell"><block ref="029659c73dbc20e4d73b3a7bdc025f83" prefix="" category="inline-code"></block></block>
+  <block id="98e480a7ad11543cec4e62ee918d1096" category="cell">评分训练/验证/推理拆分</block>
+  <block id="83e3f08af9de375350adf789efe1b6d4" category="cell"><block ref="1d027d9a5fe9277a21b6974d5cc3f97e" prefix="" category="inline-code"></block></block>
+  <block id="d4ebe860c61676044aacaa8b6f5cfc39" category="cell">得分基础/微调/推断文本</block>
+  <block id="abfc445b9a7e807bb005f0b0913669c1" category="paragraph">消耗：<block ref="07c9091af56a867b94e87b12338934d3" prefix=" " category="inline-code"></block>，<block ref="4f801ad7ef04bc6937f342d5c8231669" prefix=" " category="inline-code"></block>，<block ref="ec0cc1867b2a3504e6a04ea71043e1b5" prefix=" " category="inline-code"></block>。产生：<block ref="ec39d308f2a8d67cdfe4b7f36be6b684" prefix=" " category="inline-code"></block>，<block ref="a77dc6001e3622c0c0d8e54b04451ff2" prefix=" " category="inline-code"></block>。</block>
+  <block id="364836489b4b64a448f20f5f8a8f3796" category="section-title">8.7 检查点参数</block>
+  <block id="54b81e6a72fa4bf3d4b12f7cd7355f97" category="paragraph">检查点作用域为<block ref="b40e4f0b6e8f3138e6ccde4cb7ae520c" prefix=" " category="inline-code"></block>。这些设置确定是否创建训练完成记录、存储位置、如何处理上传失败，以及后续运行是否验证或重复使用有效的已完成训练结果。</block>
+  <block id="7598a68852c012a5972fe1ea8f1c2364" category="cell"><block ref="48e617a07ab9a92bf0a704bc436ba4ef" prefix="" category="inline-code"></block></block>
+  <block id="a3789936d22fc20e0513bae3e1b01669" category="cell">启用检查点文件创建</block>
+  <block id="9f6dd050423b6c95ff2055015a66ca93" category="cell"><block ref="0eee5278000ada466b66ac6ac21d985a" prefix="" category="inline-code"></block></block>
+  <block id="ea17442a5cf68514fc3950c0aa6d5e0c" category="cell"><block ref="f5ddaf0ca7929578b408c909429f68f2" prefix="" category="inline-code"></block> 或 <block ref="f1d34415ef4d3a99684e289d8d6ddc74" prefix=" " category="inline-code"></block></block>
+  <block id="9f9a771d88974a6dd1025eb3943f90d9" category="cell"><block ref="005c1e078ebeedc94fe7d0a9816ddcf5" prefix="" category="inline-code"></block></block>
+  <block id="2ee9c27acf5eb962df07d5741e14ea42" category="cell"><block ref="e3bfa34e4273d172c52a62f4909efc9f" prefix="" category="inline-code"></block></block>
+  <block id="ba36badcc268d29f79760acfed5c64c4" category="cell"><block ref="1ea4c3ab05ee0c6d4de30740443769cb" prefix="" category="inline-code"></block></block>
+  <block id="7152af557c55723df548f00b0239ec7f" category="cell"><block ref="1ea4c3ab05ee0c6d4de30740443769cb" prefix="" category="inline-code"></block> 或 <block ref="e11185b6e35c1b767174dc988aa0f179" prefix=" " category="inline-code"></block></block>
+  <block id="3a4b9b2ac4d3530a1aba6cbc0b6a1e39" category="cell"><block ref="d947529aba82b29e6ef4547701f60c7f" prefix="" category="inline-code"></block></block>
+  <block id="4431a432b0bfda032c700b6d91fb0736" category="cell"><block ref="6db8b8ec6c4eb3ff2545de5dbe04c800" prefix="" category="inline-code"></block></block>
+  <block id="350d871ee78bfc8b1a589b7dde157b7f" category="cell"><block ref="3262d48df5d75e3452f0f16b313b7808" prefix="" category="inline-code"></block></block>
+  <block id="780452293052ea036fde42457afa18d5" category="cell"><block ref="3262d48df5d75e3452f0f16b313b7808" prefix="" category="inline-code"></block><block ref="c3ab04d6952eb6a898fd20601002eccd" prefix="/" category="inline-code"></block><block ref="457fc07af08397af0e5d5649787fcc1b" prefix="/" category="inline-code"></block></block>
+  <block id="a8523676f6c76d068b25a5215de2a97c" category="cell"><block ref="a0f1ce4e4478b451a8b3211b9dbeb878" prefix="" category="inline-code"></block></block>
+  <block id="1629d93e768a8fab7de14c8ff49a7e36" category="cell"><block ref="0fcce4b097eca788279effb70fb29c91" prefix="" category="inline-code"></block></block>
+  <block id="cfd1dbacf397fb165a0592634937335a" category="cell">向后兼容的别名</block>
+  <block id="1000aa49cae4c86654fdc16507c0ea1e" category="cell"><block ref="90614479b94da50a20eedb59c2df9e4b" prefix="" category="inline-code"></block></block>
+  <block id="2c49f671e13c4718a15eed6d00a6b37b" category="section-title">8.8 手动归档参数</block>
+  <block id="4c09fc3893a971260517cab0255b86dd" category="paragraph">使用此组可启用 StorageGRID 存档，标识目标存储桶和凭据，并选择存档点。所选的<block ref="2878a1b91d2fb362479266e9dec90bdc" prefix=" " category="inline-code"></block>控制存档时间以及存档是否仅包含基线训练工件或完整的推理结果集。</block>
+  <block id="1b4f52479ea077319f573b44194a898b" category="cell"><block ref="49cab09ac0d8b0557e9ddc91ee96bf40" prefix="" category="inline-code"></block></block>
+  <block id="fb8f629d0722940de30b14ca8d0f1768" category="cell">启用存档</block>
+  <block id="d40119a3d417c2922aa0e2bf0bbfdcdd" category="cell"><block ref="2878a1b91d2fb362479266e9dec90bdc" prefix="" category="inline-code"></block></block>
+  <block id="9d15d15d119e3ebf28e813726782c016" category="cell"><block ref="6202f2dbb43be62721979683c867ba8c" prefix="" category="inline-code"></block></block>
+  <block id="b1eedbbcbfe2064db4fc6f5bf0be7fb9" category="cell">归档点和工件集：<block ref="b40e4f0b6e8f3138e6ccde4cb7ae520c" prefix=" " category="inline-code"></block>用于核心训练工件，或<block ref="6202f2dbb43be62721979683c867ba8c" prefix=" " category="inline-code"></block>用于完整结果集</block>
+  <block id="fe242444799bd6c10d0bf756ad5ab576" category="cell"><block ref="53da8db505f77969500701912b8c92ef" prefix="" category="inline-code"></block></block>
+  <block id="777971ee68116eb376a2a55e685859cd" category="cell"><block ref="eb03e738108b9f3ea36420ce6d6be768" prefix="" category="inline-code"></block></block>
+  <block id="85deffa19329433d0ce5cbc331ad9cc0" category="cell"><block ref="1913d1c21aaa5ded6562dd0317214f00" prefix="" category="inline-code"></block></block>
+  <block id="11e4697dd94989ae3e1c0ab8f2bbd2a9" category="cell">启用时为是</block>
+  <block id="9d4f6cd39ecab67ab674e1735d8eaa96" category="cell">归档分段</block>
+  <block id="2225977c5d4b8b2b2216c7beaa2c6a0b" category="cell"><block ref="b28e97fc250bd7c80e81c778e5a25c1a" prefix="" category="inline-code"></block></block>
+  <block id="338779550026a40c8099038146897c67" category="cell"><block ref="a63b3ccf7880bca89f9019db18fcec63" prefix="" category="inline-code"></block></block>
+  <block id="87194d25662ed1c742e21aaf07ddbe41" category="cell"><block ref="145d5154f9d1ff4f8b59d4dbd7f31409" prefix="" category="inline-code"></block></block>
+  <block id="bcfe0f0db7314a05f682060882bcd0a2" category="cell">归档前缀</block>
+  <block id="d56211ed38899d98b3a54f16612f86cb" category="cell"><block ref="f7e3cb7fc0b54d845f67cc1cc7d1b116" prefix="" category="inline-code"></block></block>
+  <block id="cfb733c6a05419947480a15aa5d5555d" category="cell"><block ref="29275a5c6a12523bf0a3610f63b64a9b" prefix="" category="inline-code"></block></block>
+  <block id="be59c0a1d981ff9525b7802e79bd8e8a" category="cell">仅限自定义</block>
+  <block id="375a34bdebd972c146956a7efe5997b2" category="cell">归档 S3 端点</block>
+  <block id="8f2411d2763b455283f5e42fb13a0de0" category="cell"><block ref="6f6fb98bde7e09298f4bdf9901d9cfa3" prefix="" category="inline-code"></block></block>
+  <block id="f67dee88e96de0db90c758a435137418" category="cell"><block ref="fc09c965940ec0e8c44fcfcc39f69086" prefix="" category="inline-code"></block></block>
+  <block id="654866693fd91ce8e9764a218f569918" category="cell">建议</block>
+  <block id="45fe895393cd8bf1d07b8125ade9efe3" category="cell">凭据配置文件</block>
+  <block id="bd6053c0cfe3d4b853d29c13702a871b" category="cell"><block ref="22d3257365b6d6c1df447dfe4b02b5a8" prefix="" category="inline-code"></block></block>
+  <block id="01e2b74914a173b5090d90962fb6bc27" category="cell"><block ref="efbd19dc3bd131cbda79d80320093de3" prefix="" category="inline-code"></block></block>
+  <block id="4d9391e429092401c280fe3e7d209939" category="cell"><block ref="f79f226c63f4daf92b77f9b5076358fd" prefix="" category="inline-code"></block></block>
+  <block id="758f96bc90cbc1a7836d888e3e0e8a4d" category="cell"><block ref="ae3fdb42c848ae0ce1d1251e722dba77" prefix="" category="inline-code"></block></block>
+  <block id="bb9c47c5ef585ab432e1744e59586cc5" category="cell">在存档中包含 XCP 输入</block>
+  <block id="bc35512e57895fc541f04bae5b7d7c70" category="cell"><block ref="12a88b097d4c2c67ca1d57fa2bda8c0e" prefix="" category="inline-code"></block></block>
+  <block id="20ef812d174367721e69af44c660455d" category="cell">上传后移除本地原始文件夹</block>
+  <block id="cc637c839d664a9a9366ef9c73527c08" category="paragraph">别名：<block ref="e71de4cdd84878838e2df71cd6734092" prefix=" " category="inline-code"></block>用于所有<block ref="112273225a7a6c78379547b49369d353" prefix=" " category="inline-code"></block>参数。</block>
+  <block id="154c079fc4ba857090186c47595a45d6" category="section-title">8.8.1 手动存档阶段决策</block>
+  <block id="782642db06f69df15231e0377bc82940" category="paragraph">The<block ref="7322f5c6abe7430601b1ccc06306e4ca" prefix=" " category="inline-code"></block> 分支任务每次 DAG 运行读取<block ref="2878a1b91d2fb362479266e9dec90bdc" prefix=" " category="inline-code"></block>一次。所选值确定何时运行存档以及将哪些工件上传到 StorageGRID 存档存储桶。存档对象存储在<block ref="e3085aa0d18dd7a10c795a574bf94276" prefix=" " category="inline-code"></block>下。</block>
+  <block id="74f1d58e46c588a1cae64a5fcfddd05c" category="cell"><block ref="2878a1b91d2fb362479266e9dec90bdc" prefix="" category="inline-code"></block> 值</block>
+  <block id="217a1c7f66e32aed5977da3b8dc83b81" category="cell">归档时间</block>
+  <block id="e01de448d32bcde41ceb09be582eaa13" category="cell">工件已存档</block>
+  <block id="baccb6d59f411e12c73c3d5cab1c15d8" category="cell">建议使用</block>
+  <block id="48eb09a89a27b30bfd2fcc686c1fadd4" category="cell"><block ref="b40e4f0b6e8f3138e6ccde4cb7ae520c" prefix="" category="inline-code"></block></block>
+  <block id="2e7a4518d90fda98fd89aa0171be890a" category="cell">此后立即<block ref="b40e4f0b6e8f3138e6ccde4cb7ae520c" prefix=" " category="inline-code"></block>；不等待微调或推理</block>
+  <block id="8d47d729e8430a243ac8f4787a5692b2" category="cell"><block ref="07c9091af56a867b94e87b12338934d3" prefix="" category="inline-code"></block>,<block ref="4f801ad7ef04bc6937f342d5c8231669" prefix=" " category="inline-code"></block>,<block ref="6642fa1c6f2710c44f023b7377e6eeb8" prefix=" " category="inline-code"></block>,<block ref="7ea5e9049cfd7967a4e9e8a1595b8dc2" prefix=" " category="inline-code"></block></block>
+  <block id="a0667922ac88bd66626ff3504860fe79" category="cell">保留可重现的基线模型，最大限度地减少存档量，或在后期阶段之前保留检查点</block>
+  <block id="c73ba07fa53ace56f63dbe3642019224" category="cell"><block ref="6202f2dbb43be62721979683c867ba8c" prefix="" category="inline-code"></block> (默认)</block>
+  <block id="f3897917239c00214a6fae3f73605a60" category="cell">在 <block ref="24cf8a9f2a179bf0692d4ab1650b014d" prefix=" " category="inline-code"></block> 和 <block ref="6202f2dbb43be62721979683c867ba8c" prefix=" " category="inline-code"></block> 完成后</block>
+  <block id="5522a79b879b0584668978e038cc8813" category="cell">所有<block ref="b40e4f0b6e8f3138e6ccde4cb7ae520c" prefix=" " category="inline-code"></block>工件加上<block ref="ec0cc1867b2a3504e6a04ea71043e1b5" prefix=" " category="inline-code"></block>、<block ref="ff6c46df37ea393281f31f41ffe6b679" prefix=" " category="inline-code"></block>、<block ref="ec39d308f2a8d67cdfe4b7f36be6b684" prefix=" " category="inline-code"></block>和<block ref="a77dc6001e3622c0c0d8e54b04451ff2" prefix=" " category="inline-code"></block></block>
+  <block id="4dc0b89ca225698f8c614afa8fdadfc3" category="cell">保留模型运行的完整业务结果和预测证据</block>
+  <block id="33b2fad026f67f7f85f0a9b3a9733f01" category="paragraph">对于任一选择，设置<block ref="1fd7873c565a27648b9911e5e6bd7192" prefix=" " category="inline-code"></block>以在存在时添加本地实例化的 XCP 训练输入。设置<block ref="8bec105836913f26c1602f4009a01fef" prefix=" " category="inline-code"></block>以跳过存档任务，而不更改训练和推理工作流程。</block>
+  <block id="a2dbb11eece45a6acb07debaa780db0b" category="section-title">8.9 完整示例配置</block>
+  <block id="e7ebe4cb035e836fce33b16403419d15" category="paragraph">此目录提供主体部署和测试路径的启动配置。每个示例都假设原始数据位于 StorageGRID，并且准备好的数据会写入 ONTAP NAS 存储桶中。将存储桶名称、端点地址、文件系统路径和配置文件名称替换为目标环境中的值。请勿将生产访问密钥或机密放在<block ref="99dfd056f67cd45b069217c19bb4f726" prefix=" " category="inline-code"></block>中；请通过 Airflow Connections、Variables 或 secrets backend 进行配置。</block>
+  <block id="6fc7a15fde27e79edea2ffbd02b0ec85" category="section-title">8.9.1 XCP 到 LustreFS（使用 Spark 和 Delta Lake）</block>
+  <block id="8e2b6049096b4e7a812a3387d0d042df" category="paragraph">使用此全吞吐量示例进行分布式准备和高性能 LustreFS 模型 I/O。它处理<block ref="d9073f930b78a3eb9d11fa2659a09dca" prefix=" " category="inline-code"></block>下所有符合条件的表格文件，在准备期间写入 Delta 表，将训练检查点持久化到 ONTAP NAS 准备好的数据桶中，并存档完整的推断结果集。</block>
+  <block id="335c1e584f87fde9008e8709a1e07641" category="section-title">8.9.2 没有使用 Python 准备的 XCP</block>
+  <block id="43f7b62903dbd75c3216c501b4b9ee9f" category="paragraph">将此基线配置用于轻量级功能运行。准备阶段使用本地 Python 引擎，下游阶段使用管道的本地准备数据和制品路径；XCP、Spark、表格格式、检查点重用和存档已禁用。</block>
+  <block id="e6204964cb0a77ad7d5b8a22d9ff3606" category="section-title">8.9.3 使用两个显式输入文件准备 Python</block>
+  <block id="b6aa1c2c8f685a97e9cf4bb1104afc5b" category="paragraph">针对两个已知的 StorageGRID CSV 对象验证管道时，请使用此重点测试。<block ref="ea8041c6af489a1a25b1a095f9ff8da1" prefix=" " category="inline-code"></block>禁用自动表格文件发现；文本输入仍使用原始前缀下的预期位置。</block>
+  <block id="a85866b2b32f396a4e57ae27d2b24ada" category="section-title">8.9.4 使用自动全文件发现的 Python 准备</block>
+  <block id="7fa1eaa8332d49c4609d91cbdd705682" category="paragraph">省略<block ref="ea8041c6af489a1a25b1a095f9ff8da1" prefix=" " category="inline-code"></block>和<block ref="838c47ae240d20e9f5fa6df78bf53c88" prefix=" " category="inline-code"></block>以处理 StorageGRID 原始前缀下的每个符合条件的表格对象。此示例适用于使用 Python 准备引擎的全文件功能或规模测试。</block>
+  <block id="de24ae65c4292b90045cfc116ccd84ed" category="paragraph"><block ref="53bbcb4b6a3c3087e1d6163cf3dab827" prefix="" category="inline-code"></block> 表示数据准备使用所有可用行。为有界测试运行设置正值。</block>
+  <block id="6ffef5674d7486801b1822054d724823" category="section-title">8.9.5 XCP 到 ONTAP S3 与 Python 的准备</block>
+  <block id="dbef453e7cec0c1353a9f9ff7a84b705" category="paragraph">当必须将准备好的数据从 ONTAP NAS NFS 导出复制到 ONTAP S3 训练存储桶时，请使用此配置。模型训练、微调和推理通过相同的 ONTAP S3 目标实现并发布工件。</block>
+  <block id="7132243962662ca208bdb4a6f5a7a7db" category="section-title">8.9.6 使用 Spark 和 Iceberg 的 XCP 到 ONTAP S3</block>
+  <block id="7980b0a9f2d1f9259b6293a421fda4e7" category="paragraph">使用此配置进行分布式准备，以 Iceberg 表输出和 ONTAP S3 作为活动训练目标。当 Spark 或 Iceberg 不可用时，如果运行必须失败而非回退，请将<block ref="435e8af8130aca438536a2efb6286d95" prefix=" " category="inline-code"></block>和<block ref="ecda157cf83513b7c14dcd5d41a3840d" prefix=" " category="inline-code"></block>设置为<block ref="b326b5062b2f0e69046810717534cb09" prefix=" " category="inline-code"></block>。</block>
+  <block id="396583de090225fa44db7e6fd1f715f7" category="section-title">8.9.7 场景选择摘要</block>
+  <block id="cdc106fa2c9d5bcfb98c630ea8b1f22d" category="cell">XCP 目标</block>
+  <block id="2b7b88996513ee01209ce526d830a897" category="cell">制备引擎</block>
+  <block id="5128c40e9b4875ff6b6f9b08e8d0a03f" category="cell">表格格式</block>
+  <block id="b6ae1c78c3ecd74cc882849d245963db" category="cell">输入范围</block>
+  <block id="29ef3ccd551d4250c3f0709a128480fa" category="cell">归档阶段</block>
+  <block id="a1dface8f2ff04034e7f4ac7f9851e72" category="cell">8.9.1</block>
+  <block id="b185b764e7198b32f082f5810b8717d5" category="cell">LustreFS</block>
+  <block id="db1f4ab5845def61a83d5df13e0c2397" category="cell">Delta</block>
+  <block id="38ae0f7ff8f6b9f7cdc512964dea88b8" category="cell">所有已发现文件</block>
+  <block id="15f47e431616676d678ba1fb23f5429f" category="cell">8.9.2</block>
+  <block id="b9f5c797ebbf55adccdd8539a65a0241" category="cell">已禁用</block>
+  <block id="e1fc0130f8e74c349b2bc83c1792b0f1" category="cell">8.9.3</block>
+  <block id="5127c13251cd0eb0e3ac9092161279f8" category="cell">两个显式文件</block>
+  <block id="b9bdc82c89fd20c40f348876cf4ce26a" category="cell">8.9.4</block>
+  <block id="d868211515224580cf5e75307a89d143" category="cell">8.9.5</block>
+  <block id="1716834171e243de0f898a67621b6624" category="cell">ONTAP S3</block>
+  <block id="1651662ffb9f2b893c5513ce167a67be" category="cell">8.9.6</block>
+  <block id="b9f1e40fa2e2d56e00b35f266364715a" category="cell">Iceberg</block>
+  <block id="617b0027e6b613829ed549314b607362" category="section-title">8.9.8 执行演练</block>
+  <block id="a70a56a200b34683569085729e0905a8" category="paragraph">从 Airflow 工作区运行示例。触发器脚本生成唯一<block ref="9abb8c4da442d2a93e3e16dc447b6411" prefix=" " category="inline-code"></block>的运行 ID，等待完成，并返回失败或超时运行的非零退出代码。以下完整配置使用与操作示例相同的<block ref="9409ba488e8bfacbc3a63bd5096a8423" prefix=" " category="inline-code"></block>模式。在运行之前，在密钥后端配置引用的 Airflow 托管连接、XCP 配置文件和归档配置文件，并将<block ref="99dfd056f67cd45b069217c19bb4f726" prefix=" " category="inline-code"></block>限制为非密钥存储桶、端点、路径和配置文件标识符。</block>
+  <block id="4763ac672b0fea60a26c858942fc0aab" category="paragraph">有效的表格式名称为<block ref="46ebfdc1519946f436cd1081b525d98f" prefix=" " category="inline-code"></block>。请勿使用<block ref="067610ffdeb3bfc31ebe5cdd1e8e1c90" prefix=" " category="inline-code"></block>，此值不受支持。</block>
+  <block id="190ce1161a12a2dc7feb94352ad32519" category="paragraph">*所有文件、Spark、Iceberg、XCP 到 ONTAP S3、检查点到 prepared-data S3、推断后归档：*</block>
+  <block id="94b137749c9d868a7efa3d20eeade073" category="paragraph">*所有文件、Spark、Iceberg、XCP 到 LustreFS、检查点到准备好的数据 S3、推断后归档：*</block>
+  <block id="62cd9c7f0c0e12e1afa47f741a239b31" category="paragraph">对于 ONTAP S3 模式，在运行之前，仅将非密钥<block ref="67920c3d3dc2fcbbb0511988f98ac5d5" prefix=" " category="inline-code"></block>名称传入<block ref="99dfd056f67cd45b069217c19bb4f726" prefix=" " category="inline-code"></block>，并在 XCP 主机上或通过 Airflow 管理的密钥存储定义相应的凭据。对于 LustreFS 模式，由于训练路由不解析 ONTAP S3 凭据，因此会故意省略<block ref="c0c7a5ec9a483e3ad0b879fd4fd64242" prefix=" " category="inline-code"></block>映射。在这两个示例中，通过 Airflow 管理的密钥存储而不是内联 JSON 来定义 StorageGRID 原始数据、ONTAP NAS 准备好的数据和存档凭据。省略<block ref="ea8041c6af489a1a25b1a095f9ff8da1" prefix=" " category="inline-code"></block>并将<block ref="e2dfdfe902add95b4f3a18f63b340ca5" prefix=" " category="inline-code"></block>设置为<block ref="cfcd208495d565ef66e7dff9f98764da" prefix=" " category="inline-code"></block>，以请求自动发现所有符合条件的表格文件并使用所有可用行。</block>
+  <block id="2ed15e8306ef4528865929588ccc8373" category="paragraph">*Python，无 XCP，双文件测试：*</block>
+  <block id="1c184b0bdfc88b8f98e65aeba5e780df" category="paragraph">*Spark、Delta Lake、XCP to LustreFS：*</block>
+  <block id="7304284eb2927d6db41c443276f38ac3" category="paragraph">*Spark、Iceberg、XCP to ONTAP S3：*</block>
+  <block id="6853d92d212bb7b1c97ba8b7aae1c4cd" category="paragraph">在 XCP 运行之前，从 XCP 主机验证配置的 ONTAP NAS NFS 路径和目标可访问性。成功运行后，请查看<block ref="a97739f1cca9a4ae927a6fd7173ecf69" prefix=" " category="inline-code"></block>、<block ref="ca1f0e49174d17af28c314531c2cd62f" prefix=" " category="inline-code"></block>、<block ref="00905a154705190882f65e1f06c87086" prefix=" " category="inline-code"></block> 和<block ref="1421d24f791396da38c8f28c327ad0fc" prefix=" " category="inline-code"></block>的任务日志，以确认所选引擎、输入范围、目标和存档阶段。</block>
+  <block id="a7c841f05d48c22a7c9afb22a391819e" category="doc">6.使用 NetApp XCP 实现数据移动</block>
+  <block id="57e6a106d8c0a8cb67ad8e6445643402" category="paragraph">NetApp XCP 提供 ONTAP NAS 准备数据层和活动训练层之间的受控传输路径。Airflow 执行预检，并通过 XCP 主机调用复制操作；<block ref="4674a08755fd498fb7f7b950ac4069cd" prefix=" " category="inline-code"></block>为每次运行选择 ONTAP S3 或 LustreFS。模型训练、微调和推理使用相同的选定目标，以保持数据和工件处于一致的层。</block>
+  <block id="39af1ec8acb0a545bd310f6e512fdf7e" category="section-title">6.1 为什么选择 NetApp XCP</block>
+  <block id="76b2331cfa1a59d29331bdcdebccf29b" category="paragraph">XCP 是一个并行的多线程复制引擎，支持此架构使用的 NFS 源、ONTAP S3 和 LustreFS 目标。其<block ref="62b85e07a9977420ba67f03d7613cb51" prefix=" " category="inline-code"></block>选项将每个传输与管道执行相关联，支持跨已准备数据、训练输入和模型工件位置的可追溯性。</block>
+  <block id="5b0a5ac05a713155b5277c3242f1a9cc" category="section-title">6.2 XCP Preflight 验证流程</block>
+  <block id="d52e497449b34945296b1a14eccdbb0f" category="paragraph">预检任务在 XCP 副本之前运行。它验证 Airflow 是否可以通过 SSH 访问 XCP 主机，以及配置的 ONTAP NAS NFS 源路径是否对 XCP 可见。当连接或源可见性不正确时，显式退出条件会在复制开始前停止管道。</block>
+  <block id="a12fd091a82b56c83754b116da512543" category="image-alt">XCP预检验证流程</block>
+  <block id="dfe95992d5c467c63f5947ed711039c3" category="section-title">6.3 XCP 复制到 S3 — 命令模板</block>
+  <block id="6b8c67c4e45efe75c5ff14c631e29d47" category="paragraph">当<block ref="844946f00330d539ab98657463980437" prefix=" " category="inline-code"></block>时，请使用此路径。XCP 从 ONTAP NAS NFS 导出中读取已准备好的运行标记数据，并将其写入配置的 ONTAP S3 存储桶和前缀。命名的 XCP S3 配置文件在 XCP 主机上提供目标凭据；然后，模型阶段通过<block ref="8c54337013d3f35fe4e958fe46784653" prefix=" " category="inline-code"></block>发现数据和制品。</block>
+  <block id="c408fce5930afdd382be5f30a9e1d49f" category="paragraph">*示例：将准备好的 ONTAP NAS 数据集复制到 ONTAP S3 训练桶*</block>
+  <block id="6609677b21963ec400d55abedde192ea" category="paragraph">此示例使用<block ref="db4ccc05d12ec3f1edc562aab1abf22c" prefix=" " category="inline-code"></block>作为 XCP 作业标识。训练任务会在已配置的<block ref="8c54337013d3f35fe4e958fe46784653" prefix=" " category="inline-code"></block>下发现复制的文件，例如<block ref="23559bba99f6d815cff6e130462f2e9e" prefix=" " category="inline-code"></block>。</block>
+  <block id="b925bf9a838ed1c4a4650f10ba5d7326" category="section-title">6.4 XCP 复制到 LustreFS — 命令模板</block>
+  <block id="97a8204eb713ea12e38574a9848c1e1d" category="paragraph">在<block ref="43aa42fc620874f288d9782d47a176ca" prefix=" " category="inline-code"></block>时使用此路径。XCP 将准备好的数据从挂载的 ONTAP NAS 源复制到挂载的 LustreFS 目标。两个挂载点都必须在 XCP 主机上可用，并且 LustreFS 还必须挂载在执行模型训练、微调和推理的 Airflow worker 上。</block>
+  <block id="bbdeb30fb7b3b8cb0d9fd6c731c52160" category="paragraph">*示例：将准备好的 ONTAP NAS 数据集复制到 LustreFS 训练挂载*</block>
+  <block id="44ec866558ee5677a57173db0e3e8691" category="paragraph">这两个<block ref="6e37764c2a5f7de937c6aa33d300e0ce" prefix=" " category="inline-code"></block>命令用于验证在复制开始之前，源路径是否通过 NFS 挂载，以及目标路径是否通过 XCP 主机上的 LustreFS 挂载。使用<block ref="a9a386a04994c6a1f0ff5ac289617187" prefix=" " category="inline-code"></block>，训练将读取<block ref="beed0f76e5868456be3724f5e4f0573e" prefix=" " category="inline-code"></block>下的运行标记数据。</block>
+  <block id="bd3b9137e5038c3173de7fa5a6f9621f" category="section-title">6.5 XCP 目标决策流程</block>
+  <block id="218087d3abf623760d645e1eb3851ff9" category="paragraph">此决策图显示了一个运行时参数如何确定复制目标和训练读取路径。选择<block ref="c0828e0381730befd1f7a025057c74fb" prefix=" " category="inline-code"></block> 表示 ONTAP S3 对象目标，或选择<block ref="c1ab44fd888254255acf3ece33dfe88e" prefix=" " category="inline-code"></block> 表示并行文件系统目标。下游阶段自动使用匹配源，避免在存储位置更改时更改模型代码。</block>
+  <block id="e5641195b04be4617d3fab35af50ae90" category="image-alt">XCP目标决策流程</block>
+  <block id="e10f3cd6038b30895c0ce98427bef6df" category="section-title">6.6 XCP 故障处理和护栏</block>
+  <block id="e0596b9567e7b5461d17fd18b5c5cf2b" category="paragraph">这些护栏使配置和基础设施故障在最早的实际时间点可被观察到。预检失败会阻止无效传输，文件系统类型检查会验证 ONTAP NAS 和 LustreFS 挂载，S3 凭据验证仅在 ONTAP S3 是选定的 XCP 目标时适用。</block>
+  <block id="9e2941b3c81256fac10392aaca4ccfde" category="cell">条件</block>
+  <block id="cf4b40705d6bb8cc5a1be874d0e35247" category="cell">防护行为</block>
+  <block id="966a84b6d4314ad62ad498bb201aff28" category="cell">不支持的<block ref="4674a08755fd498fb7f7b950ac4069cd" prefix=" " category="inline-code"></block>值</block>
+  <block id="2614b77f7435e38b59236cac7410dc89" category="cell">管道在任何数据移动之前都会拒绝该值</block>
+  <block id="508100cba01a25e1c6dfadf2bde06a35" category="cell">LustreFS 挂载不存在</block>
+  <block id="624a35d59584819c86b7b4491b1ba901" category="cell">文件系统类型验证失败；在数据移动前暂停复制</block>
+  <block id="26b0f9b3e4c9f8456736c2de018ad4ec" category="cell">SSH 无法访问</block>
+  <block id="ca383f3394f78de263608592a9cb3534" category="cell">Preflight 在任何复制操作之前以代码 1 退出</block>
+  <block id="5622e6d1ec24fd5194f5354662f11cb6" category="cell">NFS路径不可见</block>
+  <block id="5f7d06b72975c6ca94580c57f58fd23e" category="cell">预检在任何复制操作之前以代码 2 退出</block>
+  <block id="0c6e6c632dbe934c44f99313f522f327" category="cell">缺少 XCP S3 凭据（仅限 S3 模式）</block>
+  <block id="46fd016decd7b9d620205c73c66c93ce" category="cell"><block ref="b40e4f0b6e8f3138e6ccde4cb7ae520c" prefix="" category="inline-code"></block>/artifact sync 触发显式<block ref="5a2cfd89b7b171fd7b4794b08023d04f" prefix=" " category="inline-code"></block></block>
+  <block id="89fe3a46b344ee3e0e22b1d0c2f73fc2" category="doc">7.部署架构</block>
+  <block id="1e59c5591f2f42495217b22d881b2916" category="paragraph">本节定义了运行管道所需的基础设施布局、软件依赖关系和网络连接。该部署将 Airflow 编排与 XCP 数据移动主机分离，同时将两个组件连接到 StorageGRID、ONTAP NAS 以及所选的 ONTAP S3 或 LustreFS 训练目标。</block>
+  <block id="bd4b4e4c747f259ba23398a43e9b0d90" category="section-title">7.1 参考基础架构要求</block>
+  <block id="fa710a5627e108a0586304814e591a3f" category="paragraph">以下组件构成最小功能部署占用空间。根据所选准备引擎和并发任务负载调整 Airflow 主机的规模；将 XCP 主机放置在无需经过不必要网络跳转即可访问 ONTAP NAS NFS 导出和所选目标的位置。LustreFS 模式要求 XCP 主机和 Airflow Worker 上均具有兼容的挂载点。</block>
+  <block id="d7ae687c0e6e6c6e9f1c71e38ff3f626" category="cell">Airflow 主机</block>
+  <block id="6d9515757cdd6a3d42c25d65c58d15ab" category="cell">CPU/内存大小根据 Spark 或 Python 转换负载进行调整</block>
+  <block id="3f568bb30ecc645e610790b5f53f25aa" category="cell">XCP 主机</block>
+  <block id="79b7cc9c771eda1916567c6a6f89f929" category="cell">对NFS/Lustre和NetApp ONTAP S3端点的网络访问</block>
+  <block id="8882c378150aace466c4dfc76495c62c" category="cell">LustreFS 客户端</block>
+  <block id="b6b92d87ff69eea08449e633aab7dd1a" category="cell">选择为目标时，安装在 XCP 主机和 Airflow 主机上</block>
+  <block id="aac5b420aa9ff33a30c72f1ec230a06e" category="section-title">7.1.1 参考验证环境</block>
+  <block id="b1b1e71f57cf2ef54d58a10a1eb77308" category="paragraph">以下环境用作具有代表性的单节点验证配置文件。它是功能和性能评估的起点，而不是生产规模调整建议；客户必须根据其数据集量、并发性、保留、恢复和服务级别要求调整计算、网络、存储容量和保护。</block>
+  <block id="359b71e88f40029251366609358a302f" category="cell">层</block>
+  <block id="0b77244be16a9a7bd8001d373fb270c9" category="cell">参考硬件/软件</block>
+  <block id="a9f311c880151abca1af585d7f1ec056" category="cell">计算和网络</block>
+  <block id="2d2b85e9679a6509de8ef6985de34b9b" category="cell">一台具有 256 GB RAM、64 个 CPU 内核和 10 GbE 连接的服务器</block>
+  <block id="a626505ce627eb62d5b2d11a89b7cd4d" category="cell">ONTAP 活动存储</block>
+  <block id="9d0d591f8b2953774b1b75fab3828343" category="cell">一个带有 48 x 1.8 TB 固态硬盘的 NetApp A800 系统</block>
+  <block id="670aaecb1a526fbed439dad3ec353a96" category="cell">对象存储</block>
+  <block id="5115255342d712c2618bd3488a1d1024" category="cell">一个 NetApp StorageGRID SG5864 设备</block>
+  <block id="bc0e630d305cbe115d773c020ac23ed3" category="cell">高通量训练存储</block>
+  <block id="75ad6a7c6f908e823c70dc3dcefdb7c0" category="cell">一套配备 LustreFS 的 NetApp E2812 系统</block>
+  <block id="d9ea842c25efd073638a8ed6685880fb" category="cell">平台软件</block>
+  <block id="3d1e0afbd94739ce0b61063b94739406" category="cell">Kubernetes、Apache Airflow、Apache Airbyte、单节点 Apache Spark、NetApp XCP 和 LustreFS</block>
+  <block id="756798c615965bf771dfd7ab76081e53" category="section-title">7.2 软件版本表</block>
+  <block id="8a3a9bf9365269c8c3014ea49892f28b" category="paragraph">此矩阵标识了已验证管道使用的运行时软件。使 Airflow 和 Python 环境与部署的提供程序和软件包保持兼容。Spark、Delta Lake 和 Iceberg 是可选的，仅在<block ref="392989018ea1a795a5a4c97dcb3d88f3" prefix=" " category="inline-code"></block>使用 Spark 转换路径或相应的表格式时才需要。</block>
+  <block id="9197b7c75821c3ce222ed88e1c5558b9" category="cell">版本/备注</block>
+  <block id="684af6740abf2568ed9bcf3ea64cdb96" category="cell">2.x</block>
+  <block id="592fcfe486c2a919eeca0c4c43e0a3e6" category="cell">3.11</block>
+  <block id="60fbecb7b5c9a0c35581635f887f9938" category="cell">最新稳定</block>
+  <block id="3483ff058deda3dad41fa7925fab2dac" category="cell">scikit-learn</block>
+  <block id="9df67feff19891d0da79dad68db221ca" category="cell">PySpark（可选）</block>
+  <block id="6e1194e69973a1c5c68050c8a518a607" category="cell">与 Delta 3.2.0 / Iceberg 1.5.2 运行时包兼容</block>
+  <block id="080f1bcd957ee7e043aab1ff0209c6a1" category="cell">安装在远程主机上，例如<block ref="13e31e15cdd957521a3a21d54ffcf51f" prefix=" " category="inline-code"></block></block>
+  <block id="00f066007400f4d7a0e79ad5171f6930" category="section-title">7.3 网络要求</block>
+  <block id="db62544b0f5b6c1af7ab276447078f1a" category="paragraph">路由、防火墙和名称解析策略必须允许这些网络流。建议对生产中的每个 S3 兼容端点使用 HTTPS；在端点不使用默认 HTTPS 端口的情况下，使用配置的自定义端口。根据已部署的 LustreFS 实现确认 Lustre 客户端连接。</block>
+  <block id="f1a76f66cca677c6e628d9ca58a6c8fc" category="cell">流程</block>
+  <block id="fda78ffdb0354cd18aae912afe0fc791" category="cell">协议/端口</block>
+  <block id="c97c18878aa684f3a5431b40328c23f0" category="cell">Airflow → ONTAP S3</block>
+  <block id="ab7d248c4d5327fdcb4ec124dd3a9366" category="cell">HTTPS/HTTP （443/80 或自定义）</block>
+  <block id="22c6d0bee717bbaab3686a66812f5d74" category="cell">Airflow → XCP 主机</block>
+  <block id="35b0dc774d85cf09afe1d96a59548c0d" category="cell">SSH（22）</block>
+  <block id="c150e23c3d42745012d01f3c649e9907" category="cell">XCP 主机 → NFS 源</block>
+  <block id="1e5d0a9df4c1052c5fc26c78194c1eaf" category="cell">NFS（2049）</block>
+  <block id="51d5077b49d3cd52614fb5815eac99e1" category="cell">XCP 主机 → LustreFS</block>
+  <block id="f61bbcbf5fccad96167a2e3d765fd717" category="cell">Lustre 客户端端口</block>
+  <block id="e81f5d0e8472d8a178b32b560f5ff663" category="cell">XCP 主机 → ONTAP S3 （S3 模式）</block>
+  <block id="a5672e55195a9a1cd37e745fa3a6a45f" category="cell">HTTPS/HTTP</block>
+  <block id="3c4bfd8bd4a47d202ccb1ef01599e335" category="section-title">7.4 部署说明</block>
+  <block id="cf8edf5ac4821f5e064856a678e14b19" category="cell">部分/主题</block>
+  <block id="ab56f19643401439122697216ebe5c4d" category="cell">指导/运营实践</block>
+  <block id="65871f766ad47f2695b884e14a2cbb2c" category="cell">SSH 连接设置</block>
+  <block id="350b02060cb116f4af3cc7c269aedfd4" category="cell">将 Airflow 连接配置<block ref="70fe17e89c62ccb2692c96e9d32b9aa3" prefix=" " category="inline-code"></block>为通过端口 22 使用受限 SSH 密钥权限定位 XCP 主机<block ref="d490d7b4576290fa60eb31b5fc917ad1" prefix="(" category="inline-code"></block>）。</block>
+  <block id="02bac396bf5ee5e6780b6cf8878c3fc6" category="cell">服务生命周期管理</block>
+  <block id="44b85f1c5738d16ac8fa45a3c07adeab" category="cell">使用 <block ref="def385ebe245f46ee54caeec418e7cc1" prefix=" " category="inline-code"></block> 在部署和维护期间管理本地 Airflow 调度程序和 Web 服务器生命周期。</block>
+  <block id="be9789639f13920788e9402fe402be71" category="cell">凭据和密码存储</block>
+  <block id="03f3c5804c5902f7b2e8027473aa754a" category="cell">将凭据、API 令牌和访问密钥存储在 Airflow Connections、Variables 或 secrets backend 中，而不是内联在<block ref="ab705a77421e8c7b3037722d58fe2675" prefix=" " category="inline-code"></block>中。</block>
+  <block id="d83701e356911336c5b4d7cc5bf4856b" category="cell">基础架构和任务可观察性</block>
+  <block id="aa38b6cfee7087ee1b049c37bb7f447d" category="cell">独立监控调度程序心跳和任务执行，以便将业务流程可用性问题与 DAG 故障区分开来。</block>
+  <block id="1b89e3ece4049083f95528e719d4d3e9" category="section-title">7.5 安装和先决条件</block>
+  <block id="59fe6f980aba7218c893150c8f8bb432" category="paragraph">本小节定义了在全新环境中构建、配置和运行 NetApp AI 验证管道所需的基线安装步骤。本小节适用于在运行任何 DAG 之前设置 Airflow 工作区的操作员、架构师和工程师。</block>
+  <block id="9926ad579a77075153bd0b1f38a4fba4" category="section-title">7.5.1 前提条件</block>
+  <block id="360d2fe8b31356e9e71d8206a571c8ce" category="paragraph">在安装解决方案之前，请确认目标主机满足以下最低要求：</block>
+  <block id="4def433eac45427ec74781bcdc55324b" category="list-text">Linux 操作系统，最好是 Ubuntu 22.04/24.04 或 RHEL 8+。</block>
+  <block id="ca0ed8623183c3fa2b01aa39b289acc3" category="list-text">Python 3.11，带有<block ref="62ad1c2a46c5298f3e2c95d3babf8d0c" prefix=" " category="inline-code"></block>、<block ref="e124e7543d581ff8c7a6eab30ce329f4" prefix=" " category="inline-code"></block>和构建工具。</block>
+  <block id="e5b109aac006d5b97f20d6eec862a47e" category="list-text">Git已安装在主机上，用于源代码检索和版本管理。</block>
+  <block id="c8dc9fb44c5c424874f8139bbed1986b" category="list-text">Apache Airflow 2.x 部署在专用的 Python 虚拟环境中。</block>
+  <block id="4015130642fa1549caff7b10afeb67db" category="list-text">从 Airflow 主机到 NetApp XCP 主机的 SSH 访问。</block>
+  <block id="ce0214e349297227a9dc24ea9871052b" category="list-text">从 Airflow 主机到 StorageGRID、ONTAP NAS 和所选 ONTAP S3 或 LustreFS 目标的网络连接。</block>
+  <block id="3e8af18f5b845bec2a3f8b6a4c1b2cf6" category="list-text">S3 兼容端点访问，用于原始数据、预处理数据暂存和归档存储。</block>
+  <block id="902382e34786ddaab8794d60b531fc2f" category="list-text">可选：Java 运行时和 Spark 3.x（如果使用<block ref="98f11b7a7880169c3bd62a5a507b3965" prefix=" " category="inline-code"></block>准备路径）。</block>
+  <block id="145803295cfd2fbc0cd87c3423b9cdc5" category="list-text">可选：当选择 <block ref="53564d15d50493822f51cbb92cb8f82e" prefix=" " category="inline-code"></block> 或 <block ref="3a6acf324c4b197650b720250327fc51" prefix=" " category="inline-code"></block> 时，需要 Delta Lake 和 Iceberg 运行时包。</block>
+  <block id="79634873e4a71a7bfe57d88f70f7b761" category="list-text">可选：使用<block ref="43aa42fc620874f288d9782d47a176ca" prefix=" " category="inline-code"></block>时的 Lustre 客户端挂载。</block>
+  <block id="ee94d5afb2d9e17481eeeb6e251d0f42" category="section-title">7.5.2 软件包获取和存储库访问</block>
+  <block id="2d7240c6d4771e073109c0a3a21f5e54" category="paragraph">要获取此解决方案的软件包、自动化 DAG、部署脚本和验证制品，请联系 NetApp AI &amp; Data Mobility 工程团队：ng-data-mobility-in-ai-pipeline@netapp.com。</block>
+  <block id="71ed7cb3aecb8e0a69430bedadf69d8a" category="paragraph">授予访问权限后，将项目源从 GitHub 下载或克隆到目标工作目录：</block>
+  <block id="253bac73e4d33b7b7ac363085056cb8e" category="paragraph">如果已经在<block ref="d51c1a82ac648a03ea25bb2d754b5452" prefix=" " category="inline-code"></block>下克隆了存储库，请从该工作目录继续，而不是下载其他副本。</block>
+  <block id="8550239ad6f35084578ccac2065a83ca" category="section-title">7.5.3 创建 Python 环境</block>
+  <block id="bc309dd80169166cc4440032b8743c41" category="paragraph">创建专用虚拟环境并安装 Airflow 和管道的基本依赖项。</block>
+  <block id="15f5b3708efc27ec86697d0f428d8165" category="paragraph">对于基于 Spark 的准备和 Lakehouse 表格格式，请根据需要安装可选软件包：</block>
+  <block id="ead2b559f43114dc439b06de70010869" category="paragraph">使用 Spark 运行时和集群拓扑支持的确切包版本。请勿混合不兼容的 Spark、Delta 和 Iceberg 组合。</block>
+  <block id="8d961e16325e6d554212dc58348b702e" category="section-title">7.5.4 配置 Airflow 和存储库</block>
+  <block id="f815b654ffa24519d37bdabd30c1bfb4" category="paragraph">从克隆的存储库根目录，初始化 Airflow 元数据数据库，并验证 DAG 文件对 Airflow 可见。</block>
+  <block id="8bf23650fac6b3a08e35c348107ba39f" category="paragraph">工作区包括经过验证的管道所需的 Airflow 配置文件和 DAG。如果存储库包含用于本地生命周期管理的辅助脚本，请使用该脚本启动调度程序和 Web 服务器，而不是手动调用 Airflow。</block>
+  <block id="ecc38608a32ebcad7da738d1bd838c90" category="section-title">7.5.5 所需的连接和密码配置</block>
+  <block id="1dc674b8406769bbe81ff441f358bc8a" category="paragraph">在运行管道之前，请确认可以从 Airflow 主机访问以下资源：</block>
+  <block id="dab77273808b69650653222ee1681de5" category="list-text">StorageGRID 原始数据 S3 端点。</block>
+  <block id="e7b10eaddf06e807e0e486d05a66c4e8" category="list-text">ONTAP NAS 准备好的数据桶端点。</block>
+  <block id="388925b5f29ee813866bf2cb01e895ed" category="list-text">ONTAP S3 目标端点（当<block ref="844946f00330d539ab98657463980437" prefix=" " category="inline-code"></block>时）。</block>
+  <block id="5cf298f77f75f109146fb62ba9611d5c" category="list-text">LustreFS 挂载时间<block ref="43aa42fc620874f288d9782d47a176ca" prefix=" " category="inline-code"></block>。</block>
+  <block id="97512922a97ec256270d33c4ecf03e50" category="list-text">使用<block ref="70fe17e89c62ccb2692c96e9d32b9aa3" prefix=" " category="inline-code"></block>或配置的 SSH 连接通过 SSH 的 XCP 主机。</block>
+  <block id="5fce72a0443cee27c135383f65bcb7b5" category="paragraph">将凭据存储在 Airflow Connections、Variables 或 secrets 后端中，而不是将其嵌入 shell 历史记录或 DAG 代码中。在触发管道运行之前，设置所需的访问密钥、端点和配置文件映射。</block>
+  <block id="f2cfdb6aa380fd7d380e2ce56b4b02c1" category="section-title">7.5.6 验证安装</block>
+  <block id="fee1f62e459f4e7701fda3dbbe62c89f" category="paragraph">当 Airflow 调度程序和 DAG 正常运行，且示例管道可以列出并触发而不出现配置错误时，即可确认安装成功。</block>
+  <block id="e824527e0ea7e6ce273c5fcb7211dfda" category="paragraph">如果安装正确，DAG 应位于 Airflow 中，并准备好使用存储库根目录中的触发器脚本进行<block ref="99dfd056f67cd45b069217c19bb4f726" prefix=" " category="inline-code"></block>驱动运行。</block>
+  <block id="7b224eab549f7426fa7f2717c96f8358" category="paragraph">此时，环境已准备好使用第 8 节中的配置示例和操作指南中描述的部署方案。</block>
+  <block id="448d2b7ac77f10d95528acb41da7c498" category="doc">11.NetApp 差异化和竞争定位，附录</block>
+  <block id="ca919d4c72ebed65cedbd1c2a649b092" category="paragraph">此组合部分针对常见替代方案定位架构，并提供操作员和审阅者使用的共享参考资料。区别因素不是单个存储端点，而是 StorageGRID、ONTAP NAS、ONTAP S3、LustreFS、XCP 和 Airflow 的策略控制组合，使每个 AI 生命周期阶段能够使用适当的层级，而无需重建工作流。</block>
+  <block id="e1eba5eadc1c4b949361e6a22fb12073" category="section-title">11.1 NetApp 差异化和竞争定位</block>
+  <block id="03deb1e85334e9662145170290f64959" category="paragraph">这种比较将架构与常见替代方案进行了对比。其差异化之处并非单一存储端点，而是 StorageGRID、ONTAP NAS、ONTAP S3、LustreFS、XCP 和 Airflow 的策略控制组合，使 AI 生命周期的每个阶段都能使用适当的存储层，而无需重建工作流。</block>
+  <block id="9f5c844584f35fd1d66d2025b43e01d6" category="cell">备用方法</block>
+  <block id="f3d9abb903127694db460aa9c7f4d7be" category="cell">限制</block>
+  <block id="3daba42f73c76b76f7e8208531fe7958" category="cell">NetApp 解决方案优势</block>
+  <block id="b8d83b7b234d610148a2deca29afc8dc" category="cell">纯云原生管道</block>
+  <block id="138039f816b5d254d43f788db8661e29" category="cell">锁定到一个存储范式</block>
+  <block id="bbc0f5efb20190911896b8d77ea645c7" category="cell">通过配置可互换的 S3/LustreFS</block>
+  <block id="d8e5f2b5eb986fb77b54cfc71a9a176f" category="cell">基于 DIY 脚本的流水线</block>
+  <block id="0a18a4dc763424d4a27546818f5f49b1" category="cell">无重试、检查点或沿袭</block>
+  <block id="f6673e2b0413550ea31f16c65d05532f" category="cell">Airflow 编排 {plus} 原生支持检查点/恢复</block>
+  <block id="bb6b1c1345a8c232e94352fe59abb8ae" category="cell">单层存储体系结构</block>
+  <block id="6b8a5407e77a1d5f44ea61d62b335ac8" category="cell">适用于所有工作负载的单一性能/成本配置文件</block>
+  <block id="cc298ad1796c98ec3eed7554865eb0ae" category="cell">通过 <block ref="4674a08755fd498fb7f7b950ac4069cd" prefix=" " category="inline-code"></block> 按运行选择层</block>
+  <block id="24a37a5f055b0a996a26574efd7e86a4" category="cell">每次更新时全面重新训练</block>
+  <block id="f3846151fcbf633e53aee108c1f70ecf" category="cell">高经常性计算成本</block>
+  <block id="4d008f56c7bc2b132a79bed44fbfc36a" category="cell">通过<block ref="166675adabd3faa5d0d69a56aa736d81" prefix=" " category="inline-code"></block>进行增量微调</block>
+  <block id="3a40581436d23ab74f583374ac44bd11" category="section-title">11.2 附录</block>
+  <block id="d38efa328b05b163e7bb469dbcbf5aff" category="paragraph">附录为操作、审查或修改本 NVA 的读者提供了共享的术语和文件控制上下文。更改记录的行为、参数、存储布局或验证证据时，请保持修订历史记录为最新。</block>
+  <block id="736a31786d16840f67c359834f5a9fff" category="section-title">11.2.1 术语表</block>
+  <block id="1d35b3fc13c8a51866a3d1491dc239ea" category="paragraph">这些定义为体系结构的存储、编排和沿袭术语确立了一致的含义。</block>
+  <block id="cf5f3091e30dee6597885d8c0e0c357f" category="cell">术语</block>
+  <block id="0b890b1926b90387673882e6ccae7fdc" category="cell">定义</block>
+  <block id="0395eb585fc2fd28ca3da7846bd8fe23" category="cell">NetApp 的高速并行数据复制/迁移工具</block>
+  <block id="0247481dc0f72853a0af51e5a0b32149" category="cell">NetApp 在 ONTAP 上的 S3 兼容对象存储服务</block>
+  <block id="53043b3f87fe7e7b24eecc60f56db6e3" category="cell">高性能并行分布式文件系统</block>
+  <block id="b575eaf24ee5b18896d24741d1581417" category="cell">DAG</block>
+  <block id="dda65d4b2bc353e63d40f89de1a51821" category="cell">有向无环图 — Airflow 的工作流程定义</block>
+  <block id="0f75a7ffb3a339a7862a2f76bacd0817" category="cell">XCom</block>
+  <block id="b2a2e18aad4888c41d7d2883e24a62d0" category="cell">Airflow 在任务之间传递数据的机制</block>
+  <block id="f8fa1cd8b7e66ffd748bc457b500b439" category="cell">run++_++stamp</block>
+  <block id="63dc63d73654f384355ac419bc9c1cad" category="cell">用于沿袭的每次执行时间戳的唯一标识符</block>
+  <block id="d163fde01af1e5fb194790ca956adc9e" category="cell">描述阶段输入、输出和配置的 JSON 记录</block>
+  <block id="9030b20cc44d15c823d7d9055d9256cf" category="section-title">11.2.2 修订历史记录</block>
+  <block id="827c10f02368408b7a6dda4d4215b95b" category="paragraph">记录每个已发布的更改，以保留文档的审核和批准跟踪。</block>
+  <block id="a517747c3d12f99244ae598910d979c5" category="cell">作者</block>
+  <block id="f4ec5f57bd4d31b803312d873be40da9" category="cell">更改</block>
+  <block id="e4c2e8edac362acab7123654b9e73432" category="cell">1.0</block>
+  <block id="26a5abe47da5900b0ae882a6aec4b9be" category="cell">2026-09-25</block>
+  <block id="b2a3f35d93df1b18e481b0c6da439d7c" category="cell">解决方案架构团队</block>
+  <block id="653f3695c816fe917bd71efebc29678c" category="cell">具有完整参数表和图表的初始发布就绪 NVA</block>
+  <block id="5015789bd01aedf136308121439d926f" category="section-title">11.2.3 联系我们和软件请求</block>
+  <block id="c13a866a5512684b05501b3e102cc84a" category="paragraph">要请求软件包、自动化 DAG、部署脚本或验证工件来部署和验证此架构，或提供反馈和技术咨询，请联系 NetApp AI &amp; Data Mobility 团队：</block>
+  <block id="11b3a03965c68af1757646bf1af31b1d" category="list-text">*电子邮件：* ng-data-mobility-in-ai-pipeline@netapp.com</block>
+  <block id="b54e191897b2eac1de59d7165a5771b7" category="list-text">*目的：*软件包请求、部署指南、架构验证支持和技术反馈。</block>
+  <block id="f3b9f47f074747e8a4a1154f76009a6e" category="doc">1.内容提要</block>
+  <block id="7a94bf07268d596b944e517eb50fffdd" category="section-title">1.1 本文件的目的</block>
+  <block id="6738cbe80e17f3b6ce0482b4c50a856b" category="paragraph">此 NetApp 经过验证的架构（NVA）记录了生产级 AI 数据管道，该管道可提取原始数据，为机器学习做好准备，使用 NetApp XCP 在存储层之间高速移动数据，训练和增量微调模型，生成预测并归档结果，以实现治理和可重复性。本文档旨在引导架构师和基础设施团队了解设计原理、部署、配置和操作。</block>
+  <block id="56e5af41916c6098c7274117c78bd1f3" category="section-title">1.2 受众</block>
+  <block id="14df1d74069d65b14f1a48a87ab264a1" category="paragraph">解决方案架构师、存储/基础设施工程师、数据平台工程师、机器学习工程师以及正在评估 AI/ML 工作负载的 NetApp 存储和数据移动技术的 IT 决策者。</block>
+  <block id="a0eae26428eb3a4acff5f47f109793ae" category="section-title">1.3 业务挑战概述</block>
+  <block id="af5e0f591a90785c0f80bdf8a886941a" category="paragraph">人工智能团队需要将落在对象存储中的数据进行可靠转换，然后将其传递到最适合训练的计算存储层——用于一般工作负载的弹性 S3，或用于 I/O 密集型训练的高性能并行文件系统 (LustreFS)。如果没有受管理的数据移动性和编排层，团队只能使用脆弱的单一用途脚本，这些脚本缺乏重试、检查点、存储灵活性和审计跟踪功能。</block>
+  <block id="21f462f955fc26555e09692ed79f561d" category="paragraph">企业 AI 程序停滞不前——不是因为模型或计算限制，而是因为传统存储并非为 AI 而设计。迁移大量数据集、在训练期间保持 GPU 持续供给、管理检查点开销以及控制存储成本，所耗费的精力远超 AI 工作本身。单层架构强制要求在性能与成本之间进行权衡，随着模型和数据集的增长，这一矛盾愈发突出。</block>
+  <block id="43b82cd3d08cce7f76802ada19d8b044" category="section-title">1.4 NetApp 解决方案总结</block>
+  <block id="69aae5796def40750185912c52643d34" category="paragraph">该解决方案以 Apache Airflow DAG （有向无环图）的形式协调摄取、准备、数据移动、训练、微调、推断和归档。StorageGRID 锚定原始数据和长期归档对象层。数据准备将运行标记的数据集和清单写入 ONTAP NAS 存储桶，由 NFS 作为 XCP 源公开。NetApp XCP 将准备好的数据移动到运行时可选择的训练目标—— NetApp ONTAP S3 或 LustreFS——无需更改代码即可切换层。</block>
+  <block id="5e97bb9bb6e6a6ae9a295691d8d6abde" category="paragraph">在此设计中，ONTAP NAS 存储桶主要从 XCP 支持和验证的角度使用，因为它为移动工作流提供了一致的 NFS 源。在实际生产环境中，相同的活动数据也可以直接通过高性能 RDMA 支持的路径提供，因此 ONTAP NAS 层应被视为操作便捷且可支持的暂存模式，而非唯一的运行时访问方法。</block>
+  <block id="4c0608a49c2eafce0fed9ffbe200e93f" category="paragraph">该管道是更广泛的*NetApp AI 存储架构*的具体实施——这是一个专门构建的三层存储框架，可根据每个 AI 工作负载阶段调整性能和成本：</block>
+  <block id="94547adbe96f7be060162c22ccce1ddf" category="list-text">*E-Series（LustreFS）：* 用于 GPU 密集型模型训练和检查点的超高吞吐量并行存储。</block>
+  <block id="0ccb375bd0588c5bccf13aaad343e561" category="list-text">*ONTAP （AFF/AFX）：* 高性能主动存储，用于训练、微调、推理、矢量/RAG 工作负载和选定的数据准备用例，并支持 FAS 和 NAS 存储桶。</block>
+  <block id="86a7b6a4dbb789d1e2230407cffe9822" category="list-text">*StorageGRID:* 可扩展的 S3 兼容对象存储，用于数据提取、治理和长期保留。</block>
+  <block id="ef164aacd5f3100f53beac96ecb92756" category="paragraph">跨层的数据移动通过 Apache Airflow 和 NetApp XCP 完全自动化，从而彻底消除了关键路径中的手动操作。</block>
+  <block id="7fb47d6e794a031d86cb3afa8781ea1b" category="paragraph">NetApp 存储架构可帮助企业支持分布式数据准备、模型训练、微调、推理和生命周期治理，而无需将所有数据强制纳入单个集中式数据湖。通过减少不必要的数据移动，它自然适合混合 AI 工作流程。</block>
+  <block id="ab9d14424c77fdc8c540f37dbdce309b" category="section-title">1.5 为什么 NetApp</block>
+  <block id="9e0e31246b7b078403969b265870b3f4" category="cell">维度</block>
+  <block id="aa0fe8321fb7b67c678844b04510fd65" category="cell">传统方法</block>
+  <block id="055dd1147b0cb838e7e97d3810fe9c68" category="cell">NetApp AI 存储架构</block>
+  <block id="2ba1ff45e8ac056ea48b1d67639f6c13" category="cell">GPU 生产力</block>
+  <block id="17c42b26fd20bed138c1aab504d3fa14" category="cell">存储瓶颈闲置昂贵的计算</block>
+  <block id="6c574a07d371e34675db3f754201e3f8" category="cell">GPUDirect Storage over RDMA有助于保持GPU集群的充分利用</block>
+  <block id="0153a2c1523bbcedd3803c3975292c8e" category="cell">数据移动</block>
+  <block id="cb9ade801353e207b141c9b6c07038be" category="cell">手动脚本延迟管道</block>
+  <block id="fa038f3376a59a18197dfe33f9e8e640" category="cell">通过 Airflow {plus} XCP 实现自动层间移动</block>
+  <block id="ede30146d94bbef36e06ab4239294fae" category="cell">成本控制</block>
+  <block id="9b27f3669a4ae5e915f58c1727fb01e5" category="cell">所有数据都在高成本闪存上</block>
+  <block id="a281117ba4499a01fd0ade32f8979949" category="cell">FabricPool 自动将冷数据降级至低成本对象存储</block>
+  <block id="2848c163a6043ea1f00bf7edc976aa87" category="cell">多租户</block>
+  <block id="ba741ee53f4b296f2df026dd5fe8a7ac" category="cell">共享命名空间存在数据泄露风险</block>
+  <block id="feee486524ac4a5679235839bbacb721" category="cell">专用 ONTAP SVM 强制执行严格的租户隔离</block>
+  <block id="4c944d3babf0c11e0a8ef5a00cb956e1" category="cell">工作负载广度</block>
+  <block id="8ac564388b83db531519389b2b642251" category="cell">用于训练和推理的单独堆栈</block>
+  <block id="f937c49bea8fff69ac4b5ed60b58b058" category="cell">跨越整个 AI 生命周期的单一统一架构</block>
+  <block id="e56652c10344842fa403276a0de9a045" category="section-title">1.6 业务案例</block>
+  <block id="f72249920c2224a16f44d80ac0d5fc08" category="paragraph">GPU 计算通常是人工智能基础设施预算中最大的资本支出。每小时集群闲置等待数据都是直接、可量化的财务损失。NetApp 确保正确的数据在正确的时间位于正确的层级——自动实现——从而提供更高的 AI 吞吐量、更低的 TCO，以及可从 POC 扩展至企业级生产环境而无需重新设计的架构。</block>
+  <block id="fa30115fda1775ba88ac241fd93f6e65" category="section-title">1.7 主要优势概览</block>
+  <block id="d0b37cb641df70f32a642387802f2cee" category="cell">优势</block>
+  <block id="94be02d643758bfa7b4b21a510d1a6a6" category="cell">统一编排</block>
+  <block id="a1fbdd89820ff621e23b915af1e53f96" category="cell">单个 DAG 跨越摄取→存档</block>
+  <block id="58a12568a29455f1e6c4c671128ca96c" category="cell">存储层灵活性</block>
+  <block id="c10fd389708ade1822685f5fe937ef49" category="cell">通过配置按运行选择 S3 或 LustreFS</block>
+  <block id="23828ef6b1a77c9d31b240e4513a8e41" category="cell">降低再培训成本</block>
+  <block id="5aa161db33f428b8e37509b5db8a9cf4" category="cell">更快的恢复</block>
+  <block id="ffbc9ea1d26376e142ceb18b61829a7f" category="cell">基于检查点的训练恢复</block>
+  <block id="ba4ceb83f1556ce344adb490200c7dbd" category="cell">完整沿袭</block>
+  <block id="3c97cc6669c4bdd49a02b70f177edb53" category="cell">清单、有效配置日志、归档记录</block>
+  <block id="95222ee03ecb550b4f0eec38d6d64a62" category="cell">无存储锁定</block>
+  <block id="b2e35ad59b4bb70eed61139aac911c4c" category="cell">多协议：NFS、S3、Lustre</block>
+  <block id="5205ee5c3cf4ceb45857fbf87d683007" category="cell">GPU 利用率</block>
+  <block id="120c2ba53c02a73d0c091c25ebdd398d" category="cell">分层存储保持计算供给，避免 GPU 空闲成本</block>
+  <block id="861aec82df0b2a13926d296e7b029f3a" category="cell">成本优化的保留</block>
+  <block id="290ac09971ce1b8a6839f8da5b5f05fd" category="cell">FabricPool 将冷数据自动分层至对象存储</block>
+  <block id="3f19c11eae3d13d04b540722f85582a0" category="doc">4.NetApp、第三方和开源技术组件</block>
+  <block id="b6dcf455b9fa42f399a66f285e7b688f" category="cell">解决方案中的角色</block>
+  <block id="9358ca4c012b59a024ddbb5b722f35a0" category="cell">S3 兼容的原始数据摄取和归档对象存储层</block>
+  <block id="ee2abebc0a5895ff78961b897c3ef778" category="cell">NetApp ONTAP NAS 存储桶/NFS</block>
+  <block id="51128678215bc5d324d4824ef7148e3f" category="cell">准备好的数据层；NFS 源导出在数据移动前由 XCP 预检验证</block>
+  <block id="df2c24964ca3e99761acc48b2c8a75c9" category="cell">NetApp ONTAP S3</block>
+  <block id="e3c349dc1703c11cb0c6f097cea36ea2" category="cell">可选的 XCP 训练数据和模型工件目标</block>
+  <block id="9c99b7e4f17faaddd382536cc33831fa" category="cell">高吞吐量数据移动引擎；复制到 S3 或 LustreFS</block>
+  <block id="2e985af49c448d15c7b99987586e6b15" category="cell">NetApp FabricPool</block>
+  <block id="2ebded1238cad7357683cd6182401933" category="cell">针对 ONTAP NAS 准备好的数据和存档相邻数据的可选分层，以优化成本</block>
+  <block id="251ccba882c38c898898d034e841e822" category="cell">LustreFS （NetApp 集成）</block>
+  <block id="8016f6749c8b283bc54089843fca052b" category="cell">用于训练层的高性能并行文件系统</block>
+  <block id="3de5adf532651c47316fb407c325149a" category="cell">NetApp Console（可选）</block>
+  <block id="95e92f499ec473a09086b45df56b5849" category="cell">ONTAP 和 XCP 资源的扩展监控/可观察性</block>
+  <block id="6fde748d0b0960b0f95344dfecc8def0" category="cell">ONTAP Snapshot/备份</block>
+  <block id="4e3da5fe1a47960251b7d12f30074177" category="cell">ONTAP NAS 层中已准备好的数据的时间点保护，独立于管道</block>
+  <block id="c28f738adc899ace2d4f137e4267ba3a" category="section-title">4.1 NetApp XCP — 核心价值</block>
+  <block id="921f8925d86c00ec607dc42645c02335" category="paragraph">XCP 是将数据位置与计算位置分离的移动层。单个配置开关<block ref="4674a08755fd498fb7f7b950ac4069cd" prefix="(" category="inline-code"></block>）确定准备好的数据和模型工件是否存储在 NetApp ONTAP S3 或 LustreFS 高性能层中，其中<block ref="b40e4f0b6e8f3138e6ccde4cb7ae520c" prefix=" " category="inline-code"></block>、<block ref="24cf8a9f2a179bf0692d4ab1650b014d" prefix=" " category="inline-code"></block> 和<block ref="6202f2dbb43be62721979683c867ba8c" prefix=" " category="inline-code"></block>自动读取和写入相同的目标位置。</block>
+  <block id="a04d903d0d35d58a911d18b2b162881b" category="section-title">4.2 第三方和开源技术组件</block>
+  <block id="261addf78c7b2c961032b3dd08ba0b1f" category="cell">目的</block>
+  <block id="8a477c8e4b272f08be11fa159afd8f72" category="cell">DAG编排、重试、XCom任务通信、调度</block>
+  <block id="2a867b5e713285837efabc1785438e91" category="cell">Apache Spark</block>
+  <block id="369c300b9e56dca1b93beb2fbfd4f1f9" category="cell">可选的分布式转换引擎，用于<block ref="392989018ea1a795a5a4c97dcb3d88f3" prefix=" " category="inline-code"></block></block>
+  <block id="9cf0a38dd90d8485b2e4d6ab84028392" category="cell">Delta Lake / Apache Iceberg</block>
+  <block id="e1e688630f4ecefd63fbca5069abfb73" category="cell">用于准备表格数据的可选 lakehouse 表格格式</block>
+  <block id="71959c0ad74ee7d36352e285ca94781c" category="cell"><block ref="b7b62baea58e5fea5468057ec3993b06" prefix="" category="inline-code"></block> （表格）和 <block ref="a68d7492b61d2cfc21ad2d9da3ba249a" prefix=" " category="inline-code"></block> （文本，增量）</block>
+  <block id="48755b0fca2aa85d928ab5590eebf472" category="cell">Airbyte / Apache NiFi</block>
+  <block id="f81fe8adbe54a41de76dc77a1dbe703d" category="cell">可选的摄取连接器，位于<block ref="392989018ea1a795a5a4c97dcb3d88f3" prefix=" " category="inline-code"></block>之前</block>
+  <block id="011f2aff188ee1130fd4ce8da237a14a" category="cell">用于 StorageGRID、ONTAP NAS 存储桶和 ONTAP S3 交互的 AWS S3 兼容 SDK</block>
+  <block id="5089f79c96b1cd9cdecdeaddcd1e71b7" category="doc">9.操作指南</block>
+  <block id="58c9d6f4b87763d2e5bc2b354160eb31" category="paragraph">本指南涵盖日常执行、监控、事件分类、培训恢复、存档验证、容量调整和数据保护。将其与第 8 节中的配置场景结合使用，以在本地、ONTAP S3 和 LustreFS 培训模式下一致地运行相同的管道。</block>
+  <block id="344af90fb825e9d37eea0ac3e3353033" category="section-title">9.1 执行演练</block>
+  <block id="b1a83eeccc0e6232e21054e7a1a55efa" category="paragraph">通过<block ref="e59e6f48ee59b344987bec71a10ad326" prefix=" " category="inline-code"></block>使用<block ref="99dfd056f67cd45b069217c19bb4f726" prefix=" " category="inline-code"></block>有效载荷触发运行。该脚本提交一个唯一命名的手动运行，轮询直到其达到终止状态，并在可用时打印失败任务的本地日志尾部。每个主要任务在启动时发出一条<block ref="7d6b979c2c06708bf14b5ef145e72a76" prefix=" " category="inline-code"></block>记录，以便操作员可以验证已评估的配置，而不是仅依赖提交的有效负载。</block>
+  <block id="e833547b416d9863e9b0a011fc5685be" category="section-title">9.2 监测和可观察性</block>
+  <block id="1ef11bd9d61d2f3c2191a9612c6fb7b8" category="paragraph">在 Airflow UI 或 CLI 中监控 DAG 状态，并将其与运行 ID 和<block ref="f8fa1cd8b7e66ffd748bc457b500b439" prefix=" " category="inline-code"></block>相关联。防护日志对 grep 友好：<block ref="a97739f1cca9a4ae927a6fd7173ecf69" prefix=" " category="inline-code"></block>、<block ref="00905a154705190882f65e1f06c87086" prefix=" " category="inline-code"></block>、<block ref="ca1f0e49174d17af28c314531c2cd62f" prefix=" " category="inline-code"></block>和<block ref="f1115409130881e65ad486b84468cc2d" prefix=" " category="inline-code"></block>。查看这些条目，以验证每次运行的转换引擎、选定的 XCP 目标、训练源和检查点重用决策。</block>
+  <block id="bfcef5de55997145107af731a049adb0" category="section-title">9.3 故障排除快速参考</block>
+  <block id="5ab2bd89333cc2f0a67d79dbb22af2e6" category="paragraph">使用此表将常见任务故障与首要纠正措施对应起来。在重试运行之前，请先解决源连接和挂载问题；在未纠正无效配置或不可用端点的情况下重试将重现相同的故障。</block>
+  <block id="9a717b6435e24f212d740a3a9a281b5d" category="cell">症状</block>
+  <block id="4dbfdac6a5d3d06ff050267af6613643" category="cell">可能的原因</block>
+  <block id="b5a4b64b2aa505bd7c11f79b8a9f458d" category="cell">解决方法</block>
+  <block id="33a00b8baec47c50f62ef82c248f6a36" category="cell"><block ref="97742e99cd3474b025ff64e50724ced1" prefix="" category="inline-code"></block></block>
+  <block id="ecbc8cb8270ab1e9472ca045861bcecc" category="cell">缺失/不正确<block ref="67920c3d3dc2fcbbb0511988f98ac5d5" prefix=" " category="inline-code"></block>，位于<block ref="c0c7a5ec9a483e3ad0b879fd4fd64242" prefix=" " category="inline-code"></block></block>
+  <block id="fd3d72ca8f1f3d726f4f976f29aafd3c" category="cell">验证配置文件名称和凭据映射</block>
+  <block id="a9732916b88b4157a9e1c084fbb4fb9a" category="cell"><block ref="8bb6a81f51fc9005cd498a4b7021da64" prefix="" category="inline-code"></block></block>
+  <block id="65156bc4dd99209e777e9d7978069848" category="cell">LustreFS 未挂载或错误<block ref="d4baa9abe0f21e414ec3b460845aa4f2" prefix=" " category="inline-code"></block></block>
+  <block id="95be8136f503c255725244850fd4e9c8" category="cell">使用<block ref="81b19feab9a1d6c2bbeb4cdd67a970a9" prefix=" " category="inline-code"></block>验证文件系统类型；正确路径</block>
+  <block id="1f70d8ba1c856f7e05780ca92d22103f" category="cell"><block ref="6d946f3f506abddaa380e20122813731" prefix="" category="inline-code"></block></block>
+  <block id="982796a196dba98b181c6e562f56e5fd" category="cell">原始 S3 前缀中缺少文本 JSON</block>
+  <block id="f41a30049bf0df0b758e4b25452e857a" category="cell">上传<block ref="e259ccfa53a0b8b1915afd0b147122c5" prefix=" " category="inline-code"></block>,<block ref="2ca834a656a179410acd72087d3e1bd5" prefix=" " category="inline-code"></block>,<block ref="7d5571305a06a1f22015a0962bc6784e" prefix=" " category="inline-code"></block></block>
+  <block id="f48a3d71866d5eb2993f22dcc05b00b8" category="cell">预检退出代码 1</block>
+  <block id="ba43630d21c570f1cd6e64e1d418df84" category="cell">验证<block ref="70fe17e89c62ccb2692c96e9d32b9aa3" prefix=" " category="inline-code"></block>连接和主机/用户</block>
+  <block id="d80ed669ba2d0c32dc420026f74ea3a5" category="cell">预检退出代码 2</block>
+  <block id="c79974782ae842bdae69ebb2fcdf195c" category="cell">NFS 路径未导出/不可见</block>
+  <block id="27c4f5f1a686ba7602f58dccf2c3042e" category="cell">验证导出方式<block ref="3cab90b76943426dea69dfbe22624cbb" prefix=" " category="inline-code"></block></block>
+  <block id="1c4a4da7fdd49b75e0e59275df626880" category="section-title">9.4 检查点操作</block>
+  <block id="997fcd55276350ba295657d5da4193a5" category="paragraph">检查点仅适用于<block ref="b40e4f0b6e8f3138e6ccde4cb7ae520c" prefix=" " category="inline-code"></block>。设置<block ref="fc0dbeb2de215f1816783b6d9d045c56" prefix=" " category="inline-code"></block>以重复使用有效的已完成训练结果并跳过冗余模型训练，或使用<block ref="c3ab04d6952eb6a898fd20601002eccd" prefix=" " category="inline-code"></block>在不跳过的情况下验证检查点资格。在初始测试期间或每当训练输入、配置或预期工件发生更改时，请保持禁用重用<block ref="3262d48df5d75e3452f0f16b313b7808" prefix="(" category="inline-code"></block>）。</block>
+  <block id="7148bad0f4e4d9fffd6c48a7586aa289" category="section-title">9.5 手动归档操作</block>
+  <block id="bfebebbd0b2abef16676b0e7cf93b9f7" category="paragraph">设置<block ref="9b01afe752758ca1490be1a65ae10ec7" prefix=" " category="inline-code"></block>并有意识地选择<block ref="2878a1b91d2fb362479266e9dec90bdc" prefix=" " category="inline-code"></block>。当治理要求在训练成功后立即使用核心模型基线时，使用<block ref="b40e4f0b6e8f3138e6ccde4cb7ae520c" prefix=" " category="inline-code"></block>；当存档必须包含最终预测时，使用<block ref="6202f2dbb43be62721979683c867ba8c" prefix=" " category="inline-code"></block>。选定了<block ref="b40e4f0b6e8f3138e6ccde4cb7ae520c" prefix=" " category="inline-code"></block>的运行在存档分支之后继续进行微调和推理；它只是不会存档其后续输出。验证运行标记的 StorageGRID 前缀下的上传内容，并查看<block ref="1421d24f791396da38c8f28c327ad0fc" prefix=" " category="inline-code"></block>日志，以了解所选阶段、找到的文件和上传计数。</block>
+  <block id="277f7f3bc086a0076576bc55397c3cfa" category="section-title">9.6 缩放指导</block>
+  <block id="4ef0ef404c4c665c9856adf58927e284" category="paragraph">将<block ref="e2dfdfe902add95b4f3a18f63b340ca5" prefix=" " category="inline-code"></block>、<block ref="5257ab466c539326517ed6aa66482386" prefix=" " category="inline-code"></block>、<block ref="dfd5910097d39d53f81cb0f40aae61dc" prefix=" " category="inline-code"></block>和<block ref="1570a0563cfe735ca4167b38ba5dd2db" prefix=" " category="inline-code"></block>调整到输入量和服务级别目标。从有界样本开始验证数据形状和路由，然后在 StorageGRID、ONTAP NAS、XCP 和所选训练层具有足够的容量和吞吐量后，使用<block ref="e42719f63a96caa3e2bfeff42587863d" prefix=" " category="inline-code"></block>进行全行运行。</block>
+  <block id="3fb50352d1144e419a176247348db0f3" category="section-title">9.7 备份和恢复</block>
+  <block id="98db08d8a0a0bb1eaedc818218c749e6" category="paragraph">使用 ONTAP 快照和备份保护 ONTAP NAS 准备好的数据桶。将 StorageGRID 保护和保留策略应用于原始和存档存储桶；存档存储桶独立于管道重新执行而保留历史记录。将这些存储保护与训练检查点记录相结合，以在任务、主机或站点级别中断后恢复正确的运行范围数据和基线工件。</block>
+  <block id="d176998e87fd0c34a006c318cb60e0e5" category="doc">跨 NetApp 存储平台（StorageGRID、ONTAP 和 E-Series）简化 AI 管道</block>
+  <block id="f0b928c93dad631e98c796070142bf95" category="paragraph">这种经过验证的架构呈现了由 Apache Airflow 编排的受管理、存储层感知的 AI 数据管道。解决方案从 NetApp StorageGRID 提取原始表格和文本数据，在 ONTAP NAS 存储桶上准备确定性数据集和清单，并根据运行时配置使用 NetApp XCP 将准备好的数据移动到 NetApp ONTAP S3 或 LustreFS。然后，它训练并逐步微调 scikit-learn 模型，生成预测，对成功的训练输出设置检查点，并将模型、指标、清单和预测证据归档到 StorageGRID。该架构提供可重现的执行、可配置的存储放置、故障防护、基于检查点的恢复以及跨 AI 生命周期的可审计溯源。它适用于需要跨 NetApp 存储层 AI 管道可重复部署和验证模式的架构师、数据工程师、机器学习工程师和基础设施团队。</block>
+  <block id="f61d6c3e3733db355168b7e1aee6780b" category="section-title">目录</block>
+  <block id="87833058f2ae21b5c1048667f833a2c4" category="list-text"><block ref="87833058f2ae21b5c1048667f833a2c4" category="inline-link-macro-rx"></block></block>
+  <block id="d7bd91e362787fb482e7c76a1894d678" category="inline-link-macro">解决方案概述、业务价值和客户优势</block>
+  <block id="c1a7b9940ec10f53c08e6a5200e99550" category="list-text"><block ref="c1a7b9940ec10f53c08e6a5200e99550" category="inline-link-macro-rx"></block></block>
+  <block id="b1fcf7691de9d60b17225ed7d159fd6a" category="inline-link-macro">架构概述</block>
+  <block id="5a4c98f148d8f2cca30447a936cf683e" category="list-text"><block ref="5a4c98f148d8f2cca30447a936cf683e" category="inline-link-macro-rx"></block></block>
+  <block id="66828b5e504733532af96e31320ec7d0" category="inline-link-macro">NetApp、第三方和开源技术组件</block>
+  <block id="1751e5e1b79a51ed146ee087f8f6a2f7" category="list-text"><block ref="1751e5e1b79a51ed146ee087f8f6a2f7" category="inline-link-macro-rx"></block></block>
+  <block id="1027742fbeb3907074e7bd75f34c0ab7" category="inline-link-macro">解决方案设计和存储架构详细信息</block>
+  <block id="66d0ea6ecef1b4cb2f1a4a504d47c576" category="list-text"><block ref="66d0ea6ecef1b4cb2f1a4a504d47c576" category="inline-link-macro-rx"></block></block>
+  <block id="3be80a7cacb7f569d25459f784b57866" category="inline-link-macro">使用 NetApp XCP 实现数据移动</block>
+  <block id="1280d7cc2dff24ad5850879f002f878e" category="list-text"><block ref="1280d7cc2dff24ad5850879f002f878e" category="inline-link-macro-rx"></block></block>
+  <block id="b91a41e0b2d6325cbee2868afee8890c" category="inline-link-macro">部署架构</block>
+  <block id="d29352a8c78acb41359dcdcd685357a4" category="list-text"><block ref="d29352a8c78acb41359dcdcd685357a4" category="inline-link-macro-rx"></block></block>
+  <block id="a0313047032a3a146d6049bc90ffb1bf" category="inline-link-macro">配置参考</block>
+  <block id="ee8a8f154b1502e6137c41bc5340e918" category="list-text"><block ref="ee8a8f154b1502e6137c41bc5340e918" category="inline-link-macro-rx"></block></block>
+  <block id="54443d700c17f38f44c225ccb9215860" category="inline-link-macro">操作指南</block>
+  <block id="ce180cabf5b8db3701ada4db3064d2ec" category="list-text"><block ref="ce180cabf5b8db3701ada4db3064d2ec" category="inline-link-macro-rx"></block></block>
+  <block id="269a49d038b9a8139ab57945408a0197" category="inline-link-macro">安全注意事项、验证和测试</block>
+  <block id="2d028c511f87a856130b8faa1bcad8bb" category="list-text"><block ref="2d028c511f87a856130b8faa1bcad8bb" category="inline-link-macro-rx"></block></block>
+  <block id="fe19e7a395b73341318847148fe453ab" category="inline-link-macro">NetApp 差异化和竞争定位，附录</block>
+  <block id="fd851090582d7d69fc754d5c0fcf3814" category="list-text"><block ref="fd851090582d7d69fc754d5c0fcf3814" category="inline-link-macro-rx"></block></block>
+  <block id="77a4484e0ff253726225ede780910ec0" category="doc">10.安全注意事项、验证和测试</block>
+  <block id="fe47432ca494e9bbb78ee738edb197ef" category="paragraph">此组合部分涉及安全操作 AI 管道所需的控制措施，以及用于证明设计在典型环境中按预期运行的验证活动。管道中使用的相同存储层分离、最小权限访问模型、检查点逻辑和运行范围沿袭，同样为验证计划和操作护栏提供了依据。</block>
+  <block id="63dfc205f269db6d8332a683f451c226" category="section-title">10.1 安全注意事项</block>
+  <block id="81f55c2537337ef7570791ad89e6178e" category="paragraph">安全控制应隔离每个存储层和管道功能，同时保留审核所需的沿袭。对 StorageGRID 原始数据、ONTAP NAS 准备的数据、选定的 XCP 目标和 StorageGRID 存档使用单独的最低权限凭据。加密网络流量，并将所有机密存储在 DAG 定义、示例和 shell 历史记录之外。</block>
+  <block id="c76e3867213cff8946148c6510af0736" category="cell">建议</block>
+  <block id="a1b90cdc7ec76259d651da09ab470ff5" category="cell">凭据管理</block>
+  <block id="2749b06ea1ab6573d6730ea8a09a9949" category="cell">使用 Airflow Connections/Variables 或机密管理器；避免在<block ref="ab705a77421e8c7b3037722d58fe2675" prefix=" " category="inline-code"></block>中使用内联明文</block>
+  <block id="000bc935231021ae0fe6521680ed904e" category="cell">传输中的数据</block>
+  <block id="8da03a5081daf9fd66479f4524a2e808" category="cell">使用启用 TLS 的 S3 端点；在支持的情况下使用加密的 NFS/Lustre 传输</block>
+  <block id="65bd83537129be15c8027ec94bec5bd3" category="cell">访问控制</block>
+  <block id="ab37a13cef2222f883c64cfaa4a66e76" category="cell">将每个角色的 S3 凭据（StorageGRID raw、ONTAP NAS 准备好的数据、XCP 目标、StorageGRID 存档）的范围设置为所需的最低权限</block>
+  <block id="9d438f4fb0a44ca03f194d7170e2c79a" category="cell">Configs 中的 secrets</block>
+  <block id="c8f1b85a0451f65162a724b7b2c43ccf" category="cell">轮换测试期间泄露的任何凭据；将触发脚本/shell 历史记录视为敏感信息</block>
+  <block id="02cd298e74149a3e270da2fd6a626c14" category="cell">审核跟踪</block>
+  <block id="6e44d9613675330c807c5277dbb16dc8" category="cell">依靠数据准备清单、检查点记录和存档清单来获取合规性证据</block>
+  <block id="cb18b9c3368c9bb84abcfbd4a37331dd" category="section-title">10.2 验证和测试</block>
+  <block id="a23db05d2d73e8506c3b5f3393f5f85b" category="paragraph">验证确认管道的可配置行为在其路由、故障处理、数据移动和多文件发现路径中可靠运行。每个验证测试领域均使用实际 Airflow DAG 触发器在代表性环境中执行，并对日志输出和存储清单的正确性进行了验证。</block>
+  <block id="42b970cdb36cee2517da02c632af6945" category="section-title">10.2.1 功能路由验证</block>
+  <block id="2125c8d6e52c8ee7a8a1e5f8acee3582" category="paragraph">此测试区域在<block ref="4cb7fb5c858deba7c9c4234ea87ca5ff" prefix=" " category="inline-code"></block>时验证端到端数据和制品路由。</block>
+  <block id="c917cab995ae8a21f5e3cb1f1791ab83" category="list-text">*目标：*验证数据准备、XCP 移动性、模型训练、微调和推断是否一致使用选定的 XCP 目标<block ref="c0828e0381730befd1f7a025057c74fb" prefix="(" category="inline-code"></block>或<block ref="c1ab44fd888254255acf3ece33dfe88e" prefix=" " category="inline-code"></block>）。</block>
+  <block id="bd8fd2b0dc20b1951dfbf284879948be" category="list-text">*测试过程：* 触发的 DAG 运行，使用<block ref="3b67ce44d0063b3445779bdcdc23a85b" prefix=" " category="inline-code"></block>和<block ref="82f0ef32b20753a5a513103532fa02f2" prefix=" " category="inline-code"></block>。检查 XCom 输出、有效配置日志和存储位置。</block>
+  <block id="f125c73143d174acddedd606c209fad7" category="list-text">*验证结果：*</block>
+  <block id="6e4d848c09492596b8f8fedb49c69538" category="list-text">在<block ref="392989018ea1a795a5a4c97dcb3d88f3" prefix=" " category="inline-code"></block>中，格式化的表格拆分和文本文件已暂存到<block ref="52a995e2bb78ad881a462f83adad1bf9" prefix=" " category="inline-code"></block>下的 ONTAP NAS 准备数据层。</block>
+  <block id="e6e03c876819145cf3f2986b9ec2cf43" category="list-text">在<block ref="7ac288520c3e86dc65075db9af673f9a" prefix=" " category="inline-code"></block>中，准备好的数据集已传输到所选的 XCP 目标，用于下游模型阶段。</block>
+  <block id="4ac01b333d06ed287c11fc18492266a2" category="list-text">在<block ref="b40e4f0b6e8f3138e6ccde4cb7ae520c" prefix=" " category="inline-code"></block>中，从 XCP 目标加载模型输入，并将基线工件（<block ref="07c9091af56a867b94e87b12338934d3" prefix="(" category="inline-code"></block>、<block ref="4f801ad7ef04bc6937f342d5c8231669" prefix=" " category="inline-code"></block>、<block ref="6642fa1c6f2710c44f023b7377e6eeb8" prefix=" " category="inline-code"></block>、<block ref="7ea5e9049cfd7967a4e9e8a1595b8dc2" prefix=" " category="inline-code"></block>）发布回<block ref="0a3ed063fee81c274a5f15dd0f0c41c8" prefix=" " category="inline-code"></block>。</block>
+  <block id="4a22119382245302a07506240920f58c" category="list-text">在<block ref="24cf8a9f2a179bf0692d4ab1650b014d" prefix=" " category="inline-code"></block>中，从 XCP 目标实现基本向量化器/分类器工件，进行增量调整，并以<block ref="ec0cc1867b2a3504e6a04ea71043e1b5" prefix=" " category="inline-code"></block>和<block ref="ff6c46df37ea393281f31f41ffe6b679" prefix=" " category="inline-code"></block>的形式发布。</block>
+  <block id="59169420bc28526e1a63ed65ef1e34c7" category="list-text">在<block ref="6202f2dbb43be62721979683c867ba8c" prefix=" " category="inline-code"></block>中，从 XCP 目标实体化了经过调整的文本分类器以及基线回归模型和向量化器，以生成预测。</block>
+  <block id="531c2943eddee706a16875a4c846c495" category="section-title">10.2.2 本地回退和非 XCP 执行验证</block>
+  <block id="60b00f5acc92e2c5c8fad4af40eb045a" category="paragraph">此测试区域验证禁用 XCP 数据移动时的管道行为<block ref="50474986c650a53cd355f0890af7cc07" prefix="(" category="inline-code"></block>）。</block>
+  <block id="711a4ccc5e7a62fe619b967bbe85f759" category="list-text">*目标：*确保管道使用直接本地准备好的数据路径无缝运行，而无需 SSH 连接、远程 XCP 主机或 XCP 凭据配置文件。</block>
+  <block id="14a9ecc98b0e3742f0b032d670fdbfe1" category="list-text">*测试过程：* 触发的管道使用<block ref="50474986c650a53cd355f0890af7cc07" prefix=" " category="inline-code"></block>和默认的 S3/本地路径运行。</block>
+  <block id="16c92c74a439529e358f1ab4222d54fb" category="list-text">XCP 预检和复制任务已安全绕过。</block>
+  <block id="61d5a416385868fb58344cdf6e3543e2" category="list-text"><block ref="b40e4f0b6e8f3138e6ccde4cb7ae520c" prefix="" category="inline-code"></block>、<block ref="24cf8a9f2a179bf0692d4ab1650b014d" prefix=" " category="inline-code"></block> 和 <block ref="6202f2dbb43be62721979683c867ba8c" prefix=" " category="inline-code"></block> 直接从本地准备好的数据目录和本地发布的工件中读取。</block>
+  <block id="d0d704515aad79c5ce1a1d03ee993860" category="list-text">已验证禁用 XCP 时未发生 XCP S3 凭据解析或 SSH 预检错误。</block>
+  <block id="a47bfbe77e53897d42f49c754a9c7121" category="section-title">10.2.3 性能和层级比较（ONTAP S3 vs. LustreFS）</block>
+  <block id="3de4adc3a64b75596d60149266021a7f" category="paragraph">此测试区域评估 ONTAP S3 对象存储和 LustreFS 并行文件系统层之间的 I/O 延迟、发现开销和训练吞吐量。</block>
+  <block id="40f2ed03d15b073ecad4c8ae72733a82" category="list-text">*目标：*量化使用 LustreFS 的 E-Series 与使用 ONTAP S3 活动训练层的 ONTAP AFF/AFX 的性能特征。</block>
+  <block id="80b25a3669c326e4cb9b3d29a9cbac8b" category="list-text">*测试程序：* 测量文件发现时间、训练数据集加载延迟以及跨相同数据集大小（14,400+ 行、多文件文本/表格输入）的工件发布/实体化持续时间。</block>
+  <block id="157219a3b20f577c7c24e46769d8af13" category="list-text">*LustreFS Tier：* 在模型训练期间，表现出更低的文件发现开销和更快的随机访问读取延迟，使其成为高文件数量、GPU 密集型并行训练工作负载的理想选择。</block>
+  <block id="3a0a502d0b9e1b177efe2720b5b1b826" category="list-text">*ONTAP S3 Tier：* 通过更简单的多协议管理提供高吞吐量，使其成为注重成本、弹性访问的活跃存储的最佳选择，而无需客户端文件系统挂载。</block>
+  <block id="e043a5ee8c5a66a880c0084283038997" category="section-title">10.2.4 故障恢复和训练检查点验证</block>
+  <block id="97eede2c11ae797cd6849a8e487229de" category="paragraph">此测试区域验证范围限定于<block ref="b40e4f0b6e8f3138e6ccde4cb7ae520c" prefix=" " category="inline-code"></block>的检查点恢复系统。</block>
+  <block id="06e7cc167cbd4ae0ddedd314df434cb1" category="list-text">*目标：*验证管道恢复是否能准确检测到之前成功的训练运行并跳过冗余计算，同时保留工件完整性。</block>
+  <block id="2b5c4a64046e2486c337e4c5fd5f53a9" category="list-text">*测试程序：*</block>
+  <block id="5a7acf08448c4163206b370409643f2a" category="list-text">使用<block ref="e00be78ee16e63c2f21334aadbf4b09f" prefix=" " category="inline-code"></block>和<block ref="8f6596c838940b2a315665d30cf97bcf" prefix=" " category="inline-code"></block>运行管道。</block>
+  <block id="25fad48a00cf38a3397423df93ace0d0" category="list-text">使用 <block ref="6014d03cea9fffcf77cc620ce64c4f8e" prefix=" " category="inline-code"></block> 模拟任务失败或重新执行。</block>
+  <block id="7e7445ceb0cdede991d57602b85663d4" category="list-text">已测试<block ref="c3ab04d6952eb6a898fd20601002eccd" prefix=" " category="inline-code"></block>和<block ref="3262d48df5d75e3452f0f16b313b7808" prefix=" " category="inline-code"></block>重复使用模式。</block>
+  <block id="6e9c1bcd34c62188cfb51d2796ed955e" category="list-text">当设置了<block ref="457fc07af08397af0e5d5649787fcc1b" prefix=" " category="inline-code"></block>且有效的检查点 JSON + 所有核心工件均存在于 S3/LustreFS 中时，<block ref="b40e4f0b6e8f3138e6ccde4cb7ae520c" prefix=" " category="inline-code"></block>立即退出并做出决策<block ref="81af5ad2e3428ff2033f884b232187e7" prefix=" " category="inline-code"></block>，记录<block ref="c66f769ad92d5497fc53be627b7867f1" prefix=" " category="inline-code"></block>。</block>
+  <block id="ac1fffb343a5fe70f80877a793f9d2ce" category="list-text">下游<block ref="24cf8a9f2a179bf0692d4ab1650b014d" prefix=" " category="inline-code"></block>和<block ref="6202f2dbb43be62721979683c867ba8c" prefix=" " category="inline-code"></block>成功具体化了已验证的检查点工件。</block>
+  <block id="79e2dd997b96c9a4924137e71f1f38c9" category="list-text">当<block ref="c3ab04d6952eb6a898fd20601002eccd" prefix=" " category="inline-code"></block>设置后，守卫在不跳过训练的情况下验证了工件是否存在。</block>
+  <block id="2714ddd3d88d3b61fa74f509382b5625" category="section-title">10.2.5 可扩展性和多文件数据集验证</block>
+  <block id="82d0af427e547090fd3a576a3beac4b2" category="paragraph">此测试区域验证跨大型、多文件表格和文本数据集的管道可扩展性。</block>
+  <block id="a343ad781aad534de482b25312255ef4" category="list-text">*目标：* 确认自动数据集发现、Spark 转换引擎执行和 Lakehouse 表格式支持<block ref="63bcabf86a9a991864777c631c5b7617" prefix="(" category="inline-code"></block>和<block ref="46ebfdc1519946f436cd1081b525d98f" prefix=" " category="inline-code"></block>）。</block>
+  <block id="63c8c2896e32363f52fda9fe16f3f460" category="list-text">在 StorageGRID 原始前缀下对数十个 CSV/Parquet 文件进行摄取和准备（<block ref="d9073f930b78a3eb9d11fa2659a09dca" prefix="(" category="inline-code"></block>）。</block>
+  <block id="457175968aa4949a0e9c9b06372e31f3" category="list-text">测试了使用<block ref="ea8041c6af489a1a25b1a095f9ff8da1" prefix=" " category="inline-code"></block>的显式文件选择与自动全文件发现<block ref="e42719f63a96caa3e2bfeff42587863d" prefix="(" category="inline-code"></block>）。</block>
+  <block id="437dc0183488713975e2e2d7f5db49f5" category="list-text">已使用 PySpark 与<block ref="74f510566296e4855844c01c925b6162" prefix=" " category="inline-code"></block>和<block ref="1fa9f2eb30fa2c5d9b6079c7cad25603" prefix=" " category="inline-code"></block>执行准备。</block>
+  <block id="776d98f3ae221855c0bcb1a4619e30cc" category="list-text">Spark 分布式准备成功提取、过滤、拆分和格式化大型多部分表格数据集。</block>
+  <block id="5b9361d0c6e6918d938060c3ab911711" category="list-text">自动发现准确识别了所有有效的表格 CSV/Parquet 对象，同时忽略非表格伪影。</block>
+  <block id="8e250ea9ebd6bb5753bbb0beda74df19" category="list-text">Delta Lake 和 Iceberg 表格式均已正确创建并注册于<block ref="c14d9bf81a1758ecfa63ad49c7d2ec2e" prefix=" " category="inline-code"></block>下，下游模型训练可发现并读取格式化的分片。</block>
+  <block id="c101166418f16de422fdc9e916353a9b" category="section-title">10.2.6 示例客户评估工作流程、规模假设和验证指标</block>
+  <block id="dde5c7a33bf1328266c1902d3d02d17d" category="paragraph">此工作流程可帮助客户评估设计是否符合其 AI 管道成熟度、数据主权要求和性能目标。从代表性数据集和一次管道运行开始，然后仅在满足每个验收标准后再增加数据量、文件数量、模型复杂性和并发运行次数。按<block ref="9fb3dba6eca678cbea9b624e31c94ac5" prefix=" " category="inline-code"></block>记录结果，以便 ONTAP S3 与 LustreFS 之间的比较使用相同的输入数据和配置。</block>
+  <block id="bd900915317c283ac797c4873d96019d" category="cell">评估步骤</block>
+  <block id="79845a58c9ab4daacfc2a4d221d50c6d" category="cell">估算假设/决策</block>
+  <block id="4d6fe485f2affa54c54a694495880206" category="cell">验证指标和验收证据</block>
+  <block id="9c5ac97d361fa6741e0292e07adbe33a" category="cell">1.建立基线</block>
+  <block id="254a39edfbe41eb645a6fe6423ca5cd8" category="cell">在有界样本上使用 <block ref="1022552a06ee5264e0e7db7678d9ce04" prefix=" " category="inline-code"></block> 运行 Python 准备路径。</block>
+  <block id="9b1c38df606f84777ee337a5adecfc53" category="cell">使用第 7.1.1 节中的参考验证环境作为初始功能基线。</block>
+  <block id="efd05005cf2bf66077efa079099e6083" category="cell">DAG 成功完成；输入行和输出拆分计数；模型指标；任务持续时间；CPU、内存和本地磁盘利用率。</block>
+  <block id="cf594a6060dfd71bf42ab1d484ee1fa2" category="cell">2.验证数据主权</block>
+  <block id="efbbc0ecf77afa125d5a3339b080d92e" category="cell">将原始数据、准备好的数据、活动培训数据和存档保存在已批准的存储端点和区域中。按层级查看凭据和保留策略。</block>
+  <block id="3c92230c7a2bf21b4bf7f8dd58b6685b" category="cell">在移动数据之前，定义允许的位置、访问角色、加密要求和保留策略。</block>
+  <block id="4b3581c3b4d2b761346bc0493b861b0f" category="cell">记录在有效配置和清单中的端点、存储桶、前缀和区域；最低权限访问验证；存档和删除策略证据。</block>
+  <block id="87f897e410ec0df988b9d0f587eaf4f3" category="cell">3.验证数据移动性</block>
+  <block id="5c7af2c0a5e44e41df921503ddf11ca2" category="cell">启用 XCP 并将相同的准备运行复制到 ONTAP S3，然后重复到 LustreFS。</block>
+  <block id="9f021aab6da71547f565e6029b1fc803" category="cell">确保为准备好的运行、工件、工作空间和并发运行提供 10 GbE 连接和足够的目标容量。</block>
+  <block id="3bd1ad7c253e4ed8f4229d76aeabceef" category="cell">XCP 完成状态；已复制的字节和文件；复制持续时间和吞吐量；源/目标文件计数和校验和或清单比较；预检成功。</block>
+  <block id="a57ff9b8aeb7efe08863c2aa7ae712b7" category="cell">4.验证培训层级匹配度</block>
+  <block id="94397da248572ff2c81df7d1ddaf8f51" category="cell">使用相同的数据集和模型设置对每个选定目标进行训练、微调和推断。</block>
+  <block id="28b8b22225539b1abb0d1785fc6b0585" category="cell">将 ONTAP S3 用于基于对象的工作流；当并行训练 I/O 或高文件数有此需要时，将 E-Series 与 LustreFS 配合使用。</block>
+  <block id="b668662ca4247f75201afa6b47691bdc" category="cell">数据集发现和加载时间；训练、微调和推理持续时间；工件发布/实现持续时间；CPU/GPU 利用率（如适用）；模型质量一致性。</block>
+  <block id="7e0cf315d3e99839efee2879f7bd8d20" category="cell">5.验证规模和恢复</block>
+  <block id="212e6ce3bdb6463825ae2fe3dc442344" category="cell">增加<block ref="0188f3f091ff883d0c9bf4fd73e8f6af" prefix=" " category="inline-code"></block>到所有行，增加文件数量和并发运行，然后测试检查点重用和存档。</block>
+  <block id="b4550a8276424f75ae50bd8093cec60d" category="cell">保留的运行范围数据集和工件的大小容量，加上增长空间；为 Spark 和并发 Airflow 任务配置 CPU 和内存。</block>
+  <block id="6e17cd5c9febdb1140939b313158ef5a" category="cell">端到端运行时间；成功运行率；队列时间；检查点恢复决策和运行时间；存档完整性；每次运行的存储增长；恢复时间目标 (RTO) 达成情况。</block>
+  <block id="3a2f5d1bd1ac61faad5440ebeb59c963" category="paragraph">在开始评估之前，客户应定义端到端运行时间、XCP 吞吐量、训练数据加载时间、最大并发运行数、恢复时间和存储保留期的定量目标。应将测量基准和每个扩展测试与这些目标进行比较，以确定架构是否满足预期的工作负载和运营要求。</block>
+  <block id="4ead30b83aa62f168161c1b50379049d" category="doc">5.解决方案设计和存储架构详细信息</block>
+  <block id="a076198aa499d107d246bf95085dfa52" category="section-title">5.1 设计原则</block>
+  <block id="6715f465fe1e34f3d25b02ac9e516520" category="paragraph">代码更改的配置；带有类型化合约的明确阶段边界；一致的工件路由；带有可操作错误的快速失败验证；存储层中立性。</block>
+  <block id="36ee8823744267868da8874590b074bc" category="section-title">5.2 阶段设计总结</block>
+  <block id="64c6da2436465d11573858d46056b95d" category="cell">阶段</block>
+  <block id="89b338a49062f34d2599838abe19a332" category="cell">设计摘要</block>
+  <block id="1f715e306a8c1a0a9dbe74addb6c07ae" category="cell">载入</block>
+  <block id="18ad907a09491f2f015adc24ccf9bc0b" category="cell"><block ref="a9ba0ac6818f785f16c4ec33a68daae2" prefix="" category="inline-code"></block> selects<block ref="8152603d62286c8bf3a5e38e9783e25a" prefix=" " category="inline-code"></block>、<block ref="334c4a4c42fdb79d7ebc3e73b517e6f8" prefix=" " category="inline-code"></block>、<block ref="b49fd71c8cebb94efe280affb9a31c4c" prefix=" " category="inline-code"></block>、或<block ref="af844fc364e7f6a693732ee729fa8435" prefix=" " category="inline-code"></block>；返回标准化元数据</block>
+  <block id="5cb83e5ef3cd25eb53fa55d635a7758f" category="cell">数据准备</block>
+  <block id="5ca82b70c6e84daeacbbcc95fb5a97cc" category="cell">发现/接受原始 StorageGRID 表格键；规范化 Airbyte/普通 CSV；生成确定性训练/验证/推断拆分；将运行标记的准备数据前缀和清单写入 ONTAP NAS 存储桶</block>
+  <block id="437df779f37b464d6542801e9e85079c" category="cell">数据移动性 (XCP)</block>
+  <block id="ce69da3527c06924ecd3f666a8c0c3d7" category="cell">从 ONTAP NAS NFS 导出复制准备好的数据；<block ref="4674a08755fd498fb7f7b950ac4069cd" prefix=" " category="inline-code"></block>驱动 XCP 目标和训练读取路径</block>
+  <block id="1dc3b66849b234d8d054492be9525186" category="cell">本地或从 XCP 目标（S3/LustreFS）进行训练；多格式（CSV/Parquet/JSON）发现</block>
+  <block id="9e6aea3c5e45188f0b77ae5263a5846d" category="cell">微调</block>
+  <block id="1c7b160ed248c0a13aea1636579b9af8" category="cell">从 XCP 目标实现基本模型；<block ref="166675adabd3faa5d0d69a56aa736d81" prefix=" " category="inline-code"></block>扩展类集；重新发布优化模型</block>
+  <block id="b478c982042746e1a072bf65039e48ca" category="cell">从相同 XCP 目标具体化调优后的工件；可配置的拆分/文本范围</block>
+  <block id="7e8f3341aa068c38408847eb10200602" category="cell">检查点/恢复</block>
+  <block id="8aa6d9a54d875dec0b0097004a2f3080" category="cell"><block ref="b40568a4ec8e470c8b057f66ccf98f4f" prefix="" category="inline-code"></block> 保留完成记录；<block ref="249dd87402612547d77c4e73f823e1d1" prefix=" " category="inline-code"></block> 在后续运行中验证/重复使用</block>
+  <block id="2da31bb10b4f6940bab26ea97a8f5b1c" category="cell">存档</block>
+  <block id="8dfcb92f708e31a9bf71f8aa077e994d" category="cell"><block ref="b40e4f0b6e8f3138e6ccde4cb7ae520c" prefix="" category="inline-code"></block> 立即归档核心训练模型；<block ref="6202f2dbb43be62721979683c867ba8c" prefix=" " category="inline-code"></block> 等待预测并归档完整结果集；可选的 XCP 输入包含和原始文件夹清理</block>
+  <block id="9f6ec9a20a962f4bf3cdb6c9f0517e22" category="section-title">5.3 配置驱动理念</block>
+  <block id="61ee06bb1a4a978e5b30eeb9b9d77972" category="paragraph">所有非秘密存储、引擎和行为选择都是<block ref="ab705a77421e8c7b3037722d58fe2675" prefix=" " category="inline-code"></block>参数——在 S3 和 LustreFS 或 Python 和 Spark 之间切换无需修改代码，而由 Airflow 管理的秘密存储负责解析所需凭据。</block>
+  <block id="43570fbc51c014ae495ba791a7d22ab9" category="section-title">5.4 存储架构详细信息</block>
+  <block id="4ae42f0f6bb061b857e581d8a4dd76ff" category="paragraph">存储架构将 AI 生命周期划分为专用层：StorageGRID 保存原始和归档对象，ONTAP NAS 存储桶保存已准备好并加盖运行戳记的数据集，ONTAP S3 或 LustreFS 提供选定的活动训练层。这种分离使源数据、准备好的数据、模型工件和存档证据可独立管理，同时通过共享<block ref="f8fa1cd8b7e66ffd748bc457b500b439" prefix=" " category="inline-code"></block>保留数据谱系。</block>
+  <block id="3a01fa252ae34fbd4a8e9441fcc403d9" category="section-title">5.4.1 存储布局图</block>
+  <block id="537465e529f1badf97edd4384dfe4027" category="cell">逻辑存储路径</block>
+  <block id="c3b6ff3cbd50c0a647e1ed3171d5a844" category="cell">存储的内容/制品</block>
+  <block id="cfd1bea32c3dc7a9298e1ecb938ecdef" category="cell">StorageGRID 原始层</block>
+  <block id="4c41d432287f80b5f384cf8bf88def88" category="cell"><block ref="e31275420c69a315ad06fd478312e8af" prefix="" category="inline-code"></block></block>
+  <block id="e94a53160b3b50582cdac17fd8e8f39d" category="cell">表格CSV部分<block ref="b33a8a61554b4ee27edf10ee5cac3898" prefix="(" category="inline-code"></block>），文本输入<block ref="e259ccfa53a0b8b1915afd0b147122c5" prefix="(" category="inline-code"></block>，<block ref="2ca834a656a179410acd72087d3e1bd5" prefix=" " category="inline-code"></block>，<block ref="7d5571305a06a1f22015a0962bc6784e" prefix=" " category="inline-code"></block>）</block>
+  <block id="401138d65cfa4ee83107bb4fac8e6f72" category="cell">ONTAP NAS 准备就绪层</block>
+  <block id="52e69ea48647d5a0289bd16a1503b26c" category="cell"><block ref="6d30ab26b54af649cd283c72d5970b29" prefix="" category="inline-code"></block></block>
+  <block id="5014424e92a2aba8c353011cf52e1f3b" category="cell">格式化分割<block ref="64a44d2ba35b7c43cefbd4ec6ace291e" prefix="(" category="inline-code"></block>），文本文件<block ref="e1435d95bb4acc31d24ff4a79a692b3b" prefix=" " category="inline-code"></block>，Lakehouse 表<block ref="c14d9bf81a1758ecfa63ad49c7d2ec2e" prefix="(" category="inline-code"></block>Delta/Iceberg）</block>
+  <block id="0d3ad22cbf606577a4cb0e0a66f2d211" category="cell">活动培训层（XCP Dest）</block>
+  <block id="580a66a1f17aadd1ad1ca6e5443e2244" category="cell"><block ref="f200155a0aed4ca0269919dd636cf544" prefix="" category="inline-code"></block></block>
+  <block id="836cb8847ddd0db6b0978c266e152f4f" category="cell">复制的数据拆分，训练的模型二进制文件<block ref="d2ca4b0bccd1ab5e50e8208dfe178d3d" prefix="(" category="inline-code"></block>），评估指标<block ref="60027b9a629942140fbdc73a7646f7d2" prefix="(" category="inline-code"></block>）</block>
+  <block id="4a02e61ad6864f3bfc04161d049395ac" category="cell">StorageGRID 存档层</block>
+  <block id="f107d40230fb42b27e2164e2a8cfa02c" category="cell"><block ref="4dac5612d9ec9e882fb472cd0bc1b789" prefix="" category="inline-code"></block></block>
+  <block id="d7193b10ca33ef0c138cd29c8a147452" category="cell">阶段范围基线或完整模型伪影，预测证据<block ref="ec39d308f2a8d67cdfe4b7f36be6b684" prefix="(" category="inline-code"></block>,<block ref="a77dc6001e3622c0c0d8e54b04451ff2" prefix=" " category="inline-code"></block>)</block>
+  <block id="0b7b1be00659843d581ad5487b6e7665" category="cell">层间沿袭与流程</block>
+  <block id="c8dcf495cca7fecf10540e5eaede66fd" category="cell">原始→准备→活动层→存档</block>
+  <block id="58b230e12ab15f01f7f3f337bfb5a440" category="cell">端到端的数据移动和制品沿袭通过共享<block ref="f8fa1cd8b7e66ffd748bc457b500b439" prefix=" " category="inline-code"></block>跨所有存储层进行关联</block>
+  <block id="813827a4b718f8218840f13fc42ec103" category="paragraph">此图映射跨所有存储层运行的单个管道的逻辑桶和前缀布局：</block>
+  <block id="dd228c56f38e1e7fafdd657d4343ce7a" category="image-alt">单个管道运行的逻辑存储布局</block>
+  <block id="9431ece604f55ab3eb71411430e448b4" category="section-title">5.4.2 存储规模估算指导</block>
+  <block id="b24180cef03e26a329e51a90bfee7e93" category="paragraph">根据每个层的角色和保留策略独立调整其大小。ONTAP NAS 和选定的 XCP 目标必须能够支持并发活动运行，而 StorageGRID 容量主要由原始数据和归档保留需求驱动。在规划峰值管道并发时，请包含临时工作容量和增长余量。</block>
+  <block id="db8e6d43ab4f95f8019db79a1abe73a1" category="cell">规模估算依据</block>
+  <block id="630fe32f14d0d21a78934325b6efb998" category="cell">StorageGRID 原始分段</block>
+  <block id="d9e074a97daf0ce5b461cf42068706ae" category="cell">采集量 × 保留窗口</block>
+  <block id="1e09baff40cea09221cd078bcd3298d2" category="cell">ONTAP NAS 准备好的数据桶</block>
+  <block id="c748d67e44b488190b9c29b5163130ce" category="cell">准备好的数据集大小 × 保留的运行次数</block>
+  <block id="47a7fa4e295bf38ec19fa66ef92a7fd9" category="cell">XCP 目的地（S3 或 Lustre）</block>
+  <block id="71f524b56c9110b0464e341677c065fd" category="cell">峰值并发训练数据集大小 {plus} 模型工件开销</block>
+  <block id="86cbd27b6e6c30b85f585221365bfbac" category="cell">存档分段</block>
+  <block id="b7b56fd894bb9ceef22ce3fc250ec55f" category="cell">保留策略 × 存档阶段选择（model++_++training = 较小；inferencing = 较大）</block>
+  <block id="590f6902df2bf8eec2bf9f8cf1c61f0a" category="section-title">5.4.3 存储性能注意事项</block>
+  <block id="ae76e1567e70e5d23f71f9b9cd706d96" category="paragraph">XCP 目标按运行次数选择<block ref="4674a08755fd498fb7f7b950ac4069cd" prefix=" " category="inline-code"></block>，允许存储性能与工作负载匹配，而不是将每个工作负载强制分配到一个层。对于行数较多的数据集、大量并发读取器或 I/O 密集型训练，请选择 LustreFS。对于性能要求无需并行文件系统的注重成本、弹性访问的工作负载，请选择 ONTAP S3。在任意一种情况下，XCP 都会使数据和模型工件与所选的训练层保持一致。</block>
+  <block id="29602a1d92913856ae69ab34f9161dc2" category="doc">2.解决方案概述、业务价值和客户利益</block>
+  <block id="04ad6fc392728e568f701dec395a3f80" category="section-title">2.1 解决方案说明</block>
+  <block id="1bcd157e7f67855021834a0e22816e05" category="paragraph">该管道实现为 Airflow DAG<block ref="4df7faef846a10d1b392009cede02fd2" prefix=" " category="inline-code"></block>，由任务<block ref="bf7189d19d6e68b3e85680474f1c364f" prefix=" " category="inline-code"></block>、<block ref="392989018ea1a795a5a4c97dcb3d88f3" prefix=" " category="inline-code"></block>、<block ref="0d23a483d4f4e6084bd576dfb5d22a76" prefix=" " category="inline-code"></block>、<block ref="d4bf281557521bbc56e8562f2a79d4b2" prefix=" " category="inline-code"></block>、<block ref="b40e4f0b6e8f3138e6ccde4cb7ae520c" prefix=" " category="inline-code"></block>、<block ref="24cf8a9f2a179bf0692d4ab1650b014d" prefix=" " category="inline-code"></block>、<block ref="6202f2dbb43be62721979683c867ba8c" prefix=" " category="inline-code"></block>、<block ref="9094b028fa14a21915d212b5fb4c5fcf" prefix=" " category="inline-code"></block>、<block ref="7322f5c6abe7430601b1ccc06306e4ca" prefix=" " category="inline-code"></block>和<block ref="5bbf39b317038a7fd1c2007c79f2f56a" prefix=" " category="inline-code"></block>组成。</block>
+  <block id="3bcf4724289c1e921a0463acc4ba0adf" category="section-title">2.2 用例和问题陈述</block>
+  <block id="52b37c7972f8546dc0bcc1a3630b95b4" category="paragraph">客户必须使用来自 StorageGRID 的原始数据定期训练和刷新表格回归和文本分类模型。管道在 ONTAP NAS 存储桶中准备该数据，然后根据每次运行的目标选择，使用 NetApp XCP 将其传输到 ONTAP S3 或 LustreFS 进行训练。</block>
+  <block id="2156fe5452e0914984da2f8d92e39343" category="section-title">2.3 目标客户概况和行业适用性</block>
+  <block id="2082147b4c6347a153e3ad75241d6840" category="paragraph">金融服务（风险/欺诈模型）、制造（预测性维护）、医疗保健（分类/分诊）、零售（需求预测）——任何需要在 NetApp 基础设施上进行受管控、可重复 ML 训练的企业。</block>
+  <block id="98f03c125377947df2a54c91b13d09cb" category="section-title">2.4 解决方案范围和边界</block>
+  <block id="48b51af027c0cda59989ce495e5b4bd9" category="paragraph">*范围内：* 摄取门控、数据准备（Python/Spark）、XCP 数据移动（S3/LustreFS）、scikit-learn 训练和增量微调、推理、检查点、手动归档。*超出范围：* 实时模型服务 API、流式摄取、基于 GPU 的深度学习框架。</block>
+  <block id="e871e8265d4c938a227d6797c521b333" category="section-title">2.5 假设和前提条件</block>
+  <block id="dc1c7b4a53bb5d8c5f3fd175519e1de5" category="list-text">可从 Airflow 访问的 StorageGRID S3 兼容端点，用于原始数据访问和存档。</block>
+  <block id="ca95209e88cdfb9210412231c00c75fa" category="list-text">ONTAP NAS 存储桶可从 Airflow 访问，用于写入已准备好的数据，并通过 NFS 向 XCP 主机公开。</block>
+  <block id="aaa3045b16f276fd095e0771347c478f" category="list-text">NetApp ONTAP S3 兼容端点，当选择 ONTAP S3 作为训练目标时，可从 Airflow 和 XCP 访问该端点。</block>
+  <block id="184589991ab45408aa6cfea87d43b71c" category="list-text">NetApp XCP 已安装，可通过 SSH （Airflow 连接<block ref="70fe17e89c62ccb2692c96e9d32b9aa3" prefix=" " category="inline-code"></block>）访问。</block>
+  <block id="005215fff61604a86b12b2cdc3c36430" category="list-text">当选择 LustreFS 时，LustreFS 客户端已挂载到 XCP 主机上。</block>
+  <block id="579e86188d7575ff34b8d459acca4b91" category="list-text">Airflow 2.x，带<block ref="6686853da3491a56c98917cc5c4ddea2" prefix=" " category="inline-code"></block>、<block ref="3483ff058deda3dad41fa7925fab2dac" prefix=" " category="inline-code"></block>；可选 PySpark &amp;#43; Delta/Iceberg 软件包。</block>
+  <block id="ffcb633e2f3b12689c94bb2ee569e81a" category="section-title">2.6 业务驱动因素</block>
+  <block id="f78bed7e4d9042b3fc6fe3a1a428acaf" category="paragraph">通过增量训练缩短建模时间，降低基础架构成本，消除一次性脚本编写风险。</block>
+  <block id="2aea47512e9b3a06b37f85736d342995" category="section-title">2.7 价值主张摘要</block>
+  <block id="892d0758993f2087606d8215953e37ac" category="paragraph">StorageGRID、ONTAP NAS、ONTAP S3、LustreFS 和 XCP 与 Airflow 编排相结合，可提供存储层感知、可观察、弹性的 AI 管道。</block>
+  <block id="a0088c6108e7e45a440e9b0e3ccabff3" category="section-title">2.8 利益相关者的利益</block>
+  <block id="ac8b4a1f7bd101b66c3b615cdd7a2bdf" category="cell">利益相关者</block>
+  <block id="8c3b0099eed5df08053dc956ae63ee43" category="cell">数据工程</block>
+  <block id="b414ab24dd635dc4c503c4aaa7e3e6dc" category="cell">声明式、参数驱动的准备；自动文件发现；Spark/Delta/Iceberg 支持</block>
+  <block id="d5170d610c4cf9f4c710ca75573b44eb" category="cell">数据科学/机器学习</block>
+  <block id="9edb9ea8ecf532073c0eafe324d3b62e" category="cell">增量微调；跨阶段一致的制品源；可重复的拆分</block>
+  <block id="87727a06ba270d2c9eafe81149c048c4" category="cell">IT运营</block>
+  <block id="098a60ad036a27963f425ac9aae6deeb" category="cell">运行时存储选择；保护/有效配置日志；基于检查点的恢复</block>
+  <block id="1650c4bf68f08634cd219eba44103ccd" category="cell">合规/治理</block>
+  <block id="4684a120a0c62b7d13ef80d0ddce3989" category="cell">清单和存档记录提供可审计的沿袭；可配置的保留阶段</block>
+  <block id="977e4b92e9c67503cdd190ad48929fa7" category="section-title">2.9 TCO注意事项</block>
+  <block id="5c44823756606f9b434544d323004696" category="paragraph">增量微调和检查点恢复可降低经常性计算成本；存储层灵活性可避免为所有工作负载过度配置高性能存储。</block>
+  <block id="7dfe87c319fc151303fa1fd12838f522" category="section-title">2.10 ROI 考量因素</block>
+  <block id="31a1e1054c1f4ad6946f1139fc6ede39" category="paragraph">更快的模型刷新周期，减少手动维护，缩短每次故障事件的恢复时间。</block>
+  <block id="8a5df26a7f8369cf8cdc5ba99e62cf3d" category="sidebar">跨 NetApp 存储平台简化 AI 管道</block>
+  <block id="a69c37005efb30e78d65b6481b870f64" category="sidebar">解决方案概述、业务价值和客户利益</block>
+  <block id="ebd8431a0b14e9588377860f5d21d80b" category="sidebar">架构概述</block>
+  <block id="2584c2a5d0ce11ce02481fe4f9f5b9b2" category="sidebar">NetApp、第三方和开源技术组件</block>
+  <block id="ba805c003296f5beca6876cb586aef5f" category="sidebar">解决方案设计和存储架构详细信息</block>
+  <block id="22487892b8757ebc6e562fbc2dacaea8" category="sidebar">借助 NetApp XCP 实现数据移动</block>
+  <block id="46d93ce059017fe679dc02b4bfab8803" category="sidebar">部署架构</block>
+  <block id="f4ea6a3bf251250dd4aa9cbf64093651" category="sidebar">配置参考</block>
+  <block id="542a293babb1f752a7bc3955516d4d9e" category="sidebar">操作指南</block>
+  <block id="eda25134f7653bbf8614a1931b31992c" category="sidebar">安全注意事项、验证和测试</block>
+  <block id="74cdeb3238b25b8cba8bfeae3d88eefb" category="sidebar">NetApp 差异化和竞争定位，附录</block>
 </blocks>

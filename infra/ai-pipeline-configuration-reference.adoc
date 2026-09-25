@@ -1,0 +1,814 @@
+---
+sidebar: sidebar 
+permalink: infra/ai-pipeline-configuration-reference.html 
+keywords:  
+summary:  
+---
+= 8.配置参考
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+Karthikeyan Nagalingam， NetApp
+
+配置参考描述了控制数据摄取、数据准备、XCP 移动性、训练、检查点和存档的运行时参数。ONTAP NAS 存储桶主要用作可支持性和可移植性的预备数据和 XCP 暂存层。在实时生产使用中，当更符合工作负载和延迟要求时，也可以通过支持 RDMA 的直接访问路径使用相同的预备数据。
+
+'''
+所有运行时行为均通过 `dag++_++run.conf`提供，使同一 DAG 能够服务于不同的源系统、转换引擎、存储目标、恢复策略和归档范围。仅配置所选工作流所需的参数组，将凭据保存在 Airflow Connections 或 secrets 后端中，并将示例用作非生产模板，而非凭据值。
+
+
+
+[[8-1-ingestion-parameters]]
+== 8.1 采集参数
+
+使用这些设置来选择和配置上游摄取机制。 `s3++_++direct` 使用数据准备组中配置的 StorageGRID 原始数据对象；仅当选择了相应的摄取工具时，才需要 Airbyte 和 NiFi 设置。
+
+[cols="20%,>23%,>23%,17%,17%"]
+|===
+| 参数 | 默认 | 必填项 | 描述 | 示例 
+
+
+| `ingestion++_++tool` | `s3++_++direct` | 否 | 选择摄取模式 | `"s3++_++direct"` 
+
+
+| `airbyte++_++api++_++url` | 无 | 仅限 Airbyte | Airbyte API 端点 | `"http://airbyte:8000"` 
+
+
+| `airbyte++_++connection++_++id` | 无 | 仅限 Airbyte | Airbyte 连接 ID | `"connection-123"` 
+
+
+| `airbyte++_++api++_++token` | 无 | 可选 | Bearer 令牌 | `"++<++TOKEN++>++"` 
+
+
+| `airbyte++_++timeout++_++secs` | `30` | 否 | Airbyte 超时 | `60` 
+
+
+| `nifi++_++api++_++url` | 无 | NiFi 专用 | NiFi API 端点 | `"http://nifi:8080"` 
+
+
+| `nifi++_++process++_++group++_++id` | 无 | NiFi 专用 | NiFi 流程组 | `"abc123"` 
+
+
+| `nifi++_++timeout++_++secs` | `30` | 否 | NiFi 超时 | `60` 
+|===
+
+
+[[8-2-data-preparation-parameters]]
+== 8.2 数据准备参数
+
+这些设置控制原始数据访问、准备好的数据输出、输入发现和转换行为。 `s3++_++raw++_*++` 参数指的是 StorageGRID，而代码兼容的  `s3++_++formatted++_*++` 参数标识写入已准备数据、运行标记数据和清单的 ONTAP NAS 存储桶。
+
+*原始 StorageGRID / 准备好的数据 ONTAP NAS 存储桶：*
+
+当 StorageGRID 与 ONTAP NAS 存储桶使用不同的 S3 兼容服务或访问策略时，请配置单独的端点和凭据。通用回退密钥仅在缺少更具体的原始数据或准备好的数据设置时才适用。
+
+[cols="24%,>30%,23%,23%"]
+|===
+| 参数 | 默认 | 描述 | 示例 
+
+
+| `s3++_++raw++_++bucket` | `ai-raw-data` | StorageGRID 原始输入存储桶 | `"bucket1"` 
+
+
+| `s3++_++raw++_++prefix` | `example++_++ai++_++pipeline/raw` | StorageGRID 原始数据前缀 | `"example++_++ai++_++pipeline/raw"` 
+
+
+| `s3++_++raw++_++endpoint++_++url` | 后备链 | StorageGRID S3 端点 | `"http://10.63.150.62:10444"` 
+
+
+| `s3++_++raw++_++access++_++key++_++id` | 后备链 | 原始访问密钥 | `"++<++KEY++>++"` 
+
+
+| `s3++_++raw++_++secret++_++access++_++key` | 后备链 | 原始密钥 | `"++<++SECRET++>++"` 
+
+
+| `s3++_++raw++_++region` | `aws++_++region` | 原始区域 | `"us-east-1"` 
+
+
+| `s3++_++formatted++_++bucket` | `ai-formatted-data` | ONTAP NAS 准备好的数据输出桶 | `"prepnasbucket"` 
+
+
+| `s3++_++formatted++_++prefix` | `example++_++ai++_++pipeline/formatted` | ONTAP NAS 准备好的数据前缀 | `"example++_++ai++_++pipeline/formatted"` 
+
+
+| `s3++_++formatted++_++endpoint++_++url` | 后备链 | ONTAP NAS bucket S3 端点 | `"http://10.63.150.159"` 
+
+
+| `s3++_++formatted++_++access++_++key++_++id` | 后备链 | ONTAP NAS 存储桶访问密钥 | `"++<++KEY++>++"` 
+
+
+| `s3++_++formatted++_++secret++_++access++_++key` | 后备链 | ONTAP NAS 存储桶密钥 | `"++<++SECRET++>++"` 
+|===
+*一般回退：* `s3++_++endpoint++_++url`， `s3++_++access++_++key++_++id`， `s3++_++secret++_++access++_++key`， `s3++_++session++_++token`， `s3++_++verify`， `aws++_++region`， `aws++_++access++_++key++_++id`， `aws++_++secret++_++access++_++key`， `aws++_++session++_++token`。
+
+*输入选择：*
+
+使用显式对象键设置来处理已知的 CSV 输入；否则，任务会在配置的 StorageGRID 原始前缀下发现合格的表格对象。
+
+[cols="24%,>30%,23%,23%"]
+|===
+| 参数 | 默认 | 描述 | 示例 
+
+
+| `s3++_++tabular++_++object++_++keys` | 自动发现 | CSV 密钥的显式列表 | `++[++"raw/demo/a.csv"++]++` 
+
+
+| `s3++_++tabular++_++object++_++key` | 无 | 单个显式CSV密钥 | `"raw/demo/a.csv"` 
+|===
+*转型：*
+
+选择 Python 路径进行轻量级本地准备，或选择 Spark 进行分布式准备。采样和种子可重复地应用于生成的训练、验证和推理拆分。
+
+[cols="24%,>30%,23%,23%"]
+|===
+| 参数 | 默认 | 描述 | 示例 
+
+
+| `transformation++_++engine` | `python` | `python` 或  `spark` | `"spark"` 
+
+
+| `spark++_++required` | `false` | 失败而非回退 | `true` 
+
+
+| `table++_++format` | `none` | `none`/`delta`/`iceberg` | `"delta"` 
+
+
+| `table++_++format++_++required` | `false` | 格式不可用时失败 | `true` 
+
+
+| `sample++_++count` | 所有行 | 行限制（≤0 = 全部） | `14400` 
+
+
+| `seed` | `7` | 可重复的随机种子 | `11` 
+|===
+*Spark:*
+
+这些设置仅适用于 `transformation++_++engine=spark`。它们控制 Spark 进程放置、资源分配、时间限制和可选的 Delta Lake 或 Iceberg 运行时依赖项。
+
+[cols="24%,>30%,23%,23%"]
+|===
+| 参数 | 默认 | 描述 | 示例 
+
+
+| `spark++_++submit++_++bin` | `spark-submit` | Spark 二进制文件 | `"/opt/spark/bin/spark-submit"` 
+
+
+| `spark++_++master` | `local++[*]++` | Spark master | `"local++[*]++"` 
+
+
+| `spark++_++driver++_++memory` | `4g` | 驱动程序内存 | `"8g"` 
+
+
+| `spark++_++executor++_++memory` | `4g` | 执行器内存 | `"8g"` 
+
+
+| `spark++_++timeout++_++secs` | `900`/`7200` | 超时（0 = 禁用） | `0` 
+
+
+| `spark++_++delta++_++packages` | Delta 3.2.0 | Delta 运行时包 | `"io.delta:delta-spark++_++2.12:3.2.0"` 
+
+
+| `spark++_++iceberg++_++packages` | Iceberg 1.5.2 | Iceberg 运行时软件包 | `"org.apache.iceberg:iceberg-spark-runtime-3.5++_++2.12:1.5.2"` 
+
+
+| `spark++_++iceberg++_++catalog` | `local` | Iceberg 目录名称 | `"local"` 
+|===
+
+
+[[8-3-xcp-and-training-destination-parameters]]
+== 8.3 XCP 和 Training 目标参数
+
+在 `enable++_++xcp=true`验证 ONTAP NAS NFS 源、调用 XCP 主机并选择活动训练层时使用此组。 `xcp++_++copy++_++destination`是控制开关：它选择下面的 ONTAP S3 特定或 LustreFS 特定设置，下游模型阶段使用相同的选定层。
+
+[cols="20%,>23%,>23%,17%,17%"]
+|===
+| 参数 | 默认 | 必填项 | 描述 | 示例 
+
+
+| `enable++_++xcp` | `false` | 是，适用于 XCP | 启用 XCP 分支 | `true` 
+
+
+| `xcp++_++copy++_++destination` | `s3` | 否 | `s3` 或  `lustrefs` | `"lustrefs"` 
+
+
+| `xcp++_++nfs++_++source++_++ip` | `10.63.150.159` | XCP 预检 | NFS 服务器 IP | `"10.63.150.159"` 
+
+
+| `xcp++_++nfs++_++source++_++path` | `/prepnasbucket/example++_++ai++_++pipeline` | XCP 预检 | NFS 导出路径 | `"/prepnasbucket/example++_++ai++_++pipeline"` 
+
+
+| `ssh++_++user` | `root` | 否 | XCP 主机 SSH 用户 | `"root"` 
+
+
+| `ssh++_++host` | `10.63.150.178` | 否 | XCP 主机地址 | `"10.63.150.178"` 
+|===
+*S3 目标（以下情况为必填项 `xcp++_++copy++_++destination=s3`）：*
+
+仅为 ONTAP S3 培训路径提供这些设置。配置文件或直接凭据允许 XCP 和模型工件同步逻辑访问所选的 ONTAP S3 存储桶和前缀。
+
+[cols="24%,>30%,23%,23%"]
+|===
+| 参数 | 默认 | 描述 | 示例 
+
+
+| `xcp++_++s3++_++endpoint` | 默认 | XCP S3 端点 | `"http://10.63.150.161"` 
+
+
+| `xcp++_++s3++_++bucket` | 无 | XCP 目标 Bucket | `"trainingbucket"` 
+
+
+| `xcp++_++s3++_++dest++_++prefix` | `example++_++ai++_++pipeline` | 目标前缀 | `"example++_++ai++_++pipeline"` 
+
+
+| `xcp++_++s3++_++training++_++prefix` | `xcp++_++s3++_++dest++_++prefix` | 训练发现前缀 | `"example++_++ai++_++pipeline"` 
+
+
+| `xcp++_++s3++_++profile` | `ontaps3` | 已命名凭据配置文件 | `"ontaps3"` 
+
+
+| `xcp++_++s3++_++profiles` | 无 | 配置文件映射 | `++{++"ontaps3": ++{++...}}` 
+
+
+| `xcp++_++s3++_++access++_++key++_++id` | 无 | 直接密钥回退 | `"++<++KEY++>++"` 
+
+
+| `xcp++_++s3++_++secret++_++access++_++key` | 无 | 直接秘密回退 | `"++<++SECRET++>++"` 
+
+
+| `xcp++_++s3++_++region` | `aws++_++region` | XCP S3 区域 | `"us-east-1"` 
+|===
+*LustreFS 目标（当 `xcp++_++copy++_++destination=lustrefs`时为必填项）：*
+
+仅为 LustreFS 培训路径提供这些设置。源和目标必须在 XCP 主机上挂载并可访问；运行模型阶段的 Airflow worker 也必须可访问目标。
+
+[cols="24%,>30%,23%,23%"]
+|===
+| 参数 | 默认 | 描述 | 示例 
+
+
+| `xcp++_++lustrefs++_++source++_++path` | `/prepnasbucket/example++_++ai++_++pipeline` | XCP 复制源 | `"/prepnasbucket/example++_++ai++_++pipeline"` 
+
+
+| `xcp++_++lustrefs++_++dest++_++path` | `/mnt/lustre/client` | LustreFS 挂载目标 | `"/mnt/lustre/client"` 
+
+
+| `xcp++_++lustrefs++_++training++_++subpath` | `xcp++_++s3++_++dest++_++prefix` | 挂载下的训练子目录 | `"example++_++ai++_++pipeline"` 
+
+
+| `xcp++_++lustrefs++_++newid` | `data++_++prep` 运行 stamp | XCP 作业标识符 | `"20260901++_++120000"` 
+|===
+*文本源行为：*
+
+这些选项控制在 XCP 移动性之后如何找到三个文本数据集。显式键覆盖发现；可以禁用本地回退，以要求文本输入来自所选 XCP 目标。
+
+[cols="24%,>30%,23%,23%"]
+|===
+| 参数 | 默认 | 描述 | 示例 
+
+
+| `xcp++_++text++_++allow++_++local++_++fallback` | `true` | 允许本地文本回退 | `false` 
+
+
+| `xcp++_++text++_++base++_++key` | 自动 | 显式基准文本位置 | `".../text++_++base.json"` 
+
+
+| `xcp++_++text++_++finetune++_++key` | 自动 | 显式微调文本位置 | `".../text++_++finetune.json"` 
+
+
+| `xcp++_++text++_++infer++_++key` | 自动 | 显式推理文本位置 | `".../text++_++infer.json"` 
+|===
+
+
+[[8-4-model-training-parameters]]
+== 8.4 模型训练参数
+
+这些设置选择本地或 XCP 提供的源，限制训练量，并保留可重现的数据排序。启用 XCP 后，训练将读取所选的 ONTAP S3 或 LustreFS 层，并将基线工件发布回同一目标。
+
+[cols=",>,,"]
+|===
+| 参数 | 默认 | 描述 | 示例 
+
+
+| `enable++_++xcp` | `false` | 选择XCP或本地源 | `true` 
+
+
+| `xcp++_++copy++_++destination` | `s3` | 选择源层 | `"lustrefs"` 
+
+
+| `sample++_++count` | 所有行 | 训练样本限制 | `14400` 
+
+
+| `seed` | `7` | 可重现的随机播放 | `11` 
+|===
+产生： `regression++_++model.bin`、 `text++_++vectorizer.bin`、 `text++_++classifier.bin`、 `train++_++metrics.json`。
+
+
+
+[[8-5-fine-tuning-parameters]]
+== 8.5 微调参数
+
+微调从所选 XCP 目标实现基线文本工件，将增量学习应用于微调数据集，并重新发布经过调整的分类器及其指标。保持其 XCP 设置与模型训练一致，以维护工件溯源。
+
+[cols="24%,>30%,23%,23%"]
+|===
+| 参数 | 默认 | 描述 | 示例 
+
+
+| `enable++_++xcp` | `false` | 启用制品物化/发布 | `true` 
+
+
+| `xcp++_++copy++_++destination` | `s3` | 选择制品来源/目的地 | `"lustrefs"` 
+|===
+消耗： `text++_++vectorizer.bin`， `text++_++classifier.bin`， `text++_++finetune.json`。产生： `text++_++classifier++_++tuned.bin`， `fine++_++tune++_++metrics.json`。
+
+
+
+[[8-6-inference-parameters]]
+== 8.6 推理参数
+
+这些标志控制从所选训练层实现调优模型后的评分范围。当验证或业务需求需要超出默认推理拆分和推理文本输入的输出时，启用任一选项。
+
+[cols=",>,,"]
+|===
+| 参数 | 默认 | 描述 | 示例 
+
+
+| `infer++_++all++_++splits` | `false` | 评分训练/验证/推理拆分 | `true` 
+
+
+| `infer++_++all++_++text` | `false` | 得分基础/微调/推断文本 | `true` 
+|===
+消耗： `regression++_++model.bin`， `text++_++vectorizer.bin`， `text++_++classifier++_++tuned.bin`。产生： `tabular++_++predictions.csv`， `text++_++predictions.json`。
+
+
+
+[[8-7-checkpoint-parameters]]
+== 8.7 检查点参数
+
+检查点作用域为 `model++_++training`。这些设置确定是否创建训练完成记录、存储位置、如何处理上传失败，以及后续运行是否验证或重复使用有效的已完成训练结果。
+
+[cols="24%,>30%,23%,23%"]
+|===
+| 参数 | 默认 | 描述 | 示例 
+
+
+| `checkpoint++_++enabled` | `true` | 启用检查点文件创建 | `true` 
+
+
+| `checkpoint++_++store` | `local` | `local` 或  `formatted++_++s3` | `"formatted++_++s3"` 
+
+
+| `checkpoint++_++upload++_++fail++_++mode` | `warn` | `warn` 或  `fail` | `"fail"` 
+
+
+| `training++_++checkpoint++_++reuse++_++mode` | `off` | `off`/`verify++_++only`/`resume++_++if++_++exists` | `"resume++_++if++_++exists"` 
+
+
+| `checkpoint++_++reuse++_++mode` | `off` | 向后兼容的别名 | `"verify++_++only"` 
+|===
+
+
+[[8-8-manual-archive-parameters]]
+== 8.8 手动归档参数
+
+使用此组可启用 StorageGRID 存档，标识目标存储桶和凭据，并选择存档点。所选的 `manual++_++archive++_++stage`控制存档时间以及存档是否仅包含基线训练工件或完整的推理结果集。
+
+[cols="20%,>23%,>23%,17%,17%"]
+|===
+| 参数 | 默认 | 必填项 | 描述 | 示例 
+
+
+| `manual++_++archive++_++enabled` | `false` | 否 | 启用存档 | `true` 
+
+
+| `manual++_++archive++_++stage` | `inferencing` | 否 | 归档点和工件集： `model++_++training`用于核心训练工件，或 `inferencing`用于完整结果集 | `"model++_++training"` 
+
+
+| `manual++_++archive++_++bucket` | `archivalbucket` | 启用时为是 | 归档分段 | `"archivalbucket"` 
+
+
+| `manual++_++archive++_++prefix` | `ai-models` | 否 | 归档前缀 | `"ai-models"` 
+
+
+| `manual++_++archive++_++endpoint` | 默认 | 仅限自定义 | 归档 S3 端点 | `"http://10.63.150.62:10444"` 
+
+
+| `manual++_++archive++_++profile` | `sgdlocal` | 建议 | 凭据配置文件 | `"sgdlocal"` 
+
+
+| `manual++_++archive++_++profiles` | 无 | 可选 | 配置文件映射 | `++{++"sgdlocal": ++{++...}}` 
+
+
+| `manual++_++archive++_++include++_++xcp++_++inputs` | `false` | 否 | 在存档中包含 XCP 输入 | `true` 
+
+
+| `manual++_++archive++_++cleanup++_++raw` | `false` | 否 | 上传后移除本地原始文件夹 | `true` 
+|===
+别名： `fabricpool++_++archive++_*++`用于所有 `manual++_++archive++_*++`参数。
+
+
+
+[[8-8-1-manual-archive-stage-decision]]
+=== 8.8.1 手动存档阶段决策
+
+The `route++_++manual++_++archive++_++stage` 分支任务每次 DAG 运行读取 `manual++_++archive++_++stage`一次。所选值确定何时运行存档以及将哪些工件上传到 StorageGRID 存档存储桶。存档对象存储在 `s3://++<++manual++_++archive++_++bucket++>++/++<++manual++_++archive++_++prefix++>++/++<++stage++>++/++<++run++_++stamp++>++/`下。
+
+[cols="25%,25%,25%,25%"]
+|===
+| `manual++_++archive++_++stage` 值 | 归档时间 | 工件已存档 | 建议使用 
+
+
+| `model++_++training` | 此后立即 `model++_++training`；不等待微调或推理 | `regression++_++model.bin`, `text++_++vectorizer.bin`, `text++_++classifier.bin`, `train++_++metrics.json` | 保留可重现的基线模型，最大限度地减少存档量，或在后期阶段之前保留检查点 
+
+
+| `inferencing` (默认) | 在  `fine++_++tuning` 和  `inferencing` 完成后 | 所有 `model++_++training`工件加上 `text++_++classifier++_++tuned.bin`、 `fine++_++tune++_++metrics.json`、 `tabular++_++predictions.csv`和 `text++_++predictions.json` | 保留模型运行的完整业务结果和预测证据 
+|===
+对于任一选择，设置 `manual++_++archive++_++include++_++xcp++_++inputs=true`以在存在时添加本地实例化的 XCP 训练输入。设置 `manual++_++archive++_++enabled=false`以跳过存档任务，而不更改训练和推理工作流程。
+
+
+
+[[8-9-complete-sample-configuration]]
+== 8.9 完整示例配置
+
+此目录提供主体部署和测试路径的启动配置。每个示例都假设原始数据位于 StorageGRID，并且准备好的数据会写入 ONTAP NAS 存储桶中。将存储桶名称、端点地址、文件系统路径和配置文件名称替换为目标环境中的值。请勿将生产访问密钥或机密放在 `CONF++_++JSON`中；请通过 Airflow Connections、Variables 或 secrets backend 进行配置。
+
+
+
+[[8-9-1-xcp-to-lustrefs-with-spark-and-delta-lake]]
+=== 8.9.1 XCP 到 LustreFS（使用 Spark 和 Delta Lake）
+
+使用此全吞吐量示例进行分布式准备和高性能 LustreFS 模型 I/O。它处理 `s3++_++raw++_++prefix`下所有符合条件的表格文件，在准备期间写入 Delta 表，将训练检查点持久化到 ONTAP NAS 准备好的数据桶中，并存档完整的推断结果集。
+
+[source, json]
+----
+{
+  "ingestion_tool": "s3_direct",
+  "s3_raw_bucket": "bucket1",
+  "s3_raw_prefix": "example_ai_pipeline/raw",
+  "s3_formatted_bucket": "prepnasbucket",
+  "s3_formatted_prefix": "example_ai_pipeline/formatted",
+
+  "enable_xcp": true,
+  "xcp_copy_destination": "lustrefs",
+  "xcp_nfs_source_ip": "10.63.150.159",
+  "xcp_nfs_source_path": "/prepnasbucket/example_ai_pipeline",
+  "xcp_lustrefs_source_path": "/prepnasbucket/example_ai_pipeline",
+  "xcp_lustrefs_dest_path": "/mnt/lustre/client",
+  "xcp_lustrefs_training_subpath": "example_ai_pipeline",
+  "xcp_text_allow_local_fallback": false,
+
+  "transformation_engine": "spark",
+  "spark_required": true,
+  "table_format": "delta",
+  "table_format_required": true,
+  "spark_driver_memory": "8g",
+  "spark_executor_memory": "8g",
+  "spark_timeout_secs": 0,
+  "sample_count": 14400,
+  "seed": 11,
+
+  "infer_all_splits": true,
+  "infer_all_text": true,
+
+  "checkpoint_enabled": true,
+  "checkpoint_store": "formatted_s3",
+  "training_checkpoint_reuse_mode": "off",
+
+  "manual_archive_enabled": true,
+  "manual_archive_stage": "inferencing",
+  "manual_archive_bucket": "archivalbucket",
+  "manual_archive_prefix": "ai-models",
+  "manual_archive_profile": "sgdlocal",
+  "manual_archive_cleanup_raw": true
+}
+----
+
+
+[[8-9-2-no-xcp-with-python-preparation]]
+=== 8.9.2 没有使用 Python 准备的 XCP
+
+将此基线配置用于轻量级功能运行。准备阶段使用本地 Python 引擎，下游阶段使用管道的本地准备数据和制品路径；XCP、Spark、表格格式、检查点重用和存档已禁用。
+
+[source, json]
+----
+{
+    "ingestion_tool": "s3_direct",
+    "s3_raw_bucket": "bucket1",
+    "s3_raw_prefix": "example_ai_pipeline/raw",
+    "s3_formatted_bucket": "prepnasbucket",
+    "s3_formatted_prefix": "example_ai_pipeline/formatted",
+    "enable_xcp": false,
+    "transformation_engine": "python",
+    "table_format": "none",
+    "sample_count": 200,
+    "seed": 11,
+    "checkpoint_enabled": false,
+    "manual_archive_enabled": false
+}
+----
+
+
+[[8-9-3-python-preparation-with-two-explicit-input-files]]
+=== 8.9.3 使用两个显式输入文件准备 Python
+
+针对两个已知的 StorageGRID CSV 对象验证管道时，请使用此重点测试。 `s3++_++tabular++_++object++_++keys`禁用自动表格文件发现；文本输入仍使用原始前缀下的预期位置。
+
+[source, json]
+----
+{
+    "ingestion_tool": "s3_direct",
+    "s3_raw_bucket": "bucket1",
+    "s3_raw_prefix": "example_ai_pipeline/raw",
+    "s3_tabular_object_keys": [
+        "example_ai_pipeline/raw/tabular_part_01.csv",
+        "example_ai_pipeline/raw/tabular_part_02.csv"
+    ],
+    "s3_formatted_bucket": "prepnasbucket",
+    "s3_formatted_prefix": "example_ai_pipeline/formatted",
+    "enable_xcp": false,
+    "transformation_engine": "python",
+    "table_format": "none",
+    "sample_count": 200,
+    "seed": 11,
+    "manual_archive_enabled": false
+}
+----
+
+
+[[8-9-4-python-preparation-with-automatic-all-file-discovery]]
+=== 8.9.4 使用自动全文件发现的 Python 准备
+
+省略 `s3++_++tabular++_++object++_++keys`和 `s3++_++tabular++_++object++_++key`以处理 StorageGRID 原始前缀下的每个符合条件的表格对象。此示例适用于使用 Python 准备引擎的全文件功能或规模测试。
+
+[source, json]
+----
+{
+    "s3_raw_bucket": "bucket1",
+    "s3_raw_prefix": "example_ai_pipeline/raw",
+    "s3_formatted_bucket": "prepnasbucket",
+    "s3_formatted_prefix": "example_ai_pipeline/formatted",
+    "enable_xcp": false,
+    "transformation_engine": "python",
+    "table_format": "none",
+    "sample_count": 0,
+    "seed": 11,
+    "manual_archive_enabled": false
+}
+----
+`sample++_++count: 0` 表示数据准备使用所有可用行。为有界测试运行设置正值。
+
+
+
+[[8-9-5-xcp-to-ontap-s3-with-python-preparation]]
+=== 8.9.5 XCP 到 ONTAP S3 与 Python 的准备
+
+当必须将准备好的数据从 ONTAP NAS NFS 导出复制到 ONTAP S3 训练存储桶时，请使用此配置。模型训练、微调和推理通过相同的 ONTAP S3 目标实现并发布工件。
+
+[source, json]
+----
+{
+    "s3_raw_bucket": "bucket1",
+    "s3_raw_prefix": "example_ai_pipeline/raw",
+    "s3_formatted_bucket": "prepnasbucket",
+    "s3_formatted_prefix": "example_ai_pipeline/formatted",
+    "enable_xcp": true,
+    "xcp_copy_destination": "s3",
+    "xcp_nfs_source_ip": "10.63.150.159",
+    "xcp_nfs_source_path": "/prepnasbucket/example_ai_pipeline",
+    "xcp_s3_endpoint": "https://ontap-s3.example.com",
+    "xcp_s3_bucket": "trainingbucket",
+    "xcp_s3_dest_prefix": "example_ai_pipeline",
+    "xcp_s3_training_prefix": "example_ai_pipeline",
+    "xcp_s3_profile": "ontaps3",
+    "transformation_engine": "python",
+    "table_format": "none",
+    "sample_count": 14400,
+    "seed": 11,
+    "checkpoint_enabled": true,
+    "checkpoint_store": "formatted_s3",
+    "manual_archive_enabled": true,
+    "manual_archive_stage": "model_training",
+    "manual_archive_bucket": "archivalbucket",
+    "manual_archive_profile": "storagegrid-archive"
+}
+----
+
+
+[[8-9-6-xcp-to-ontap-s3-with-spark-and-iceberg]]
+=== 8.9.6 使用 Spark 和 Iceberg 的 XCP 到 ONTAP S3
+
+使用此配置进行分布式准备，以 Iceberg 表输出和 ONTAP S3 作为活动训练目标。当 Spark 或 Iceberg 不可用时，如果运行必须失败而非回退，请将 `spark++_++required`和 `table++_++format++_++required`设置为 `true`。
+
+[source, json]
+----
+{
+    "s3_raw_bucket": "bucket1",
+    "s3_raw_prefix": "example_ai_pipeline/raw",
+    "s3_formatted_bucket": "prepnasbucket",
+    "s3_formatted_prefix": "example_ai_pipeline/formatted",
+    "enable_xcp": true,
+    "xcp_copy_destination": "s3",
+    "xcp_nfs_source_ip": "10.63.150.159",
+    "xcp_nfs_source_path": "/prepnasbucket/example_ai_pipeline",
+    "xcp_s3_bucket": "trainingbucket",
+    "xcp_s3_dest_prefix": "example_ai_pipeline",
+    "xcp_s3_profile": "ontaps3",
+    "transformation_engine": "spark",
+    "spark_required": true,
+    "table_format": "iceberg",
+    "table_format_required": true,
+    "spark_driver_memory": "8g",
+    "spark_executor_memory": "8g",
+    "spark_timeout_secs": 0,
+    "sample_count": 0,
+    "seed": 11,
+    "manual_archive_enabled": true,
+    "manual_archive_stage": "inferencing",
+    "manual_archive_bucket": "archivalbucket",
+    "manual_archive_profile": "storagegrid-archive"
+}
+----
+
+
+[[8-9-7-scenario-selection-summary]]
+=== 8.9.7 场景选择摘要
+
+[cols="20%,16%,16%,16%,16%,16%"]
+|===
+| 场景 | XCP 目标 | 制备引擎 | 表格格式 | 输入范围 | 归档阶段 
+
+
+| 8.9.1 | LustreFS | 火花 | Delta | 所有已发现文件 | `inferencing` 
+
+
+| 8.9.2 | 无 | Python | 无 | 所有已发现文件 | 已禁用 
+
+
+| 8.9.3 | 无 | Python | 无 | 两个显式文件 | 已禁用 
+
+
+| 8.9.4 | 无 | Python | 无 | 所有已发现文件 | 已禁用 
+
+
+| 8.9.5 | ONTAP S3 | Python | 无 | 所有已发现文件 | `model++_++training` 
+
+
+| 8.9.6 | ONTAP S3 | 火花 | Iceberg | 所有已发现文件 | `inferencing` 
+|===
+
+
+[[8-9-8-execution-walkthroughs]]
+=== 8.9.8 执行演练
+
+从 Airflow 工作区运行示例。触发器脚本生成唯一 `manual++__<++UTC timestamp++>++`的运行 ID，等待完成，并返回失败或超时运行的非零退出代码。以下完整配置使用与操作示例相同的 `CONF++_++JSON="$(python3 - ++<<++'PY' ...)"`模式。在运行之前，在密钥后端配置引用的 Airflow 托管连接、XCP 配置文件和归档配置文件，并将 `CONF++_++JSON`限制为非密钥存储桶、端点、路径和配置文件标识符。
+
+有效的表格式名称为 `iceberg`。请勿使用 `icerberg`，此值不受支持。
+
+*所有文件、Spark、Iceberg、XCP 到 ONTAP S3、检查点到 prepared-data S3、推断后归档：*
+
+[source, bash]
+----
+CONF_JSON="$(python3 - <<'PY'
+import json
+
+print(json.dumps({
+    "ingestion_tool": "s3_direct",
+    "enable_xcp": True,
+    "xcp_copy_destination": "s3",
+    "xcp_text_allow_local_fallback": True,
+
+    "s3_raw_bucket": "bucket1",
+    "s3_raw_prefix": "example_ai_pipeline/raw",
+    "s3_raw_endpoint_url": "https://storagegrid.example.com",
+    "s3_raw_region": "us-east-1",
+
+    "s3_formatted_bucket": "prepnasbucket",
+    "s3_formatted_prefix": "example_ai_pipeline/formatted",
+    "s3_formatted_endpoint_url": "https://ontap-nas.example.com",
+    "s3_formatted_region": "us-east-1",
+
+    "xcp_nfs_source_ip": "10.63.150.159",
+    "xcp_nfs_source_path": "/prepnasbucket/example_ai_pipeline",
+    "xcp_s3_endpoint": "https://ontap-s3.example.com",
+    "xcp_s3_bucket": "trainingbucket",
+    "xcp_s3_dest_prefix": "example_ai_pipeline",
+    "xcp_s3_training_prefix": "example_ai_pipeline",
+    "xcp_s3_profile": "ontaps3",
+
+    "transformation_engine": "spark",
+    "spark_required": True,
+    "table_format": "iceberg",
+    "table_format_required": True,
+    "sample_count": 0,
+    "seed": 11,
+    "spark_driver_memory": "8g",
+    "spark_executor_memory": "8g",
+    "spark_timeout_secs": 0,
+    "infer_all_splits": True,
+    "infer_all_text": True,
+
+    "checkpoint_enabled": True,
+    "checkpoint_store": "formatted_s3",
+    "manual_archive_enabled": True,
+    "manual_archive_stage": "inferencing",
+    "manual_archive_bucket": "archivalbucket",
+    "manual_archive_prefix": "ai-models",
+    "manual_archive_profile": "sgdlocal",
+    "manual_archive_endpoint": "https://storagegrid.example.com",
+    "manual_archive_cleanup_raw": True,
+    "manual_archive_include_xcp_inputs": True,
+}, separators=(",", ":")))
+PY
+)"
+CONF_JSON="$CONF_JSON" AIRFLOW_BIN=./.venv/bin/airflow INGESTION_TOOL=s3_direct \
+  ./trigger_and_wait_ai_pipeline_sklearn.sh
+----
+*所有文件、Spark、Iceberg、XCP 到 LustreFS、检查点到准备好的数据 S3、推断后归档：*
+
+[source, bash]
+----
+CONF_JSON="$(python3 - <<'PY'
+import json
+
+print(json.dumps({
+    "ingestion_tool": "s3_direct",
+    "enable_xcp": True,
+    "xcp_copy_destination": "lustrefs",
+    "ssh_user": "root",
+    "ssh_host": "10.63.150.178",
+    "xcp_text_allow_local_fallback": True,
+
+    "s3_raw_bucket": "bucket1",
+    "s3_raw_prefix": "example_ai_pipeline/raw",
+    "s3_raw_endpoint_url": "https://storagegrid.example.com",
+    "s3_raw_region": "us-east-1",
+
+    "s3_formatted_bucket": "prepnasbucket",
+    "s3_formatted_prefix": "example_ai_pipeline/formatted",
+    "s3_formatted_endpoint_url": "https://ontap-nas.example.com",
+    "s3_formatted_region": "us-east-1",
+
+    "xcp_nfs_source_ip": "10.63.150.159",
+    "xcp_nfs_source_path": "/prepnasbucket/example_ai_pipeline",
+    "xcp_lustrefs_source_path": "/prepnasbucket/example_ai_pipeline",
+    "xcp_lustrefs_dest_path": "/mnt/lustre/client",
+    "xcp_lustrefs_training_subpath": "example_ai_pipeline",
+
+    "transformation_engine": "spark",
+    "spark_required": True,
+    "table_format": "iceberg",
+    "table_format_required": True,
+    "sample_count": 0,
+    "seed": 11,
+    "spark_driver_memory": "8g",
+    "spark_executor_memory": "8g",
+    "spark_timeout_secs": 0,
+    "infer_all_splits": True,
+    "infer_all_text": True,
+
+    "checkpoint_enabled": True,
+    "checkpoint_store": "formatted_s3",
+    "manual_archive_enabled": True,
+    "manual_archive_stage": "inferencing",
+    "manual_archive_bucket": "archivalbucket",
+    "manual_archive_prefix": "ai-models",
+    "manual_archive_profile": "sgdlocal",
+    "manual_archive_endpoint": "https://storagegrid.example.com",
+    "manual_archive_cleanup_raw": True,
+    "manual_archive_include_xcp_inputs": True,
+}, separators=(",", ":")))
+PY
+)"
+AIRFLOW_BIN=./.venv/bin/airflow INGESTION_TOOL=s3_direct \
+  ./trigger_and_wait_ai_pipeline_sklearn.sh
+----
+对于 ONTAP S3 模式，在运行之前，仅将非密钥 `xcp++_++s3++_++profile`名称传入 `CONF++_++JSON`，并在 XCP 主机上或通过 Airflow 管理的密钥存储定义相应的凭据。对于 LustreFS 模式，由于训练路由不解析 ONTAP S3 凭据，因此会故意省略 `xcp++_++s3++_++profiles`映射。在这两个示例中，通过 Airflow 管理的密钥存储而不是内联 JSON 来定义 StorageGRID 原始数据、ONTAP NAS 准备好的数据和存档凭据。省略 `s3++_++tabular++_++object++_++keys`并将 `sample++_++count`设置为 `0`，以请求自动发现所有符合条件的表格文件并使用所有可用行。
+
+*Python，无 XCP，双文件测试：*
+
+[source, bash]
+----
+CONF_JSON='{"s3_raw_bucket":"bucket1","s3_raw_prefix":"example_ai_pipeline/raw","s3_tabular_object_keys":["example_ai_pipeline/raw/tabular_part_01.csv","example_ai_pipeline/raw/tabular_part_02.csv"],"s3_formatted_bucket":"prepnasbucket","s3_formatted_prefix":"example_ai_pipeline/formatted","enable_xcp":false,"transformation_engine":"python","table_format":"none","sample_count":200,"manual_archive_enabled":false}' \
+./trigger_and_wait_ai_pipeline_sklearn.sh
+----
+*Spark、Delta Lake、XCP to LustreFS：*
+
+[source, bash]
+----
+CONF_JSON='{"enable_xcp":true,"xcp_copy_destination":"lustrefs","xcp_nfs_source_ip":"10.63.150.159","xcp_nfs_source_path":"/prepnasbucket/example_ai_pipeline","xcp_lustrefs_source_path":"/prepnasbucket/example_ai_pipeline","xcp_lustrefs_dest_path":"/mnt/lustre/client","xcp_lustrefs_training_subpath":"example_ai_pipeline","transformation_engine":"spark","spark_required":true,"table_format":"delta","table_format_required":true,"sample_count":14400,"manual_archive_enabled":true,"manual_archive_stage":"inferencing"}' \
+./trigger_and_wait_ai_pipeline_sklearn.sh
+----
+*Spark、Iceberg、XCP to ONTAP S3：*
+
+[source, bash]
+----
+CONF_JSON='{"enable_xcp":true,"xcp_copy_destination":"s3","xcp_nfs_source_ip":"10.63.150.159","xcp_nfs_source_path":"/prepnasbucket/example_ai_pipeline","xcp_s3_bucket":"trainingbucket","xcp_s3_dest_prefix":"example_ai_pipeline","xcp_s3_profile":"ontaps3","transformation_engine":"spark","spark_required":true,"table_format":"iceberg","table_format_required":true,"sample_count":0,"manual_archive_enabled":true,"manual_archive_stage":"inferencing"}' \
+./trigger_and_wait_ai_pipeline_sklearn.sh
+----
+在 XCP 运行之前，从 XCP 主机验证配置的 ONTAP NAS NFS 路径和目标可访问性。成功运行后，请查看 `++[++data++_++prep++]++ effective++_++config`、 `++[++xcp++_++copy++]++ effective++_++config`、 `++[++model++_++training++]++ effective++_++config` 和 `++[++manual++_++archive++]++`的任务日志，以确认所选引擎、输入范围、目标和存档阶段。
+
+'''

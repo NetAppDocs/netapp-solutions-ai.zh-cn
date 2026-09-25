@@ -1,0 +1,277 @@
+---
+sidebar: sidebar 
+permalink: infra/ai-pipeline-deployment-architecture.html 
+keywords:  
+summary:  
+---
+= 7.部署架构
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+Karthikeyan Nagalingam， NetApp
+
+本节定义了运行管道所需的基础设施布局、软件依赖关系和网络连接。该部署将 Airflow 编排与 XCP 数据移动主机分离，同时将两个组件连接到 StorageGRID、ONTAP NAS 以及所选的 ONTAP S3 或 LustreFS 训练目标。
+
+
+
+[[7-1-reference-infrastructure-requirements]]
+== 7.1 参考基础架构要求
+
+以下组件构成最小功能部署占用空间。根据所选准备引擎和并发任务负载调整 Airflow 主机的规模；将 XCP 主机放置在无需经过不必要网络跳转即可访问 ONTAP NAS NFS 导出和所选目标的位置。LustreFS 模式要求 XCP 主机和 Airflow Worker 上均具有兼容的挂载点。
+
+[cols="50%,50%"]
+|===
+| 组件 | 需求 
+
+
+| Airflow 主机 | CPU/内存大小根据 Spark 或 Python 转换负载进行调整 
+
+
+| XCP 主机 | 对NFS/Lustre和NetApp ONTAP S3端点的网络访问 
+
+
+| LustreFS 客户端 | 选择为目标时，安装在 XCP 主机和 Airflow 主机上 
+|===
+
+
+[[7-1-1-reference-validation-environment]]
+=== 7.1.1 参考验证环境
+
+以下环境用作具有代表性的单节点验证配置文件。它是功能和性能评估的起点，而不是生产规模调整建议；客户必须根据其数据集量、并发性、保留、恢复和服务级别要求调整计算、网络、存储容量和保护。
+
+[cols="50%,50%"]
+|===
+| 层 | 参考硬件/软件 
+
+
+| 计算和网络 | 一台具有 256 GB RAM、64 个 CPU 内核和 10 GbE 连接的服务器 
+
+
+| ONTAP 活动存储 | 一个带有 48 x 1.8 TB 固态硬盘的 NetApp A800 系统 
+
+
+| 对象存储 | 一个 NetApp StorageGRID SG5864 设备 
+
+
+| 高通量训练存储 | 一套配备 LustreFS 的 NetApp E2812 系统 
+
+
+| 平台软件 | Kubernetes、Apache Airflow、Apache Airbyte、单节点 Apache Spark、NetApp XCP 和 LustreFS 
+|===
+
+
+[[7-2-software-version-matrix]]
+== 7.2 软件版本表
+
+此矩阵标识了已验证管道使用的运行时软件。使 Airflow 和 Python 环境与部署的提供程序和软件包保持兼容。Spark、Delta Lake 和 Iceberg 是可选的，仅在 `data++_++prep`使用 Spark 转换路径或相应的表格式时才需要。
+
+[cols="50%,50%"]
+|===
+| 软件 | 版本/备注 
+
+
+| Apache Airflow | 2.x 
+
+
+| Python | 3.11 
+
+
+| boto3 | 最新稳定 
+
+
+| scikit-learn | 最新稳定 
+
+
+| PySpark（可选） | 与 Delta 3.2.0 / Iceberg 1.5.2 运行时包兼容 
+
+
+| NetApp XCP | 安装在远程主机上，例如 `/usr/src/xcp/linux/xcp` 
+|===
+
+
+[[7-3-network-requirements]]
+== 7.3 网络要求
+
+路由、防火墙和名称解析策略必须允许这些网络流。建议对生产中的每个 S3 兼容端点使用 HTTPS；在端点不使用默认 HTTPS 端口的情况下，使用配置的自定义端口。根据已部署的 LustreFS 实现确认 Lustre 客户端连接。
+
+[cols=","]
+|===
+| 流程 | 协议/端口 
+
+
+| Airflow → ONTAP S3 | HTTPS/HTTP （443/80 或自定义） 
+
+
+| Airflow → XCP 主机 | SSH（22） 
+
+
+| XCP 主机 → NFS 源 | NFS（2049） 
+
+
+| XCP 主机 → LustreFS | Lustre 客户端端口 
+
+
+| XCP 主机 → ONTAP S3 （S3 模式） | HTTPS/HTTP 
+|===
+
+
+[[7-4-deployment-notes]]
+== 7.4 部署说明
+
+[cols="50%,50%"]
+|===
+| 部分/主题 | 指导/运营实践 
+
+
+| SSH 连接设置 | 将 Airflow 连接配置 `ssh++_++default`为通过端口 22 使用受限 SSH 密钥权限定位 XCP 主机(`600`）。 
+
+
+| 服务生命周期管理 | 使用  `tools/airflow++_++ctl.sh` 在部署和维护期间管理本地 Airflow 调度程序和 Web 服务器生命周期。 
+
+
+| 凭据和密码存储 | 将凭据、API 令牌和访问密钥存储在 Airflow Connections、Variables 或 secrets backend 中，而不是内联在 `dag++_++run.conf`中。 
+
+
+| 基础架构和任务可观察性 | 独立监控调度程序心跳和任务执行，以便将业务流程可用性问题与 DAG 故障区分开来。 
+|===
+
+
+[[7-5-installation-and-prerequisites]]
+== 7.5 安装和先决条件
+
+本小节定义了在全新环境中构建、配置和运行 NetApp AI 验证管道所需的基线安装步骤。本小节适用于在运行任何 DAG 之前设置 Airflow 工作区的操作员、架构师和工程师。
+
+
+
+[[7-5-1-prerequisites]]
+=== 7.5.1 前提条件
+
+在安装解决方案之前，请确认目标主机满足以下最低要求：
+
+* Linux 操作系统，最好是 Ubuntu 22.04/24.04 或 RHEL 8+。
+* Python 3.11，带有 `pip`、 `venv`和构建工具。
+* Git已安装在主机上，用于源代码检索和版本管理。
+* Apache Airflow 2.x 部署在专用的 Python 虚拟环境中。
+* 从 Airflow 主机到 NetApp XCP 主机的 SSH 访问。
+* 从 Airflow 主机到 StorageGRID、ONTAP NAS 和所选 ONTAP S3 或 LustreFS 目标的网络连接。
+* S3 兼容端点访问，用于原始数据、预处理数据暂存和归档存储。
+* 可选：Java 运行时和 Spark 3.x（如果使用 `spark`准备路径）。
+* 可选：当选择  `table++_++format=delta` 或  `table++_++format=iceberg` 时，需要 Delta Lake 和 Iceberg 运行时包。
+* 可选：使用 `xcp++_++copy++_++destination=lustrefs`时的 Lustre 客户端挂载。
+
+
+
+
+[[7-5-2-software-package-acquisition-and-repository-access]]
+=== 7.5.2 软件包获取和存储库访问
+
+要获取此解决方案的软件包、自动化 DAG、部署脚本和验证制品，请联系 NetApp AI & Data Mobility 工程团队：ng-data-mobility-in-ai-pipeline@netapp.com。
+
+授予访问权限后，将项目源从 GitHub 下载或克隆到目标工作目录：
+
+[source, bash]
+----
+# Example GitHub clone
+mkdir -p /opt/netapp-ai
+cd /opt/netapp-ai
+
+git clone https://github.com/<your-org>/<your-repo>.git
+cd <your-repo>
+
+git checkout main
+ls -la
+----
+如果已经在 `/opt/netapp-ai/<your-repo>`下克隆了存储库，请从该工作目录继续，而不是下载其他副本。
+
+
+
+[[7-5-3-create-the-python-environment]]
+=== 7.5.3 创建 Python 环境
+
+创建专用虚拟环境并安装 Airflow 和管道的基本依赖项。
+
+[source, bash]
+----
+export REPO_ROOT=/opt/netapp-ai/<your-repo>
+cd "$REPO_ROOT"
+python3 -m venv "$REPO_ROOT/.venv"
+source "$REPO_ROOT/.venv/bin/activate"
+
+python -m pip install --upgrade pip setuptools wheel
+pip install "apache-airflow>=2.8,<3.0" boto3 scikit-learn
+----
+对于基于 Spark 的准备和 Lakehouse 表格格式，请根据需要安装可选软件包：
+
+[source, bash]
+----
+pip install pyspark==3.5.*
+pip install delta-spark==3.2.0
+pip install apache-iceberg==1.5.2
+----
+使用 Spark 运行时和集群拓扑支持的确切包版本。请勿混合不兼容的 Spark、Delta 和 Iceberg 组合。
+
+
+
+[[7-5-4-configure-airflow-and-the-repository]]
+=== 7.5.4 配置 Airflow 和存储库
+
+从克隆的存储库根目录，初始化 Airflow 元数据数据库，并验证 DAG 文件对 Airflow 可见。
+
+[source, bash]
+----
+export AIRFLOW_HOME="$REPO_ROOT/.airflow"
+export AIRFLOW__CORE__DAGS_FOLDER="$REPO_ROOT"
+export AIRFLOW__CORE__LOAD_EXAMPLES=False
+
+airflow db init
+airflow dags list | grep -E "example_ai_pipeline|example_ai_pipeline_sklearn"
+----
+工作区包括经过验证的管道所需的 Airflow 配置文件和 DAG。如果存储库包含用于本地生命周期管理的辅助脚本，请使用该脚本启动调度程序和 Web 服务器，而不是手动调用 Airflow。
+
+[source, bash]
+----
+# Start the Airflow scheduler and webserver with the deployment's service manager.
+# or, if using the standard commands:
+# airflow scheduler
+# airflow webserver
+----
+
+
+[[7-5-5-required-connectivity-and-secret-configuration]]
+=== 7.5.5 所需的连接和密码配置
+
+在运行管道之前，请确认可以从 Airflow 主机访问以下资源：
+
+* StorageGRID 原始数据 S3 端点。
+* ONTAP NAS 准备好的数据桶端点。
+* ONTAP S3 目标端点（当 `xcp++_++copy++_++destination=s3`时）。
+* LustreFS 挂载时间 `xcp++_++copy++_++destination=lustrefs`。
+* 使用 `ssh++_++default`或配置的 SSH 连接通过 SSH 的 XCP 主机。
+
+
+将凭据存储在 Airflow Connections、Variables 或 secrets 后端中，而不是将其嵌入 shell 历史记录或 DAG 代码中。在触发管道运行之前，设置所需的访问密钥、端点和配置文件映射。
+
+
+
+[[7-5-6-verify-the-installation]]
+=== 7.5.6 验证安装
+
+当 Airflow 调度程序和 DAG 正常运行，且示例管道可以列出并触发而不出现配置错误时，即可确认安装成功。
+
+[source, bash]
+----
+airflow dags list
+airflow tasks list example_ai_pipeline_sklearn
+----
+如果安装正确，DAG 应位于 Airflow 中，并准备好使用存储库根目录中的触发器脚本进行 `CONF++_++JSON`驱动运行。
+
+[source, bash]
+----
+./trigger_and_wait_ai_pipeline_sklearn.sh
+----
+此时，环境已准备好使用第 8 节中的配置示例和操作指南中描述的部署方案。

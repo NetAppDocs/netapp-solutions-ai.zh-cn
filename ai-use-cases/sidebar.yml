@@ -3,6 +3,33 @@ section: ai-use-cases
 title: 人工智能用例
 url: "/ai-use-cases/index.html"
 entries:
+- title: 跨 NetApp 存储平台简化 AI 管道
+  pdf-filename: 跨 NetApp 存储平台简化 AI 管道
+  entries:
+  - title: 概述
+    url: "/infra/ai-pipeline-overview.html"
+  - title: 内容提要
+    url: "/infra/ai-pipeline-executive-summary.html"
+  - title: 解决方案概述、业务价值和客户利益
+    url: "/infra/ai-pipeline-solution-overview.html"
+  - title: 架构概述
+    url: "/infra/ai-pipeline-architecture.html"
+  - title: NetApp、第三方和开源技术组件
+    url: "/infra/ai-pipeline-netapp-components.html"
+  - title: 解决方案设计和存储架构详细信息
+    url: "/infra/ai-pipeline-solution-design-and-storage-architecture.html"
+  - title: 借助 NetApp XCP 实现数据移动
+    url: "/infra/ai-pipeline-data-mobility.html"
+  - title: 部署架构
+    url: "/infra/ai-pipeline-deployment-architecture.html"
+  - title: 配置参考
+    url: "/infra/ai-pipeline-configuration-reference.html"
+  - title: 操作指南
+    url: "/infra/ai-pipeline-operational-guide.html"
+  - title: 安全注意事项、验证和测试
+    url: "/infra/ai-pipeline-security-considerations-validation-testing.html"
+  - title: NetApp 差异化和竞争定位，附录
+    url: "/infra/ai-pipeline-differentiation-appendices.html"
 - title: KV Cache 卸载与 NetApp
   pdf-filename: KV Cache 卸载与 NetApp
   url: "/software/ai-kv-cache-offloading-netapp.html"
