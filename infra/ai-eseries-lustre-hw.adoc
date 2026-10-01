@@ -149,7 +149,7 @@ EF80 是此解决方案版本经过验证的标准平台。
 
 每个 EF80 阵列还使用专用插槽 4 I/O 模块进行控制器间镜像。将控制器 A 端口 4a 连接到控制器 B 端口 4a，将控制器 A 端口 4b 连接到控制器 B 端口 4b。这些连接提供缓存镜像和 I/O 传输，不用于主机 NVMe-oF 流量。请参阅 link:https://docs.netapp.com/us-en/e-series/install-hw-ef50-ef80/install-cable.html#step-1-cable-the-inter-controller-mirroring-connections["用缆线连接 EF50 和 EF80 控制器间镜像连接"^]。
 
-有关所有型号的完整 EF 系列规格，请参见 link:https://www.netapp.com/pdf.html?item=/media/14036-ds-4082.pdf["NetApp EF-Series 全闪存阵列数据表"^]。
+有关所有型号的完整 EF 系列规格，请参见 link:https://www.netapp.com/pdf.html?item=/media/19339-ds-4082.pdf["NetApp EF-Series 全闪存阵列数据表"^]。
 
 
 

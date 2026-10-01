@@ -34,4 +34,4 @@ image:apache-spark-014.png["云服务合作伙伴的示例解决方案。"]
 
 由于NetApp NPS 分别通过 Direct Connect 和 Express Route 连接连接到 Amazon AWS 和 Microsoft Azure，因此客户可以利用 In-Place Analytics Module 访问来自 Amazon 和 AWS 分析集群的数据。因此，由于本地存储和 NPS 存储都运行ONTAP软件， https://docs.netapp.com/us-en/ontap/data-protection/snapmirror-replication-concept.html["SnapMirror"^]可以将NPS数据镜像到本地集群，提供跨本地和多云的混合云分析。
 
-为了获得最佳性能， NetApp通常建议使用多个网络接口和直接连接或快速路由来访问云实例的数据。我们还有其他数据移动解决方案，包括 https://mysupport.netapp.com/documentation/docweb/index.html?productID=63942&language=en-US["XCP"^]和 https://cloud.netapp.com/cloud-sync-service["BlueXP复制和同步"^]帮助客户构建应用感知、安全且经济高效的混合云 Spark 集群。
+为了获得最佳性能，NetApp 通常建议使用多个网络接口和直接连接或快速路由从云实例访问数据。我们还有其他数据移动解决方案，包括  https://mysupport.netapp.com/documentation/docweb/index.html?productID=63942&language=en-US["XCP"^] 和  https://www.netapp.com/data-services/copy-and-sync/["复制并同步"^]，帮助客户构建应用感知、安全且经济高效的混合云 Spark 集群。

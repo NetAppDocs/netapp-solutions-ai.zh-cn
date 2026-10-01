@@ -108,7 +108,7 @@ image:ai-edge-007.png["该图显示输入/输出对话框或表示书面内容"]
 
 
 
-NOTE: 有关详细信息，请参阅 https://www.netapp.com/pdf.html?item=/media/19339-DS-4082.pdf["NetApp EF 系列NetApp EF 系列全闪存阵列 EF600、F300、EF570 和 EF280 数据表"^]。
+NOTE: 有关详细信息，请参见 https://www.netapp.com/pdf.html?item=/media/19339-ds-4082.pdf["NetApp EF 系列NetApp EF 系列全闪存阵列 EF600、F300、EF570 和 EF280 数据表"^]。
 
 
 

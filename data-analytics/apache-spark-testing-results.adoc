@@ -78,7 +78,7 @@ summary: 我们使用 TeraGen 基准测试工具中的 TeraSort 和 TeraValidate
 [[financial-sentiment-analysis]]
 == 金融情绪分析
 
-我们发表了link:https://www.netapp.com/pdf.html?item=/media/17123-tr4910pdf.pdf["TR-4910：利用NetApp AI 对客户沟通进行情绪分析"^]，其中使用 https://github.com/NetApp/netapp-dataops-toolkit["NetApp DataOps 工具包"^]、 AFF存储和NVIDIA DGX 系统。该管道利用 DataOps Toolkit 执行批量音频信号处理、自动语音识别 (ASR)、迁移学习和情绪分析， https://developer.nvidia.com/riva["NVIDIA Riva SDK"^] ，以及 https://developer.nvidia.com/tao["道框架"^]。将情绪分析用例扩展到金融服务行业，我们构建了 SparkNLP 工作流程，为各种 NLP 任务（例如命名实体识别）加载了三个 BERT 模型，并获得了纳斯达克十大公司季度收益电话会议的句子级情绪。
+我们发布了link:https://www.netapp.com/pdf.html?item=/media/17123-tr4910.pdf["TR-4910：利用NetApp AI 对客户沟通进行情绪分析"^]，其中使用 https://github.com/NetApp/netapp-dataops-toolkit["NetApp DataOps 工具包"^]、AFF 存储和 NVIDIA DGX System 构建了端到端会话 AI 管道。该管道利用 DataOps Toolkit、 https://developer.nvidia.com/riva["NVIDIA Riva SDK"^]和 https://developer.nvidia.com/tao["道框架"^]执行批量音频信号处理、自动语音识别 （ASR）、迁移学习和情感分析。将情感分析用例扩展到金融服务行业，我们构建了 SparkNLP 工作流程，为命名实体识别等各种 NLP 任务加载了三个 BERT 模型，并获取了纳斯达克前 10 大公司季度收益电话会议的句子级情感分析结果。
 
 以下脚本 `sentiment_analysis_spark. py`使用 FinBERT 模型处理 HDFS 中的转录本，并产生正面、中性和负面情绪计数，如下表所示：
 

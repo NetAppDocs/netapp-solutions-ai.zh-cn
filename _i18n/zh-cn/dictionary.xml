@@ -362,7 +362,6 @@
   <block id="74bef786b12cb9d03a6c04df1f605181" category="inline-link">NetApp DataOps 工具包</block>
   <block id="559cf37b505e9001d46e6d6bd73e746c" category="inline-link">NVIDIA Riva SDK</block>
   <block id="e65b49198d65919095402991b0cf5624" category="inline-link">道框架</block>
-  <block id="460926218a6b1ab3e124f410ee69f408" category="paragraph">我们发表了<block ref="d791c48f7898bbaecde983abed6ac7c1" category="inline-link-macro-rx"></block>，其中使用<block ref="5d9fb1d86d92052bc5dca8ba91d13ff2" category="inline-link-rx"></block>、 AFF存储和NVIDIA DGX 系统。该管道利用 DataOps Toolkit 执行批量音频信号处理、自动语音识别 (ASR)、迁移学习和情绪分析，<block ref="8702bd0254f484bdfe9f1ec1c2a853b1" category="inline-link-rx"></block> ，以及<block ref="bba656873bd8ccd45c0c4fc908390474" category="inline-link-rx"></block>。将情绪分析用例扩展到金融服务行业，我们构建了 SparkNLP 工作流程，为各种 NLP 任务（例如命名实体识别）加载了三个 BERT 模型，并获得了纳斯达克十大公司季度收益电话会议的句子级情绪。</block>
   <block id="ffeb7ccd27ad1e7d783757733dadec57" category="paragraph">以下脚本<block ref="e313c2865ad76497c3eaf980ccfa3d03" prefix=" " category="inline-code"></block>使用 FinBERT 模型处理 HDFS 中的转录本，并产生正面、中性和负面情绪计数，如下表所示：</block>
   <block id="077259b584adffb379f7f2638be91edc" category="paragraph">下表列出了 2016 年至 2020 年纳斯达克十大公司的收益电话会议句子级情绪分析。</block>
   <block id="30702e828192097c5634358e6047d0cf" category="cell">情绪计数和百分比</block>
@@ -541,7 +540,6 @@
   <block id="f5ac1e3c252855373c7f660dbd89699d" category="list-text">NetApp FlexGroup卷最佳实践和实施指南</block>
   <block id="7d72333a4556beea0bd57e4b8a007b47" category="paragraph"><block ref="7d72333a4556beea0bd57e4b8a007b47" category="inline-link-rx"></block></block>
   <block id="bc4fe2352063642d68529f2aa0ca7ca3" category="list-text">NetApp产品文档</block>
-  <block id="c9617ae303d0bce89d13bebecca2ea1b" category="paragraph"><block ref="c9617ae303d0bce89d13bebecca2ea1b" category="inline-link-rx"></block></block>
   <block id="e0a1057b7f63b9621d22a28a118e4a79" category="summary">本节介绍此解决方案的业务优势。</block>
   <block id="7f0cbc7391fd4e971628295e6bff035a" category="doc">商业利益</block>
   <block id="239f77225835899839f2d1318d1cc1c4" category="paragraph">将数据从大数据分析转移到人工智能有以下好处：</block>
@@ -697,7 +695,6 @@
   <block id="201dde15c75147909c8154fe3e727aed" category="section-title">通用并行文件系统</block>
   <block id="510b2e746f7cab5126465c64edad8541" category="paragraph">IBM 的 GPFS 是一个企业文件系统，它提供了 HDFS 的替代方案。  GPFS 为应用程序提供了灵活性，可以决定块大小和复制布局，从而提供良好的性能和效率。</block>
   <block id="49d7c87b66a2b688ec65b1a4fe9b5ddc" category="section-title">NetApp就地分析模块</block>
-  <block id="f1b570aebec7f92867ad62cf2fe7c50c" category="paragraph">NetApp就地分析模块 (NIPAM) 作为 Hadoop 集群访问 NFS 数据的驱动程序。它有四个组件：连接池、NFS 输入流、文件句柄缓存和 NFS 输出流。有关更多信息，请参阅<block ref="ead8bf031afc74347ebd06de968e5895" category="inline-link-rx"></block> 。</block>
   <block id="0be6a753178a606f6e24a10fde5ec644" category="section-title">Hadoop分布式复制</block>
   <block id="3cc73009b533164939781f9f6a4a1aa0" category="paragraph">Hadoop分布式复制（DistCp）是一个用于大型集群间和集群内复制任务的分布式复制工具。该工具使用 MapReduce 进行数据分发、错误处理和报告。它扩展文件和目录列表并将它们输入到映射任务中以从源列表复制数据。下图展示了 HDFS 和非 HDFS 中的 DistCp 操作。</block>
   <block id="513bd70b6fe800dda2548dae1bc404df" category="paragraph"><block ref="513bd70b6fe800dda2548dae1bc404df" category="inline-image-macro-rx" type="image"></block></block>
@@ -2087,8 +2084,6 @@
   <block id="e7d54d48522774aa8774f3733414d084" category="inline-link"><block ref="f575d0e12f7a285daadcaf60a35e305e" category="inline-link-rx"></block></block>
   <block id="a0b810672fcf48d5064bdbf73f520d55" category="paragraph"><block ref="d41dfcb87efb2171f45941c801c9f5cc" category="inline-link-rx"></block></block>
   <block id="1ae50adfec05c416d0398e26bea5fc01" category="list-text">BlueXP复制和同步</block>
-  <block id="90a11f9647f9e3f6cfead9fdd4f0789d" category="inline-link"><block ref="90a11f9647f9e3f6cfead9fdd4f0789d" category="inline-link-rx"></block></block>
-  <block id="b8cfbcc5c9748a8f12142a1b9aae0e67" category="paragraph"><block ref="b8cfbcc5c9748a8f12142a1b9aae0e67" category="inline-link-rx"></block></block>
   <block id="ce9b5cd96205262213c417b501e9ed55" category="list-text">DataOps 工具包</block>
   <block id="eb87ce8a565e070f3b8c09faa4e840c1" category="inline-link"><block ref="eb87ce8a565e070f3b8c09faa4e840c1" category="inline-link-rx"></block></block>
   <block id="20a0f3ab42054c3aa4add8c8901b4aa9" category="paragraph"><block ref="20a0f3ab42054c3aa4add8c8901b4aa9" category="inline-link-rx"></block></block>
@@ -2168,7 +2163,6 @@
   <block id="6dc7db5e9c1da14f7d61e2a7f4428219" category="list-text">主要挑战是构建一个经济高效的解决方案，在不同的内部部署和云环境之间提供混合分析服务。</block>
   <block id="cc4772ffa75dd53e0fb87df4b15528cd" category="paragraph">我们的数据保护和多云连接解决方案解决了跨多个超大规模计算平台的云分析应用程序的痛点。如上图所示，来自传感器的数据通过 Kafka 流式传输并输入到 AWS Spark 集群中。数据存储在 NPS 中的 NFS 共享中，NPS 位于 Equinix 数据中心内的云提供商之外。</block>
   <block id="88971c24837a2734fa58ba8805336328" category="paragraph">由于NetApp NPS 分别通过 Direct Connect 和 Express Route 连接连接到 Amazon AWS 和 Microsoft Azure，因此客户可以利用 In-Place Analytics Module 访问来自 Amazon 和 AWS 分析集群的数据。因此，由于本地存储和 NPS 存储都运行ONTAP软件，<block ref="fcca72a796080b3a5e2b7b1394bd00ad" category="inline-link-rx"></block>可以将NPS数据镜像到本地集群，提供跨本地和多云的混合云分析。</block>
-  <block id="bc35f58684dbedfb73dd7ff64a4bd5a8" category="paragraph">为了获得最佳性能， NetApp通常建议使用多个网络接口和直接连接或快速路由来访问云实例的数据。我们还有其他数据移动解决方案，包括<block ref="0adb843c17d646acd72646e9688dde2b" category="inline-link-rx"></block>和<block ref="079cab06c3947ff50532e4e825fc7b2c" category="inline-link-rx"></block>帮助客户构建应用感知、安全且经济高效的混合云 Spark 集群。</block>
   <block id="cfb5f1c014066f18d7979fa1d35a934d" category="paragraph">以下三个 Python 脚本对应测试的三个主要用例。首先是<block ref="b01d528ada3b5a6e0e9094642b727562" prefix=" " category="inline-code"></block>。</block>
   <block id="d3abf6f12cafa2cc1b795b31cd547c75" category="paragraph">第二个脚本是<block ref="b502aa50c7ae6d7ea7adaf15de40ffe5" prefix=" " category="inline-code"></block>。</block>
   <block id="6e9120b39f924b2eed528e3bcdd009ac" category="paragraph">第三个脚本是<block ref="5e1386bf4aaea9725a3cc5bc8e2bc9f4" prefix=" " category="inline-code"></block>。</block>
@@ -3277,7 +3271,6 @@
   <block id="928fe421f0c735b90f3b3ec353741235" category="section-title">共享存储</block>
   <block id="ba49c21e7aa335a8ea452042c02f306a" category="paragraph">为了进行测试和验证，本文档使用了NetApp AFF C190系统，该系统的最大存储容量为 50.5TB，顺序读取的吞吐量为 4.4GBps，小型随机读取的吞吐量为 230K IOPS，事实证明它非常适合边缘推理工作负载。</block>
   <block id="44114b1635cead15f56735bad0467251" category="inline-link">NetApp EF300</block>
-  <block id="043774815e3806ded716086e0c8c3d03" category="paragraph">但是，如果您需要更大的存储容量或更快的网络速度，则应该使用NetApp AFF A220或NetApp AFF A250存储系统。此外，最大容量1.5PB、带宽10GBps的NetApp EF280系统也被用于该解决方案的验证。如果您希望拥有更大的存储容量和更高的带宽，<block ref="ab4f2e0c1e56faa457a7a1f93253a647" category="inline-link-rx"></block>可以使用。</block>
   <block id="6c2749dd86f49cdb85fde6976a317e4b" category="summary">本节介绍此AI解决方案的技术基础。</block>
   <block id="b2412d3528eff2c1e191154bf1ecfd60" category="section-title">NetApp AFF 系统</block>
   <block id="b7bec75e06d57a8576b1ec632131ea53" category="paragraph">最先进的NetApp AFF存储系统支持边缘 AI 推理部署，以业界领先的性能、卓越的灵活性、云集成和一流的数据管理满足企业存储需求。  NetApp AFF系统专为闪存设计，有助于加速、管理和保护业务关键数据。</block>
@@ -3321,7 +3314,6 @@
   <block id="03597240f9b0b4a23f3ffdf6e159d6ca" category="list-text">20GBps（连续读取）</block>
   <block id="ffe3b3adfe232ee25f1914e7e7d266c4" category="list-text">670K IOPs（随机读取）</block>
   <block id="7105ea3513c2bdae1a0d63a9f0703579" category="inline-link">NetApp EF 系列NetApp EF 系列全闪存阵列 EF600、F300、EF570 和 EF280 数据表</block>
-  <block id="6e69804b180359b12a32a56c17c0641e" category="admonition">有关详细信息，请参阅<block ref="5f5484869dc0c271e2b062d172d38bee" category="inline-link-rx"></block>。</block>
   <block id="a5119a6bd0f4d733e0f1f4c10f9d063b" category="section-title">NetApp ONTAP 9</block>
   <block id="b407d5a86fd662f03d5a1615963e0827" category="paragraph">ONTAP 9.8.1 是NetApp最新一代的存储管理软件，它支持企业实现基础架构现代化并过渡到云就绪数据中心。 ONTAP利用业界领先的数据管理功能，只需一套工具即可管理和保护数据，无论数据位于何处。您还可以将数据自由移动到任何需要的地方：边缘、核心或云端。  ONTAP 9.8.1 包含众多功能，可简化数据管理、加速和保护关键数据，并支持跨混合云架构的下一代基础架构功能。</block>
   <block id="2e2b24551fd50942c6da57d4f8efdfae" category="paragraph">数据管理对于企业 IT 运营至关重要，以便为应用程序和数据集使用适当的资源。  ONTAP包括以下功能，可简化操作并降低总体运营成本：</block>
@@ -3931,7 +3923,6 @@
   <block id="e4de6f9df9cd48ef525131de3cb21481" category="inline-link-macro">BlueXP API</block>
   <block id="0ec641cfacd36c8e22a334135e2abdac" category="inline-link-macro">ONTAP REST API</block>
   <block id="ebf440be7bdce857e55ec25910ae837b" category="inline-link-macro">ONTAP Ansible 集合</block>
-  <block id="dd7a007ea7e610e168238b6d6ab542a1" category="paragraph">如果您希望自动执行此过程，您可以使用<block ref="f07bcb7e875f8bb20680b339fb58364a" category="inline-link-macro-rx"></block>， 这<block ref="0966e902a53f3a5becbd165bbdc18e79" category="inline-link-macro-rx"></block>或<block ref="62c3d824298cc8f488bda82279b91e73" category="inline-link-macro-rx"></block>。</block>
   <block id="2f37e297d79532f437d3ab48727a61c0" category="admonition">系统管理器在Amazon FSx ONTAP中不可用。</block>
   <block id="20f99b2a7f22945f3d769fa1def1e403" category="section-title">将FlexCache卷公开给 Domino</block>
   <block id="c9743d6f9b7fcd7047ce3eb9d1f2a273" category="inline-link-macro">“将现有NetApp卷公开给 Domino”部分</block>
@@ -6181,7 +6172,6 @@
   <block id="6c5426ec4b27eee4669fb4c94b380c1b" category="paragraph">当每个控制器中安装三个双端口主机 I/O 模块时，EF80 平台每个阵列最多支持十二个主机端口。经过验证的 Lustre 设计将插槽 1 和 2 中的主机 I/O 模块用于每个阵列八个主机端口。</block>
   <block id="731ebee23e331d859e88ac080271361b" category="paragraph">每个 EF80 阵列还使用专用插槽 4 I/O 模块进行控制器间镜像。将控制器 A 端口 4a 连接到控制器 B 端口 4a，将控制器 A 端口 4b 连接到控制器 B 端口 4b。这些连接提供缓存镜像和 I/O 传输，不用于主机 NVMe-oF 流量。请参阅 <block ref="2167f991eb9981359d79aa07afa06edc" category="inline-link-macro-rx"></block>。</block>
   <block id="75accf3dcef2d9c3e9dbe705113b051c" category="inline-link-macro">NetApp EF-Series 全闪存阵列数据表</block>
-  <block id="45a1a3c9bbfbafab9bafe87965faab9d" category="paragraph">有关所有型号的完整 EF 系列规格，请参见 <block ref="3763b875a199c9f3b55717ee21ea1a75" category="inline-link-macro-rx"></block>。</block>
   <block id="99630099f424a9c7b805230d850190ba" category="section-title">驱动器布局（每个阵列24个驱动器）</block>
   <block id="d54adc2cb5e2aaad6185dd7d1713c006" category="paragraph">基本构建基块中的每个 EF80 阵列都使用全部 24 个 NVMe 驱动器插槽：</block>
   <block id="48ad878bc96958eff82106474f087415" category="list-text">4 个驱动器位于 RAID 1 中，用于 MGS/MDT 存储（共享卷组或 DDP 分配）</block>
@@ -6262,7 +6252,6 @@
   <block id="4102f0b5b086858fa22e676362d1b795" category="paragraph">在规划或扩展 Lustre with NetApp E-Series Storage 部署时，请使用这些链接获取相关文档、工具和软件。有关调整大小和部署步骤，请参阅 <block ref="fd37d50a703eb90bca5592e7cf7939cb" category="inline-link-macro-rx"></block> 和 <block ref="8f49e9bdbd514d6a8081d8c90c9f306a" category="inline-link-macro-rx"></block>。</block>
   <block id="ed08ca4078374e76c6df3f1999af7274" category="section-title">NetApp 资源</block>
   <block id="e016dafca1cca24ab39f1acf3f59ca72" category="list-text"><block ref="27dc27dbb2e442190a59a9d515bed42e" category="inline-link-macro-rx"></block>。搜索 *E-Series Lustre*。</block>
-  <block id="3763b875a199c9f3b55717ee21ea1a75" category="list-text"><block ref="3763b875a199c9f3b55717ee21ea1a75" category="inline-link-macro-rx"></block></block>
   <block id="b84be9aeeb7d442b640d3bd848f311a8" category="inline-link-macro">NetApp SANtricity System Manager 文档</block>
   <block id="c342c84ee7efec3704a54620e4065b6d" category="list-text"><block ref="c342c84ee7efec3704a54620e4065b6d" category="inline-link-macro-rx"></block></block>
   <block id="801fb9c6d060327b67b48b4b980fba6c" category="inline-link-macro">NetApp ansible-lustre 集合</block>
@@ -7260,4 +7249,16 @@
   <block id="542a293babb1f752a7bc3955516d4d9e" category="sidebar">操作指南</block>
   <block id="eda25134f7653bbf8614a1931b31992c" category="sidebar">安全注意事项、验证和测试</block>
   <block id="74cdeb3238b25b8cba8bfeae3d88eefb" category="sidebar">NetApp 差异化和竞争定位，附录</block>
+  <block id="ba8c9da5d0d100f4e63538050ecdd7cf" category="paragraph">我们发布了<block ref="6a940653220d242be27b001d825fb348" category="inline-link-macro-rx"></block>，其中使用<block ref="5d9fb1d86d92052bc5dca8ba91d13ff2" category="inline-link-rx"></block>、AFF 存储和 NVIDIA DGX System 构建了端到端会话 AI 管道。该管道利用 DataOps Toolkit、<block ref="8702bd0254f484bdfe9f1ec1c2a853b1" category="inline-link-rx"></block>和<block ref="bba656873bd8ccd45c0c4fc908390474" category="inline-link-rx"></block>执行批量音频信号处理、自动语音识别 （ASR）、迁移学习和情感分析。将情感分析用例扩展到金融服务行业，我们构建了 SparkNLP 工作流程，为命名实体识别等各种 NLP 任务加载了三个 BERT 模型，并获取了纳斯达克前 10 大公司季度收益电话会议的句子级情感分析结果。</block>
+  <block id="1497398039e94eb756be9a3cff5649c7" category="paragraph"><block ref="1497398039e94eb756be9a3cff5649c7" category="inline-link-rx"></block></block>
+  <block id="dfe7bc656c588f2eff50dc00854c0ccc" category="paragraph">NetApp 原位分析模块（NIPAM）用作 Hadoop 集群访问 NFS 数据的驱动程序。它包含四个组件：连接池、NFS InputStream、文件句柄缓存和 NFS OutputStream。有关详细信息，请参见<block ref="9dd2171dbb372fbb6f51755ca947fe85" category="inline-link-rx"></block>。</block>
+  <block id="6fe4264e25ab7d4538e3cd8b851adfcf" category="list-text">复制并同步</block>
+  <block id="2429279d334ad04a97acf3514b55b307" category="inline-link"><block ref="2429279d334ad04a97acf3514b55b307" category="inline-link-rx"></block></block>
+  <block id="84a1e72325e66c236656e2d4013df28b" category="paragraph"><block ref="84a1e72325e66c236656e2d4013df28b" category="inline-link-rx"></block></block>
+  <block id="c1d47e0c69cf4aa24dd1d9be184ba589" category="paragraph">为了获得最佳性能，NetApp 通常建议使用多个网络接口和直接连接或快速路由从云实例访问数据。我们还有其他数据移动解决方案，包括 <block ref="0adb843c17d646acd72646e9688dde2b" category="inline-link-rx"></block> 和 <block ref="4a924a6869cd4a0767434230d5d6ccd3" category="inline-link-rx"></block>，帮助客户构建应用感知、安全且经济高效的混合云 Spark 集群。</block>
+  <block id="a97fdbc53a2f2ffb669cf5bec4696bf4" category="paragraph">有关所有型号的完整 EF 系列规格，请参见 <block ref="dd92b2329df22bb549c9780087f3abab" category="inline-link-macro-rx"></block>。</block>
+  <block id="dd92b2329df22bb549c9780087f3abab" category="list-text"><block ref="dd92b2329df22bb549c9780087f3abab" category="inline-link-macro-rx"></block></block>
+  <block id="23de458a279cb77c771a906ae7fbf52f" category="paragraph">但是，如果您需要更多存储容量或更快的网络速度，则应使用 NetApp AFF A220 或 NetApp AFF A250 存储系统。此外，NetApp EF280 系统的最大容量为 1.5PB，带宽为 10GBps，也用于此解决方案验证。如果您希望获得更高带宽的更大存储容量，则可以使用 <block ref="9290c81f76b74b66b7051d50d766b467" category="inline-link-rx"></block>。</block>
+  <block id="a340a80086a468e2556a247456572a89" category="admonition">有关详细信息，请参见<block ref="a80bca4324b2437c5bf5f4b3248c6eb8" category="inline-link-rx"></block>。</block>
+  <block id="f217c81f72a98d73a2ef32abaa405554" category="paragraph">如果您希望自动执行此过程，可以使用 <block ref="f07bcb7e875f8bb20680b339fb58364a" category="inline-link-macro-rx"></block>、<block ref="7fc386eb564c4560b9bf182228e7a332" category="inline-link-macro-rx"></block> 或 <block ref="62c3d824298cc8f488bda82279b91e73" category="inline-link-macro-rx"></block>。</block>
 </blocks>

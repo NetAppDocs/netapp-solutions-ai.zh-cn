@@ -48,7 +48,7 @@ NOTE: 如果目标环境是您的本地数据中心，您将在本地ONTAP系统
 
 如果您不想使用BlueXP，则可以使用ONTAP System Manager 或ONTAP CLI 来创建FlexCache卷。要使用 System Manager 创建FlexCache卷，请参阅link:https://docs.netapp.com/us-en/ontap/task_nas_flexcache.html["ONTAP 文档"]。要使用ONTAP CLI 创建FlexCache卷，请参阅link:https://docs.netapp.com/us-en/ontap/flexcache/index.html["ONTAP 文档"]。
 
-如果您希望自动执行此过程，您可以使用link:https://docs.netapp.com/us-en/bluexp-automation/["BlueXP API"]， 这link:https://devnet.netapp.com/restapi.php["ONTAP REST API"]或link:https://docs.ansible.com/ansible/latest/collections/netapp/ontap/index.html["ONTAP Ansible 集合"]。
+如果您希望自动执行此过程，可以使用 link:https://docs.netapp.com/us-en/bluexp-automation/["BlueXP API"]、link:https://docs.netapp.com/us-en/ontap-restapi/index.html["ONTAP REST API"] 或 link:https://docs.ansible.com/ansible/latest/collections/netapp/ontap/index.html["ONTAP Ansible 集合"]。
 
 
 NOTE: 系统管理器在Amazon FSx ONTAP中不可用。
@@ -92,7 +92,7 @@ image:ddlnexus-005.png["该图显示输入/输出对话框或表示书面内容"
 
 如果您不想使用BlueXP，则可以使用ONTAP System Manager 或ONTAP CLI 来创建SnapMirror关系。要与 System Manager 创建SnapMirror关系，请参阅link:https://docs.netapp.com/us-en/ontap/task_dp_configure_mirror.html["ONTAP 文档"]。要使用ONTAP CLI 创建SnapMirror关系，请参阅link:https://docs.netapp.com/us-en/ontap/data-protection/snapmirror-replication-workflow-concept.html["ONTAP 文档"]。
 
-如果您希望自动执行此过程，您可以使用link:https://docs.netapp.com/us-en/bluexp-automation/["BlueXP API"]， 这link:https://devnet.netapp.com/restapi.php["ONTAP REST API"]或link:https://docs.ansible.com/ansible/latest/collections/netapp/ontap/index.html["ONTAP Ansible 集合"]。
+如果您希望自动执行此过程，可以使用 link:https://docs.netapp.com/us-en/bluexp-automation/["BlueXP API"]、link:https://docs.netapp.com/us-en/ontap-restapi/index.html["ONTAP REST API"] 或 link:https://docs.ansible.com/ansible/latest/collections/netapp/ontap/index.html["ONTAP Ansible 集合"]。
 
 
 NOTE: 系统管理器在Amazon FSx ONTAP中不可用。
@@ -111,7 +111,7 @@ NOTE: 您可以通过检查BlueXP、 ONTAP系统管理器或ONTAP CLI 中的镜�
 
 如果您不想使用BlueXP，则可以使用ONTAP System Manager 或ONTAP CLI 来中断SnapMirror关系。要断开与 System Manager 的SnapMirror关系，请参阅link:https://docs.netapp.com/us-en/ontap/task_dp_serve_data_from_destination.html["ONTAP 文档"]。要使用ONTAP CLI 断开SnapMirror关系，请参阅link:https://docs.netapp.com/us-en/ontap/data-protection/make-destination-volume-writeable-task.html["ONTAP 文档"]。
 
-如果您希望自动执行此过程，您可以使用link:https://docs.netapp.com/us-en/bluexp-automation/["BlueXP API"]， 这link:https://devnet.netapp.com/restapi.php["ONTAP REST API"]或link:https://docs.ansible.com/ansible/latest/collections/netapp/ontap/index.html["ONTAP Ansible 集合"]。
+如果您希望自动执行此过程，可以使用 link:https://docs.netapp.com/us-en/bluexp-automation/["BlueXP API"]、link:https://docs.netapp.com/us-en/ontap-restapi/index.html["ONTAP REST API"] 或 link:https://docs.ansible.com/ansible/latest/collections/netapp/ontap/index.html["ONTAP Ansible 集合"]。
 
 
 
