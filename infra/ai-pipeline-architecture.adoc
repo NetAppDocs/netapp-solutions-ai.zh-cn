@@ -15,6 +15,7 @@ summary:
 
 Karthikeyan Nagalingam， NetApp
 
+[role="lead"]
 本节介绍经过验证的人工智能管道的逻辑工作流程、组件交互、物理部署和数据沿袭。这些图表共同显示了 Apache Airflow 如何协调从 StorageGRID 到 ONTAP NAS 的数据移动，可选地使用 NetApp XCP 将数据放置在 ONTAP S3 或 LustreFS 上进行模型执行，并将受管控的结果返回到 StorageGRID 归档存储。
 
 

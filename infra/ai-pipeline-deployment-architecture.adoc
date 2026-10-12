@@ -15,6 +15,7 @@ summary:
 
 Karthikeyan Nagalingam， NetApp
 
+[role="lead"]
 本节定义了运行管道所需的基础设施布局、软件依赖关系和网络连接。该部署将 Airflow 编排与 XCP 数据移动主机分离，同时将两个组件连接到 StorageGRID、ONTAP NAS 以及所选的 ONTAP S3 或 LustreFS 训练目标。
 
 

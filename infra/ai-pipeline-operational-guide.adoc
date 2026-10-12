@@ -15,6 +15,7 @@ summary:
 
 Karthikeyan Nagalingam， NetApp
 
+[role="lead"]
 本指南涵盖日常执行、监控、事件分类、培训恢复、存档验证、容量调整和数据保护。将其与第 8 节中的配置场景结合使用，以在本地、ONTAP S3 和 LustreFS 培训模式下一致地运行相同的管道。
 
 

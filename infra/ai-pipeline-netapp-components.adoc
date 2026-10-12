@@ -15,6 +15,9 @@ summary:
 
 Karthikeyan Nagalingam， NetApp
 
+[role="lead"]
+AI 数据管道解决方案使用 NetApp、第三方和开源组件。
+
 [cols="50%,50%"]
 |===
 | 组件 | 解决方案中的角色 

@@ -15,6 +15,7 @@ summary:
 
 Karthikeyan Nagalingam， NetApp
 
+[role="lead"]
 配置参考描述了控制数据摄取、数据准备、XCP 移动性、训练、检查点和存档的运行时参数。ONTAP NAS 存储桶主要用作可支持性和可移植性的预备数据和 XCP 暂存层。在实时生产使用中，当更符合工作负载和延迟要求时，也可以通过支持 RDMA 的直接访问路径使用相同的预备数据。
 
 '''

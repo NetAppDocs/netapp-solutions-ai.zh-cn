@@ -15,6 +15,7 @@ summary:
 
 Karthikeyan Nagalingam， NetApp
 
+[role="lead"]
 NetApp XCP 提供 ONTAP NAS 准备数据层和活动训练层之间的受控传输路径。Airflow 执行预检，并通过 XCP 主机调用复制操作； `xcp++_++copy++_++destination`为每次运行选择 ONTAP S3 或 LustreFS。模型训练、微调和推理使用相同的选定目标，以保持数据和工件处于一致的层。
 
 

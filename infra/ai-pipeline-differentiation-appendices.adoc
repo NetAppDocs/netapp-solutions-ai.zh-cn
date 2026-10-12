@@ -15,6 +15,7 @@ summary:
 
 Karthikeyan Nagalingam， NetApp
 
+[role="lead"]
 此组合部分针对常见替代方案定位架构，并提供操作员和审阅者使用的共享参考资料。区别因素不是单个存储端点，而是 StorageGRID、ONTAP NAS、ONTAP S3、LustreFS、XCP 和 Airflow 的策略控制组合，使每个 AI 生命周期阶段能够使用适当的层级，而无需重建工作流。
 
 

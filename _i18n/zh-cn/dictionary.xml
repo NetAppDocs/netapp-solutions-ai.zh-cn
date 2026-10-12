@@ -7261,4 +7261,5 @@
   <block id="23de458a279cb77c771a906ae7fbf52f" category="paragraph">但是，如果您需要更多存储容量或更快的网络速度，则应使用 NetApp AFF A220 或 NetApp AFF A250 存储系统。此外，NetApp EF280 系统的最大容量为 1.5PB，带宽为 10GBps，也用于此解决方案验证。如果您希望获得更高带宽的更大存储容量，则可以使用 <block ref="9290c81f76b74b66b7051d50d766b467" category="inline-link-rx"></block>。</block>
   <block id="a340a80086a468e2556a247456572a89" category="admonition">有关详细信息，请参见<block ref="a80bca4324b2437c5bf5f4b3248c6eb8" category="inline-link-rx"></block>。</block>
   <block id="f217c81f72a98d73a2ef32abaa405554" category="paragraph">如果您希望自动执行此过程，可以使用 <block ref="f07bcb7e875f8bb20680b339fb58364a" category="inline-link-macro-rx"></block>、<block ref="7fc386eb564c4560b9bf182228e7a332" category="inline-link-macro-rx"></block> 或 <block ref="62c3d824298cc8f488bda82279b91e73" category="inline-link-macro-rx"></block>。</block>
+  <block id="ecf051eb19810ee05a1158848fdacf1c" category="paragraph">AI 数据管道解决方案使用 NetApp、第三方和开源组件。</block>
 </blocks>
