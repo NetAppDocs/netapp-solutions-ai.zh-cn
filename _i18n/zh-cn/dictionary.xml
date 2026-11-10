@@ -823,9 +823,7 @@
   <block id="7caace9abf76a798c629a9134d1bb259" category="summary">NFS 和 S3 双协议访问的一个潜在用例是在机器学习和数据科学领域。例如，一个数据科学家团队可能正在使用 AWS SageMaker 开展机器学习项目，这需要访问以 NFS 格式存储的数据。但是，可能还需要通过 S3 存储桶访问和共享数据，以便与其他团队成员协作或与使用 S3 的其他应用程序集成。</block>
   <block id="ee8cf3bf54dea46135e299d79fa1c179" category="paragraph">该解决方案采用以下技术：</block>
   <block id="a03ea23912d3b35c875ff398aa4888af" category="list-text">AWS SageMaker 笔记本。为开发人员和数据科学家提供机器学习功能，以高效地创建、训练和部署高质量的 ML 模型。</block>
-  <block id="bbe2552dc6295d353c02fd85c243f334" category="list-text">* NetApp BlueXP。*支持在本地以及 AWS、Azure 和 Google Cloud 上发现、部署和操作存储。它提供数据保护，防止数据丢失、网络威胁和意外中断，并优化数据存储和基础设施。</block>
   <block id="aa6fa71ab9848c5875470d36bbc2138a" category="list-text">* NetApp Cloud Volumes ONTAP。*在 AWS、Azure 和 Google Cloud 上提供具有 NFS、SMB/CIFS、iSCSI 和 S3 协议的企业级存储卷，让用户在访问和管理云中的数据时拥有更大的灵活性。</block>
-  <block id="eea496572a01ca3e5ced1dfe99a5809c" category="paragraph">NetApp Cloud Volumes ONTAP由BlueXP创建，用于存储 ML 数据。</block>
   <block id="923baf107dc23ca10f968a4fdecd4f4f" category="paragraph">下图展示了该解决方案的技术组件。</block>
   <block id="8afbfe3aeb9c594404d5c244cf8f6024" category="inline-image-macro">该图显示了该解决方案的技术组件。</block>
   <block id="d3d9ae40ce6d205245ae4b8c9649b6e2" category="paragraph"><block ref="d3d9ae40ce6d205245ae4b8c9649b6e2" category="inline-image-macro-rx" type="image"></block></block>
@@ -7262,4 +7260,6 @@
   <block id="a340a80086a468e2556a247456572a89" category="admonition">有关详细信息，请参见<block ref="a80bca4324b2437c5bf5f4b3248c6eb8" category="inline-link-rx"></block>。</block>
   <block id="f217c81f72a98d73a2ef32abaa405554" category="paragraph">如果您希望自动执行此过程，可以使用 <block ref="f07bcb7e875f8bb20680b339fb58364a" category="inline-link-macro-rx"></block>、<block ref="7fc386eb564c4560b9bf182228e7a332" category="inline-link-macro-rx"></block> 或 <block ref="62c3d824298cc8f488bda82279b91e73" category="inline-link-macro-rx"></block>。</block>
   <block id="ecf051eb19810ee05a1158848fdacf1c" category="paragraph">AI 数据管道解决方案使用 NetApp、第三方和开源组件。</block>
+  <block id="32931592cf6b28ce447e74b088c750ed" category="list-text">*NetApp Console。*为本地以及 AWS、Azure 和 Google Cloud 上的存储的发现、部署和操作提供单一控制平面。它提供数据保护，防止数据丢失、网络威胁和意外中断，并优化数据存储和基础架构。</block>
+  <block id="9286b2cd1be0332fa04417bf36c30a89" category="paragraph">NetApp Cloud Volumes ONTAP 是从 NetApp Console 创建的，用于存储 ML 数据</block>
 </blocks>
