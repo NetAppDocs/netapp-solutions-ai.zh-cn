@@ -16,12 +16,7 @@ summary: 了解 KV 缓存卸载到 CPU 内存和共享 NetApp StorageGRID S3 或
 [role="lead"]
 第一波企业人工智能投资侧重于模型训练和微调构建能力，而不是大规模服务。随着组织从实验转向生产，重心转向实时推理：用户不断互动的搜索助手、聊天机器人、copilot 和代理工作流程。在这些环境中，GPU 利用率快速上升，并不是因为每个请求都运行完整的训练过程，而是因为每个后续问题、对话中的每个新轮次以及每个并发用户都会为推理堆栈增加负载。
 
-
-
-[[introduction]]
-== 简介
-
-一种模式很快就会显现出来：GPU 正在做大量令人惊讶的重复工作，重新计算它已经处理过的令牌的注意力。这种重复不仅仅是一个调优问题；它是一个内存架构问题。业界的回应是围绕 KV 缓存构建的分层内存策略。
+本指南介绍了如何通过将 KV 缓存卸载到分层内存设计来减轻 GPU 的负载，以及如何将持久层放置在 NetApp 存储上。共享层可以是 StorageGRID S3、ONTAP pNFS 挂载或 NetApp Novus pNFS 挂载。服务堆栈可以是带有内置卸载连接器或 LMCache 的 vLLM，或者是带有 HiCache 的 SGLang。在任何情况下，架构都是相同的。您选择引擎和存储平台，然后将卸载路径指向该平台。
 
 
 
@@ -61,7 +56,7 @@ KV 缓存卸载通过将先前处理的提示的 KV 缓存移动到 GPU 或加�
 通过这种架构，当新请求到达时，KV 缓存块可以从共享层暂存到 CPU 内存中，从而使 GPU 专注于活动工作，同时仍在存储上保留持久缓存。
 
 --
-* *推理的经济性，而不仅仅是速度* 从生产的角度来看，共享存储的重要性不仅仅是延迟。它是对内存、并发性和成本的控制。像 vLLM 这样的服务引擎在单个节点内高效地管理 KV 缓存。像 LMCache 这样的 KV 缓存卸载框架将 KV 缓存转变为可跨 CPU 内存和存储移动的便携式可共享资产。像 NetApp ONTAP 和 StorageGRID 这样的共享存储平台提供了持久层，使跨多个实例的共享切实可行。通过将 LMCache 连接到共享存储，多个 vLLM 实例可以访问相同的已卸载 KV 缓存条目，从而随着并发量的增长提高吞吐量并减少冗余计算。这直接减少了重复预填充所浪费的 GPU 周期，与聊天机器人、搜索助手、代理以及任何具有多轮对话线程、共享系统提示或重复上下文模式的工作负载密切相关。
+* *推理的经济性，而不仅仅是速度* 从生产的角度来看，共享存储的重要性不仅仅在于延迟。它还涉及对内存、并发和成本的控制。像 vLLM 这样的服务引擎在一个节点内高效地管理 KV 缓存。像 LMCache 这样的 KV 缓存卸载框架将 KV 缓存转变为可跨 CPU 内存和存储移动的便携式可共享资产。像 NetApp ONTAP、NetApp Novus 和 StorageGRID 这样的共享存储平台提供了持久层，使得跨多个实例的共享变得切实可行。通过将 LMCache 连接到共享存储，多个 vLLM 实例可以访问相同的已卸载 KV 缓存条目，从而在并发量增长时提高吞吐量并减少冗余计算。这减少了在重复预填充上浪费的 GPU 周期，这与聊天机器人、搜索助手、智能体以及任何具有多轮线程、共享系统提示或重复上下文模式的工作负载直接相关。
 * *提高推理性能和 GPU 投资* + 此基准测试比较了随会话长度和并发负载增加时的推理性能。当 KV 缓存仅保留在 GPU 内存中时，可用余量会迅速耗尽，吞吐量下降（橙色线）。借助三层设计（GPU 用于活动工作、CPU 用于快速暂存、共享存储用于持久且可共享的缓存），该平台可维持更多会话，并避免同样急剧的性能下降。在实践中，分层通过减少重复的预填充计算，帮助您从相同的 GPU 中获得更多工作负载。
 +
 --
@@ -86,6 +81,7 @@ image:kv-cache-002.png["\"多轮推理基准\",600,600"]
 --
 ** *StorageGRID S3*
 ** *适用于 ONTAP NAS 的 NFS/pNFS*
+** *适用于 NetApp Novus 的 pNFS*
 
 
 无需自定义专有推理客户端。运营团队可以使用与其他数据服务相同的存储协议，以及熟悉的数据保护、安全性和多云移动性。
@@ -98,8 +94,22 @@ image:kv-cache-002.png["\"多轮推理基准\",600,600"]
 [[deploy-kv-cache-offloading]]
 == 部署 KV 缓存卸载
 
-共享存储扩展了 KV 缓存容量，并实现了跨服务实例的重用。要在生产中使用该层，您需要配置推理引擎和 KV 缓存卸载框架。以下各节介绍如何使用常见工具选项实现此堆栈。
+共享存储扩展了 KV 缓存容量，并实现了跨服务实例的重用。要在生产中使用该层，您需要配置推理引擎和 KV 缓存卸载框架。
 
+本节中的实施选项是对等项。选择与您运行的引擎匹配的选项：
+
++
+
+--
+* *使用 vLLM 的 LMCache 进程内模式*
+* *vLLM的原生卸载连接器*
+* *使用 vLLM 的 LMCache 多进程模式*
+* *SGLang HiCache*
+
+
+这些选项中的每个 pNFS 指令都适用于 ONTAP pNFS 或 Novus pNFS。将挂载点设在 /mnt/kvcache，或将 Novus 挂载在 /mnt/novus，并使用该路径作为共享层目录来卸载 kv 缓存块。
+
+--
 
 
 [[vllm]]
@@ -116,7 +126,7 @@ LMCache 是一种流行的开源 KV 缓存卸载框架。本节介绍如何实�
 
 在默认设置中，vLLM 仅在 GPU 内存中保留 KV 缓存。随着系统负载的增加，这将成为瓶颈。在此解决方案中，vLLM 与 LMCache 配对，其中 vLLM 提供模型，而 LMCache 跨 CPU 和共享 NetApp 存储卸载和重用缓存。LMCache 通过连接器连接到 vLLM；启动时使用 vLLM 的 --kv-transfer-config 标志启用它，从而使 vLLM 和 LMCache 将缓存保存到存储中，并在缓存命中时重新加载。
 
-进程内模式是使用 vLLM 运行 LMCache 的原始方法。使用进程内模式时，LMCache 在 vLLM 进程中运行。后来的 LMCache 版本添加了多进程模式，这是目前推荐的方法，可获得更好的功能支持和性能。本节介绍进程内模式，该模式在当前 LMCache 文档中标记为已弃用。对于新部署，请考虑改用多进程模式。
+进程内模式是使用 vLLM 运行 LMCache 的原始方法。当您使用进程内模式时，LMCache 在 vLLM 进程中运行。后来的 LMCache 版本添加了多进程模式，这是目前推荐的方法，以获得更好的功能支持和性能。本节涵盖进程内模式和多进程模式。
 
 对于此部署，您将：
 
@@ -148,16 +158,27 @@ LMCache 是一种流行的开源 KV 缓存卸载框架。本节介绍如何实�
 
 
 
-==== ONTAP pNFS/NFS 后端
+==== ONTAP 或 Novus pNFS 后端
 
-* 导出到 GPU 服务器的 ONTAP 卷
-* 在运行 vLLM 的*每个*服务器上创建的挂载路径（例如 /mnt/kvcache）。适用于基于 RDMA (RoCE) 的高性能 pNFS 的示例挂载命令：
-
-
-[listing]
+* 可供 GPU 服务器使用的 ONTAP 卷或 Novus 导出路径。
+* 运行 vLLM 的每台服务器上的挂载路径。本指南对 ONTAP 使用 /mnt/kvcache，对 Novus 导出路径使用 /mnt/novus。
++
+ Example mount command for high-performance pNFS over RDMA (RoCE):
++
+[source, cli]
 ----
 mount -o vers=4.1,proto=rdma,trunkdiscovery,write=eager,rsize=262144,wsize=262144 my_storage.my_company.net:/kvcache /mnt/kvcache
 ----
++
+对于 Novus 导出路径，应使用以下挂载点。
+
++
+[source, cli]
+----
+mount -t nfs4 -o nfsvers=4.2,proto=tcp,rsize=1048576,wsize=1048576,port=<nfs_port> <novus_tenant_vip>:/mnt/novus
+----
+
+
 
 
 [[1-install-vllm-and-lmcache]]
@@ -217,7 +238,7 @@ extra_config:
   remote_storage_plugin.fs.base_path: /mnt/kvcache
   save_chunk_meta: false
 ----
-在步骤 3 之前，使用您站点的 NFS/pNFS 程序挂载 ONTAP 导出。
+在步骤 3 之前，请使用您站点的 NFS/pNFS 流程挂载 ONTAP 或 Novus 导出。
 
 
 
@@ -303,11 +324,178 @@ curl -s http://localhost:8000/v1/chat/completions \
 
 
 
+[[vllm-native-offloading-connector]]
+=== vLLM 原生卸载连接器
+
+vLLM 包含卸载连接器，因此此路径不会添加单独的缓存进程。该连接器保留 CPU 层并将共享层写入 Novus 目录。
+
+这些说明适用于 ONTAP pNFS 或 Novus pNFS。对于 ONTAP，将 `root_dir`设置为 `/mnt/kvcache`；对于 Novus，设置为 `/mnt/novus`。
+
+示例使用 Novus 路径。
+
+`cpu_bytes_to_use` 以字节为单位。以下值为 100 GB。 `block_size` 为 256。如果您提供很长的提示，请增大此值。
+
+[source, cli]
+----
+PYTHONHASHSEED=0 \
+  vllm serve \
+  Qwen/Qwen3-8B \
+  --tensor-parallel-size 1 \
+  --kv-transfer-config '{
+    "kv_connector": "OffloadingConnector",
+    "kv_role": "kv_both",
+    "kv_connector_extra_config": {
+      "spec_name": "TieringOffloadingSpec",
+      "cpu_bytes_to_use": 100000000000,
+      "block_size": 256,
+      "eviction_policy": "lru",
+      "offload_prompt_only": false,
+      "secondary_tiers": [
+        {
+          "type": "fs",
+          "root_dir": "/mnt/novus",
+          "n_read_threads": 32,
+          "n_write_threads": 16
+        }
+      ]
+    }
+  }' \
+  --port 8000
+----
+对于同一主机上的每个 vLLM 实例，请使用不同的 CUDA_VISIBLE_DEVICES 值和不同的端口。在所有 vLLM 实例中保持 PYTHONHASHSEED 和 root_dir 相同。
+
+
+
+[[lmcache-multiprocess-mode]]
+=== LMCache 多进程模式
+
+LMCache 多进程（MP）模式是使用 vLLM 运行 LMCache 的推荐方式。LMCache 在 vLLM 进程之外作为独立服务运行，vLLM 使用 `LMCacheMPConnector`附加到它。pNFS 上经过验证的 L2 后端为 `nixl_store_dynamic`和 `fs_native`。
+
+这些说明适用于 ONTAP pNFS 或 Novus pNFS。对于 ONTAP，将 `file_path`或 `base_path`设置为 `/mnt/kvcache`；对于 Novus，则设置为 `/mnt/novus`。
+
+示例使用 Novus 路径。
+
+`chunk_size` 为 256。如果您提供非常长的提示，请对其进行调整。 `--l1-size-gb 100` 是 CPU 层。
+
+启动两个 LMCache 服务器之一，然后启动 vLLM。
+
+*选项 1： `nixl_store_dynamic` 使用 GPUDirect Storage*
+
+当 GPU 服务器具有可用的 GPUDirect Storage 以及支持 GDS 的存储系统时，使用此选项。
+
+[source, cli]
+----
+PYTHONHASHSEED=0 \
+  lmcache server \
+  --host localhost \
+  --port 5555 \
+  --http-port 8080 \
+  --max-workers 8 \
+  --l1-size-gb 100 \
+  --eviction-policy LRU \
+  --l2-prefetch-max-in-flight 128 \
+  --l2-adapter '{
+    "type": "nixl_store_dynamic",
+    "backend": "GDS",
+    "backend_params": {
+      "file_path": "/mnt/novus",
+      "use_direct_io": "true",
+      "max_capacity_gb": "10000"
+    }
+  }' \
+  --chunk-size 256
+----
+*选项 2：fs_native。此后端通过 LMCache 的原生文件系统适配器使用已挂载的文件系统。*
+
+[source, cli]
+----
+PYTHONHASHSEED=0 \
+  lmcache server \
+  --host localhost \
+  --port 5555 \
+  --http-port 8080 \
+  --max-workers 8 \
+  --l1-size-gb 100 \
+  --eviction-policy LRU \
+  --l2-prefetch-max-in-flight 128 \
+  --l2-adapter '{
+    "type": "fs_native",
+    "base_path": "/mnt/novus",
+    "num_workers": 128
+  }' \
+  --chunk-size 256
+----
+启动 vLLM 并将 MP 连接器指向 LMCache 服务器：
+
+[source, cli]
+----
+PYTHONHASHSEED=0 \
+  vllm serve \
+  Qwen/Qwen3-8B \
+  --tensor-parallel-size 1 \
+  --kv-transfer-config '{
+    "kv_connector": "LMCacheMPConnector",
+    "kv_connector_module_path": "lmcache.integration.vllm.lmcache_mp_connector",
+    "kv_role": "kv_both",
+    "kv_connector_extra_config": {
+      "lmcache.mp.host": "localhost",
+      "lmcache.mp.port": 5555
+    }
+  }' \
+  --port 8000
+----
+在一个 GPU 服务器上，其他 vLLM 进程可以使用 localhost:5555 处的相同 LMCache 服务器。跨服务器，在每台服务器上运行 LMCache 和 vLLM，在每台服务器上挂载相同的 ONTAP 卷或 Novus 导出，并保持 PYTHONHASHSEED=0。共享目录使在一个服务器上写入的块可以在另一个服务器上读取。
+
+
+
+[[sglang-hicache]]
+=== SGLang HiCache
+
+HiCache 是 SGLang 中内置的 KV 缓存框架。其 NIXL 后端支持相同的三层设计：GPU 内存、CPU 层和共享 pNFS 目录。
+
+这些说明适用于 ONTAP pNFS 或 Novus pNFS。对于 ONTAP，将 `SGLANG_HICACHE_NIXL_BACKEND_STORAGE_DIR`设置为 `/mnt/kvcache`，对于 Novus，将其设置为 `/mnt/novus`。
+
+示例使用 Novus 路径。
+
+根据当前的 SGLang 文档安装 SGLang，包括 HiCache NIXL 存储后端。NIXL 后端使用 GPUDirect Storage。示例插件块启用多线程 GDS 插件。
+
+`page-size` 为 256。如果您提供非常长的提示，请对其进行调整。 `--hicache-size 100` 是 CPU 层，以 GB 为单位。
+
+创建 `nixl_backend_config.toml`：
+
+[source, cli]
+----
+[plugin.gds_mt]
+thread_count = 32
+active = true
+----
+启动服务器：
+
+[source, cli]
+----
+PYTHONHASHSEED=0 \
+  SGLANG_HICACHE_NIXL_BACKEND_STORAGE_DIR=/mnt/novus \
+  python3 -m sglang.launch_server \
+  --model-path "Qwen/Qwen3-8B" \
+  --host 0.0.0.0 \
+  --port 8000 \
+  --page-size 256 \
+  --enable-hierarchical-cache \
+  --hicache-size 100 \
+  --hicache-write-policy write_through \
+  --hicache-storage-prefetch-policy wait_complete \
+  --hicache-storage-backend nixl \
+  --hicache-storage-backend-extra-config "@nixl_backend_config.toml"
+----
+查看 SGLang HiCache 文档，了解分层缓存的体系结构。要在 SGLang 服务器之间共享缓存，请在每台服务器上挂载相同的 ONTAP 卷或 Novus 导出，将存储目录指向该挂载点，并在每台服务器上设置 PYTHONHASHSEED=0。
+
+
+
 [[conclusion]]
 == 结束语
 
 部署分层 KV 缓存架构将 KV 缓存从 GPU 内存移动到 CPU 内存和共享 NetApp 存储，因此推理可以随用户和上下文长度扩展，而无需在重复预填充时浪费 GPU 周期。共享存储将缓存转化为跨服务实例的可重用基础架构，并帮助您从现有 GPU 投资中获得更多价值。
 
-NetApp 存储非常适合这一层，因为它提供了超出原始容量的生产推理所需的功能：通过 S3 和 NFS/pNFS 进行标准访问、多个服务引擎实例可同时使用的共享缓存，以及您已依赖的用于持久性、保护和治理的企业数据服务。您无需专有客户端；KV 缓存卸载框架使用熟悉的协议连接到 StorageGRID S3 或 ONTAP NAS 挂载点。
+Novus 代表了 NetApp 为 AI 工厂进行扩展的方式的架构转变，但从 KV 缓存卸载的角度来看，它是您使用传统 ONTAP 所做工作的直接延伸。由于两种架构都依赖于标准的 pNFS，因此您的推理堆栈不会改变，您只需将卸载路径指向 Novus 挂载点即可。无论您是继续使用 LMCache、切换到 vLLM 的原生连接器，还是部署 SGLang HiCache，底层存储层的行为方式都是相同的，让您无需重新架构应用程序堆栈即可横向扩展推理容量。
 
 NetApp 为 KV 缓存卸载提供了熟悉的存储基础，而无需更改运行推理的方式或团队管理数据的方式。
