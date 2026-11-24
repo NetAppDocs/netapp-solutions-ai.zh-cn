@@ -1,0 +1,272 @@
+---
+sidebar: sidebar 
+permalink: data-analytics/mongodb-ontap-use-cases.html 
+keywords: mongodb, atlas, ops manager, digital advisor, snapcenter, use cases 
+summary: 本页介绍了两个客户用例，从 MongoDB Atlas 提供 Digital Advisor 服务，以及使用 Ops Manager 和 NetApp SnapCenter 进行企业级 MongoDB 备份和恢复。 
+---
+= 客户用例
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+此页面描述了两个用例，展示了本报告中的 MongoDB 和 NetApp 模式如何在实践中应用。第一个展示了 MongoDB 提供 NetApp 服务。第二个展示了 MongoDB Ops Manager 如何保护 MongoDB 数据库，以及 NetApp 存储可以位于其快照存储之后的位置。两者均作为通用模式编写。大小、计划、身份和产品版本已特意省略。
+
+
+
+[[serving-netapp-digital-advisor-aiq-from-mongodb-atlas]]
+== 从 MongoDB Atlas 提供 NetApp Digital Advisor (AIQ)
+
+
+
+[[overview]]
+=== 概述
+
+Digital Advisor 通过 AWS 上的 MongoDB Atlas 为客户、合作伙伴和 NetApp 员工提供风险、容量和升级建议。由于 Atlas 包含预构建的文档以及每个文档上的访问规则，因此页面加载无需等待分析，每个受众只能看到自己的数据，并且用户操作在节点故障后仍然存在。
+
+
+
+[[why-mongodb]]
+=== 为什么选择 MongoDB
+
+[cols="40%,60%"]
+|===
+| MongoDB 功能 | Digital Advisor 获取的内容 
+
+
+| 带索引的灵活文档 | 快速读取，在一个查询中联接系统、卷和风险。 
+
+
+| 从多个作业更新插入到一个集合中 | 每个源都会根据自己的时间表刷新。 
+
+
+| 访问每个文档上的字段 | 每个受众的范围视图。 
+
+
+| 大多数写操作和时间点恢复 | 确认和缓解在故障转移后仍然有效。 
+|===
+
+
+[[solution]]
+=== 解决方案
+
+.AIQ 服务层架构
+image:mongodb-ontap-025.png["MongoDB Atlas 上的 Digital Advisor 服务层架构，从 AutoSupport 遥测，经过本地数据湖和刷新作业，再到 Atlas 集合和 API 层。"]
+
+数据将通过以下步骤传输：
+
+. 已安装的系统将 AutoSupport 遥测上传到 NetApp。
+. 本地数据湖准备数据并将其公开为虚拟数据集。
+. 计划刷新作业采用 majority 写入关注将每个数据集批量更新插入到一个 Atlas 集合中。
+. AWS 上的 API 层读取 Atlas，将访问过滤器添加到每个查询，并为 Digital Advisor 用户提供服务。
+. 单独的授权服务仅读取角色、用户和令牌集合以构建用户配置文件。
+
+
+
+
+[[best-practices]]
+=== 最佳实践
+
+* 为每个写入器*使用大多数和可重试的写入*。
+* *在代码中声明每个索引。*手动添加的索引可能会在下一次部署时被删除。
+* *仅设置您拥有的叶子路径。*设置父对象会擦除其他作业所拥有的字段。
+* *按键而不是偏移量分页，*仅投影您需要的字段。
+* *备份无法重建的内容，*确认时间点恢复覆盖用户状态，并测试单集合还原。
+
+
+
+
+[[enterprise-mongodb-backup-and-recovery-with-ops-manager]]
+== 使用 Ops Manager 实现企业 MongoDB 备份和恢复
+
+
+
+[[overview]]
+=== 概述
+
+在 Kubernetes 和虚拟机上运行 MongoDB 即服务的组织需要一种方式来部署、监控、备份和恢复每个数据库。MongoDB Ops Manager 和 MongoDB Enterprise Operator 提供了这种方式。此用例描述了它们如何协同工作，以及 NetApp 存储可以位于快照存储后端的什么位置。
+
+
+
+[[problem-and-requirements]]
+=== 问题和要求
+
+[cols="31%,35%,34%"]
+|===
+| 挑战 | 需求 | 对客户的价值 
+
+
+| *备份至关重要。*每个生产数据库都需要一个可恢复的副本。 | 通过一个接口实现*安全、实时备份*。 | 无需自定义脚本即可从丢失或损坏中恢复。 
+
+
+| *混合平台。*数据库在 Kubernetes 和 VM 上运行。 | *一个工具*即可对两者进行部署、监控、升级、备份和扩展。 | 每个数据库都有一个运营模式。 
+
+
+| *手动配置。*手工构建的副本集漂移。 | 来自简短清单的*声明性部署*。 | 每次都是相同的数据库。 
+
+
+| *可见性。*备份健康状况很难看到。 | 使用 REST API 进行 *监控* 以实现自动化。 | 在需要还原之前会显示问题。 
+
+
+| *存储选择。*快照大小和保留时间因数据库而异。 | *可插拔快照存储：* 块存储、S3 或文件系统。 | 每个数据库的成本和恢复需求相匹配。 
+|===
+
+
+[[solution]]
+=== 解决方案
+
+.使用 MongoDB Ops Manager 的备份和还原架构
+image:mongodb-ontap-026.png["显示 MongoDB Enterprise Operator、Ops Manager、备份代理以及块存储、S3 和文件系统快照存储的体系结构。"]
+
+*部署。*Enterprise Operator 监视副本集清单并创建成员。项目配置和凭据密钥将它们连接到 Ops Manager。
+
+*备份。*Ops Manager 选择快照节点。备份代理打开 `$backupCursor`，复制数据文件，并将其发送到 Ops Manager。Ops Manager 将它们写入块存储、S3 存储或文件系统存储。
+
+*还原。*用户请求快照链接，Ops Manager 创建还原作业。快照从存储流式传输到目标服务器。还原实用程序启动临时数据库，获取 oplog，并将其应用于快照。
+
+*NetApp 适用性。*针对 Ops Manager 组件提出了三个 NetApp 选项。它们是待评估的设计指南，未在本报告中验证：
+
+[cols="31%,35%,34%"]
+|===
+| Ops Manager 组件 | NetApp 选项 | 为什么要考虑 
+
+
+| S3 存储 | NetApp StorageGRID（S3） | 具有基于策略的数据放置的对象存储。 
+
+
+| 文件系统存储 | NetApp ONTAP （NFS） | ONTAP 数据管理。SnapCenter 获取卷的快照副本，而 SnapMirror 将其复制到第二个站点或云端。 
+
+
+| 应用程序和备份数据库 | NetApp ONTAP（NFS 或 iSCSI）搭配 SnapCenter | Snapshot 副本使备份平台本身在故障后能够快速恢复。 
+|===
+
+
+[[use-netapp-snapcenter-with-ops-manager]]
+=== 将 NetApp SnapCenter 与 Ops Manager 结合使用
+
+Ops Manager 在应用程序级别保护 MongoDB。NetApp SnapCenter 借助 ONTAP 快照、SnapRestore、SnapMirror 和 FlexClone 技术在存储级别添加了第二层。各层互为补充，推荐的设计同时运行两者，如下图所示。
+
+
+NOTE: 本节是需要评估的设计指南。它使用与 xref:mongodb-ontap-solution-validation.html[解决方案验证] 中的 SnapCenter 程序相同的 Snapshot、SnapMirror 和 FlexClone 工作流。
+
+.结合 Ops Manager 和 NetApp SnapCenter 的分层保护
+image:mongodb-ontap-027.png["分层保护设计，由 Ops Manager 提供应用程序级备份，并由 SnapCenter 提供存储级快照副本和复制。"]
+
+下表将工作分为两层。
+
+[cols="22%,39%,39%"]
+|===
+| 功能 | Ops Manager | SnapCenter 
+
+
+| 备份单元 | 来自备份游标的副本集的快照，以及 oplog 的连续副本。 | 一个保存数据文件和日志的 ONTAP 卷的 Snapshot 副本。 
+
+
+| 时间点恢复 | 是。还原快照并将 oplog 重放到所选时间。 | 到 Snapshot 副本的时间。将其与 Ops Manager 的 oplog 重播相结合，以实现更精细的恢复。 
+
+
+| 恢复速度 | 快照从存储流式传输到目标服务器。 | SnapRestore 返回卷而不复制数据。在您自己的数据上衡量结果。 
+
+
+| 计划和保留 | 为每个项目和每个数据库设置。 | 由策略为每个 ONTAP 卷设置。 
+
+
+| 克隆 | 还原到新服务器。 | 按需分配 FlexClone 卷，这些卷与 Snapshot 副本共享块。 
+
+
+| 灾难恢复 | 从已复制或远程快照存储还原。 | SnapMirror 到第二个站点或云中的 Amazon FSx for NetApp ONTAP 
+
+
+| 范围 | Ops Manager 管理的 Kubernetes 和 VM 上的数据库。 | ONTAP 上的卷。Kubernetes 持久卷需要 NetApp Trident 保护。 
+|===
+下表介绍了部署 SnapCenter 的三种方法。从模式 A 开始，并在演练恢复后移至模式 C。
+
+[cols="24%,39%,37%"]
+|===
+| 模式 | 哪些内容受 SnapCenter 保护 | 用于 
+
+
+| A. 保护 Ops Manager 资产（从这里开始） | 文件系统存储卷、Ops Manager 应用程序数据库、备份数据库和 oplog 存储。 | 快速恢复备份平台本身，以及将存储 SnapMirror 到第二个站点或云端。 
+
+
+| B. 保护 MongoDB 数据卷 | ONTAP 上隐藏的二级成员的数据和日志卷，例如 VM 数据存储或 NFS、iSCSI 或 FC 卷。 | 无需流式传输完整快照即可还原，并为开发/测试和 QA 提供即时 FlexClone 副本。 
+
+
+| C. 合并（建议目标） | 模式 B 用于快速恢复和克隆，Ops Manager 仍然跨 Kubernetes 和虚拟机提供基于 oplog 的时间点恢复和策略。 | 需要恢复阶梯的生产数据库：SnapRestore，然后是 Ops Manager 时间点还原，然后是 SnapMirror 故障转移。 
+|===
+*应用程序一致性。*WiredTiger 写入日志，因此将数据文件和日志保存在一起的卷的 Snapshot 副本是崩溃一致的，并且 `mongod`会在启动时将其恢复。如果它们位于不同的卷上，请将 Snapshot 副本作为一个一致性组，或者先使用 `fsyncLock`使数据库静默，然后再将其释放。有关可以改编为前置命令和后置命令的命令，请参阅xref:mongodb-ontap-appendix.html#quiesce-and-balancer-commands[附录：静默和平衡器命令]。
+
+*快照位置。*针对隐藏的辅助成员（优先级为 0）运行 SnapCenter 备份，以便快照副本不会与应用程序流量竞争。对其进行调度，以免与同一成员上的 Ops Manager 备份重叠。
+
+*备份。*SnapCenter 根据需要运行预命令，并根据策略对数据卷和日志卷创建 Snapshot 副本。然后运行后命令，并启动 SnapMirror 更新，将数据更新到第二个站点或云中的 Amazon FSx for NetApp ONTAP。Ops Manager 继续对副本集和 oplog 执行自身备份。
+
+*还原。*在使用此过程之前，请验证 ONTAP 卷是否专用于目标成员，并且不包含其他 VM 或成员磁盘。对于共享数据存储，请勿使用此单成员过程还原整个卷；而是计划从 FlexClone 进行特定于成员的磁盘还原，或者对所有受影响的使用者进行协调恢复。在目标成员上停止 `mongod`，并使用 SnapRestore 从所选 Snapshot 副本还原其卷。您还可以先挂载 FlexClone 卷以检查数据。启动 `mongod`，让成员重新加入副本集。对于时间点恢复，请将 Snapshot 副本还原到独立服务器，并将 Ops Manager 中的 oplog 应用到所选时间。如果 Snapshot 副本早于 oplog 窗口，则成员需要从主节点进行初始同步。
+
+*恢复路径。*对于发生故障的成员，请使用 SnapRestore 还原其卷，并使其从运行状况良好的副本集同步数据。对于已复制到其他成员的逻辑数据丢失或损坏，请使用隔离还原或 Ops Manager 时间点恢复；将还原的成员重新加入活动副本集会重放不需要的操作。对于站点丢失，请使用演练过的 SnapMirror 故障转移过程。
+
+*恢复目标。*重新加入活动副本集的已还原成员会同步至其当前状态；其恢复点不是 Snapshot 时间。隔离的 Snapshot 还原会恢复捕获的状态，而 Ops Manager 时间点还原使用快照和 oplog 达到所选时间。SnapRestore 避免了复制数据，而 Ops Manager 还原会流式传输快照，因此恢复时间有所不同。此报告未提供测量值，因此请针对您自己的数据测量这两种路径。
+
+*约束。*SnapCenter 通过 NetApp 支持的 MongoDB 插件保护 MongoDB，如 xref:mongodb-ontap-solution-overview.html#snapcenter[NetApp SnapCenter] 中所述。确认您的 MongoDB 拓扑和版本受支持。如果不支持，请通过 ONTAP REST API 编写相同操作的脚本。SnapCenter 不会直接保护 Kubernetes 持久卷。请使用 NetApp Trident protect 保护这些卷，并将 Ops Manager 保留为其备份路径。
+
+
+
+[[benefits-to-the-customer]]
+=== 为客户带来的优势
+
+[cols="26%,74%"]
+|===
+| 优势 | 对数据库所有者进行了哪些更改 
+
+
+| *保护* | 实时、安全的备份，可还原到所选快照并重播 oplog。 
+
+
+| *一致性* | 相同的清单和工具部署每个副本集。 
+
+
+| *速度* | 简短的清单取代了手动设置，并通过链接请求还原。 
+
+
+| *灵活性* | 三个快照存储允许每个团队选择成本和保留期。 
+
+
+| *自动化* | REST API 允许编排工具驱动部署、备份和还原。 
+|===
+
+
+[[netapp-values-in-this-design]]
+=== 此设计中的 NetApp 价值
+
+* *保护第一。*Ops Manager 备份和还原从第一个清单开始即已内置，而 SnapCenter 在底层添加了存储级快照副本。
+* *存储选择。*Ops Manager 快照可以通过 S3 存储在 StorageGRID 上，或存储在 ONTAP NFS 卷上，SnapCenter 也可以对其进行保护。
+* *可信操作。*凭据位于 Kubernetes 密钥中，每个更改都在代码中声明。
+* *混合设计。*相同的模式适用于 OpenShift、Kubernetes 和虚拟机，无论是在本地还是在云端。
+* *快速恢复和克隆。*SnapRestore 可从 Snapshot 副本返回成员卷，而无需流式传输数据，并且 FlexClone 可创建开发/测试副本，而无需复制数据。
+* *灾难恢复。*SnapMirror 将 Snapshot 副本复制到第二个站点或云中的 Amazon FSx for NetApp ONTAP。
+
+
+
+
+[[best-practices]]
+=== 最佳实践
+
+* *将每个清单保留在版本控制中，*并更改版本字段以进行升级。
+* 为每个副本集*运行三个成员*，包括 Ops Manager 应用程序和备份数据库。
+* *将 API 密钥存储在机密中*，并仅授予其所需的访问权限。
+* *根据恢复需求选择快照存储，*然后调整其大小以进行保留。
+* *保持 oplog 存储的健康，*因为时间点恢复需要它。
+* 使用 Ops Manager 监控功能，*对陈旧快照发出警报*。
+* *按计划练习恢复*并计时。
+* *限制谁可以请求快照链接，* 并首先检查目标服务器上的可用空间。
+* *通过 REST API 实现自动化*并使用审核日志记录，同时使 Ops Manager 和代理保持在受支持的版本上。
+* 从模式 A 开始，并在演练恢复后移至模式 C。
+* 从隐藏的辅助成员获取 SnapCenter Snapshot 副本，并将其保留在 Ops Manager 备份窗口之外。
+* 将数据文件和日志放在一个卷上，或者在创建 Snapshot 副本之前使用 `fsyncLock`静默数据库，并在之后将其释放。
+* 确保 Snapshot 副本足够新，以便处于副本集 oplog 窗口内。否则，还原的成员需要初始同步。
+* 按计划测试到第二个站点的 SnapMirror 故障转移，并记录每个恢复路径所需的时间。
+* 在依赖它之前，请确认 SnapCenter 插件对您的 MongoDB 版本的支持，并将 ONTAP REST API 脚本作为后备保留。
+

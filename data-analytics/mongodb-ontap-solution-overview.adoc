@@ -1,0 +1,92 @@
+---
+sidebar: sidebar 
+permalink: data-analytics/mongodb-ontap-solution-overview.html 
+keywords: mongodb, ontap, aff, snapcenter, fsx for ontap, netapp console 
+summary: 本页介绍了基于 NetApp 智能数据基础设施的端到端 MongoDB 解决方案以及其中使用的 NetApp 产品。 
+---
+= 解决方案概述
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+在下图所示的端到端解决方案中，虚拟化 MongoDB 托管在 NetApp AFF-A30 存储和 VMware vSphere 上。同样的解决方案也适用于最新的 AFF 存储。NetApp AFF 阵列提供低延迟和线内重复数据删除和压缩，以提供高性能并降低闪存存储要求。
+
+NetApp SnapCenter 备份软件提供了调用即时 NetApp Snapshot 副本和克隆的框架。它们生成整个环境的零成本副本，用于备份和恢复。SnapCenter 还通过使用 SnapMirror 管理整个环境到 Amazon Web Services （AWS） 中的 Amazon FSx for NetApp ONTAP 的远程复制。复制的数据可用于灾难恢复和开发/测试环境。
+
+.基于 NetApp 智能数据基础设施的 MongoDB 端到端解决方案
+image:mongodb-ontap-001.png["基于 NetApp 智能数据基础架构的 MongoDB 端到端解决方案。本地 MongoDB 副本集在 AFF A 系列 ONTAP HA 对上运行，该 HA 对使用 SnapMirror 复制到 AWS 中的 Amazon FSx for NetApp ONTAP 以及辅助 AFF 或 FAS 站点，所有这些均通过云控制平面进行管理。"]
+
+
+
+[[netapp-intelligent-data-infrastructure]]
+== NetApp 智能数据基础设施
+
+NetApp 智能数据基础设施是 NetApp 当前的数据管理方法。它将跨本地系统和主要公有云的数据存储、数据服务和工作负载操作结合在一起，因此组织无论数据位于何处，都能以相同的方式管理、保护、保障安全并访问其数据。它建立在本报告早期版本中使用的 NetApp Data Fabric 概念的基础之上。
+
+对于 MongoDB，这意味着本报告中使用的 ONTAP 数据管理功能（如 Snapshot 副本、克隆和复制）以相同的方式应用于物理服务器、虚拟化基础架构和云实例上的数据库。
+
+
+NOTE: 本报告中的产品名称和版本反映了原始验证，可能与当前 NetApp 产品不同。
+
+
+
+[[netapp-all-flash-fas]]
+== NetApp 全闪存 FAS
+
+NetApp 全闪存 FAS （AFF） 是一系列运行 ONTAP 的企业级全闪存存储系统。当前的 AFF 产品组合包括用于性能敏感型工作负载的 A 系列系统和用于容量优化型闪存的 C 系列系统。本报告中的验证使用了 AFF-A30，并且当前的 AFF 型号也提供相同的 ONTAP 功能。
+
+AFF 为 MongoDB 提供了以下功能：
+
+* 在具有可预测响应时间的闪存上运行对延迟敏感的数据库。
+* 通过使用内联数据效率（包括重复数据删除、压缩和压实）来减少所需的闪存容量。实际节省的空间取决于部署中的数据。
+* 作为集群进行纵向扩展或横向扩展，并在节点之间无中断地移动数据。
+* 使用内置于 ONTAP 的 NetApp Snapshot 副本、SnapRestore 和 SnapMirror 复制来保护数据。
+* 使用 ONTAP System Manager 管理系统，并通过 ONTAP REST API 自动执行操作。
+
+
+有关 AFF 的详细信息，请参见link:http://www.netapp.com/us/products/storage-systems/all-flash-fas/["NetApp AFF"^]产品页面。
+
+
+
+[[amazon-fsx-for-netapp-ontap]]
+[[amazon-fsx-for-ontap]]
+== Amazon FSx for NetApp ONTAP
+
+Amazon FSx for NetApp ONTAP 是一项完全托管的 AWS 服务，基于 ONTAP 构建，因此 AFF 阵列上使用的相同 ONTAP 数据管理功能也可在 AWS 中供 MongoDB 使用。AWS 负责运营文件系统，而您可以通过 AWS 控制台、ONTAP CLI、ONTAP System Manager、NetApp Console 或 ONTAP REST API 管理卷、Snapshot 副本、克隆及 SnapMirror 关系。
+
+FSx for ONTAP 提供了本报告中使用的 ONTAP 功能：Snapshot 副本、FlexClone 卷、SnapMirror 复制以及重复数据删除、压缩和数据压实等数据效率功能。在此解决方案中，FSx for ONTAP 是用于从本地 AFF 阵列进行备份和灾难恢复的 SnapMirror 目标，也是云中 MongoDB 的开发/测试克隆的源。
+
+原始验证在 AWS 中使用了基于软件的 ONTAP 实例。确认您的 FSx for ONTAP 部署的规模、性能和功能可用性。
+
+
+
+[[netapp-console]]
+== NetApp Console
+
+NetApp Console 提供跨本地和云 ONTAP 环境管理数据的单一控制平面。它用于发现和管理 Amazon FSx for NetApp ONTAP 和本地 ONTAP 系统。
+
+NetApp Console 提供以下主要功能：
+
+* 简化 Amazon FSx for NetApp ONTAP 文件系统的发现和管理。
+* 为内部和云中的 ONTAP 系统提供中央控制点。
+* 设置并监控本地 AFF 阵列与云 ONTAP 之间的 SnapMirror 复制，以进行备份和灾难恢复。
+* 为 ONTAP 卷提供备份和恢复服务。
+* 支持混合环境，包括本地 ONTAP 和 Amazon FSx for NetApp ONTAP。
+
+
+
+
+[[netapp-snapcenter]]
+[[snapcenter]]
+== NetApp SnapCenter
+
+NetApp SnapCenter 是 NetApp 的统一、可扩展软件，用于物理和虚拟化环境中的应用程序一致性数据保护。它使用 ONTAP Snapshot、SnapRestore、SnapMirror 和 FlexClone 技术来备份、还原和克隆应用程序数据，并将其复制以进行灾难恢复。对于虚拟化 MongoDB 部署，SnapCenter 可提供 MongoDB 虚拟机和数据库的即时备份和恢复，并可创建虚拟化 MongoDB 环境的快速克隆，以供开发/测试和 QA 使用。
+
+SnapCenter 通过插件保护应用程序。MongoDB 是 NetApp 支持的插件之一，此外还有 ORASCPM （Oracle Applications）、SAP ASE、SAP MaxDB 以及 Storage 插件。您可以从 SnapCenter 的 Add Host 页面安装该插件，它适用于 Windows 和 Linux 主机。安装插件后，您可以使用 SnapCenter 对 MongoDB 执行备份、还原和克隆操作，通过 SnapMirror 将备份集复制到另一个卷，以及使用 SnapVault 执行磁盘到磁盘的备份复制。
+
+SnapCenter 支持涵盖插件框架、核心引擎以及相关的 API。它不涵盖基于该框架构建的插件源代码或脚本。在计划部署之前，请确认您的 MongoDB 拓扑和版本受支持。如果不支持某种配置，请通过 ONTAP REST API 编写 ONTAP Snapshot、FlexClone 和 SnapMirror 操作的脚本，以实现相同的备份、克隆和复制工作流。

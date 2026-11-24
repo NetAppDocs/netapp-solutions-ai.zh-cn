@@ -7295,4 +7295,596 @@
   <block id="d6e815971012edc85292c4d193dee981" category="paragraph">启动服务器：</block>
   <block id="931d4e777b61922dc716732e0922bce8" category="paragraph">查看 SGLang HiCache 文档，了解分层缓存的体系结构。要在 SGLang 服务器之间共享缓存，请在每台服务器上挂载相同的 ONTAP 卷或 Novus 导出，将存储目录指向该挂载点，并在每台服务器上设置 PYTHONHASHSEED=0。</block>
   <block id="d33e1f0e4aa661dcaf18da8b1d20ca9f" category="paragraph">Novus 代表了 NetApp 为 AI 工厂进行扩展的方式的架构转变，但从 KV 缓存卸载的角度来看，它是您使用传统 ONTAP 所做工作的直接延伸。由于两种架构都依赖于标准的 pNFS，因此您的推理堆栈不会改变，您只需将卸载路径指向 Novus 挂载点即可。无论您是继续使用 LMCache、切换到 vLLM 的原生连接器，还是部署 SGLang HiCache，底层存储层的行为方式都是相同的，让您无需重新架构应用程序堆栈即可横向扩展推理容量。</block>
+  <block id="ba7baaa3b7a208f6cc3a0a4dabab2b3d" category="summary">本附录列出了验证中使用的静默和平衡器命令以及 MongoDB 集群命令。</block>
+  <block id="cff1be7f7b27cf1ec2e7be8bcc63df62" category="doc">附录</block>
+  <block id="fe3353e5f58b45bf73a685726121cb07" category="paragraph">本附录列出了验证中使用的静默和均衡器命令以及 MongoDB 命令。</block>
+  <block id="240548cf8df3c77ecf19da8826f1067c" category="section-title">静默和平衡器命令</block>
+  <block id="f4b84772688b360edf348b84f69d4cf1" category="inline-xref-macro">使用 SnapCenter 备份</block>
+  <block id="88a8905900e884ddc712aa6a9e6eb4cf" category="paragraph">验证过程在 MongoDB 应用程序服务器上使用 Python 2.7 脚本作为静默、取消静默和预退出命令；这些脚本不包含在内。为避免该依赖关系，请使用<block ref="1f759f82a86e1e30bfdfc964f19e91df" prefix=" " category="inline-code"></block>中<block ref="83f8eeb58ed10896380e9aa936e2b5b1" category="inline-xref-macro-rx"></block>的命令配置钩子。在运行命令的主机上安装<block ref="1f759f82a86e1e30bfdfc964f19e91df" prefix=" " category="inline-code"></block>，并根据您的部署情况调整主机、端口和身份验证选项。验证脚本使用了早期的 PyMongo 版本，该版本提供了<block ref="c2cc7082a89c1ad6631a2f66af5f00c0" prefix=" " category="inline-code"></block>类；Python 2 和<block ref="c2cc7082a89c1ad6631a2f66af5f00c0" prefix=" " category="inline-code"></block>已不再受支持。</block>
+  <block id="aab0272055532d22117a5a6915ad475f" category="cell">验证中使用的脚本</block>
+  <block id="2a78ed76450c3cb42320882b3e055b31" category="cell">操作</block>
+  <block id="91b52aa7eec8f15ed3127d4f25cb1646" category="cell"><block ref="dc240768ddc68cf2a22815128621676c" prefix="" category="inline-code"></block></block>
+  <block id="2d5e36cc52637b8d89eee5f957ba468b" category="cell">等待平衡器锁清除，然后停止平衡器。在<block ref="1f759f82a86e1e30bfdfc964f19e91df" prefix=" " category="inline-code"></block>中，运行<block ref="33b9371e54ece67b3fa20fc6396f11a3" prefix=" " category="inline-code"></block>，这也会等待任何正在进行的平衡轮次完成。</block>
+  <block id="35e66f638c47006ca17708800e5b2dff" category="cell"><block ref="a89c18ff41ad2d3dc117a67a83650d34" prefix="" category="inline-code"></block></block>
+  <block id="1eafb5d43cab3d13231855d9a0a2b8c6" category="cell">重新启动平衡器。在<block ref="1f759f82a86e1e30bfdfc964f19e91df" prefix=" " category="inline-code"></block>中，运行<block ref="a6b36d4a7a75f23ffca5ff53a5bccad3" prefix=" " category="inline-code"></block>。</block>
+  <block id="59f0ef13017d5f7887a42d362440fd80" category="cell"><block ref="a39c096e3086882dfbceb3d65354b9e0" prefix="" category="inline-code"></block></block>
+  <block id="9b70bc6e70a885923976d5042fdb8015" category="cell">当备份需要静默时，将写入刷新到磁盘并阻止新写入，包括没有一致性组快照的单独卷上的 WiredTiger 数据和日志。在<block ref="1f759f82a86e1e30bfdfc964f19e91df" prefix=" " category="inline-code"></block>中，对要备份的每个成员运行<block ref="ab3d3067c66b8c47ede4c802b4ab2fe5" prefix=" " category="inline-code"></block>。</block>
+  <block id="2755ad2e9c99557871f8eb3498db93cf" category="cell"><block ref="aa2ce788127f1949db42b3325fd6d9e9" prefix="" category="inline-code"></block></block>
+  <block id="7d3c51020d809fc9858b53189fcc705c" category="cell">释放为备份获取的每个写入锁，包括在发生故障后。在<block ref="1f759f82a86e1e30bfdfc964f19e91df" prefix=" " category="inline-code"></block>中，运行<block ref="b1ae61021e0530bc9756427f8784fadb" prefix=" " category="inline-code"></block>。</block>
+  <block id="9571a349da46861e97d0c0d323870eec" category="section-title">MongoDB 操作</block>
+  <block id="b2a0e5dc737583e69d74f944a47fcda9" category="paragraph">以下操作用于配置分片集群并向其添加两个分片。命令和输出是使用 MongoDB 3.0.7 及旧版<block ref="1ed75a5d1e2c0bb05f410077765af687" prefix=" " category="inline-code"></block> shell 捕获的。在当前 MongoDB 版本中，请使用<block ref="1f759f82a86e1e30bfdfc964f19e91df" prefix=" " category="inline-code"></block>，将配置服务器部署为副本集（使用<block ref="d524fbe7014f44f5fe4bc06a2abe2df9" prefix=" " category="inline-code"></block>和<block ref="37b8a6dbad353298f0d78d29ebbbcf2e" prefix=" " category="inline-code"></block>启动它们，并通过<block ref="5db5a37a2e57a59ca862ae2264e5e395" prefix=" " category="inline-code"></block>将副本集名称传递给<block ref="4f5f1f9f60c4a16435a93d21fddc9b63" prefix=" " category="inline-code"></block>），并省略已移除的<block ref="73d1aa74c4b34610a5f96c6c81aecdea" prefix=" " category="inline-code"></block>选项。</block>
+  <block id="fd6a481dc460af0bce4b91b032847104" category="list-text">检查每个分片成员 <block ref="8c255779fd470e05179419e1dbf5f3a6" prefix="(" category="inline-code"></block>、<block ref="0c55a0f6b748c2fc4c0199f7633135aa" prefix=" " category="inline-code"></block>、<block ref="28b44f9f2e88cbad7c00de21cc8671ab" prefix=" " category="inline-code"></block>、<block ref="21cc88ebe602fd973673fe94d4fedb34" prefix=" " category="inline-code"></block>、<block ref="24dd7878f3dd251c302c8f8c6494f29b" prefix=" " category="inline-code"></block> 和 <block ref="05ad754a0b8817fa63d3ae0119541248" prefix=" " category="inline-code"></block>）上 MongoDB 数据库的挂载分区。每个成员将 XFS 文件系统挂载到 <block ref="4caa791091d21d23e63637080226f370" prefix=" " category="inline-code"></block>：</block>
+  <block id="c8674dce5a9f4a895ee9f25e4b930e3b" category="list-text">在每个分片成员上，创建所需的文件夹，设置所有权和权限，然后启动<block ref="563000bf2ad9bb017f91b15beb884445" prefix=" " category="inline-code"></block>。对于第一个分片，成员是<block ref="8c255779fd470e05179419e1dbf5f3a6" prefix=" " category="inline-code"></block>、<block ref="0c55a0f6b748c2fc4c0199f7633135aa" prefix=" " category="inline-code"></block>和<block ref="28b44f9f2e88cbad7c00de21cc8671ab" prefix=" " category="inline-code"></block>。例如，在<block ref="8c255779fd470e05179419e1dbf5f3a6" prefix=" " category="inline-code"></block>上：</block>
+  <block id="d22641cb37f028cc417b0d3ef81cdd90" category="list-text">在端口 27019 上启动配置服务器 <block ref="12f24fe89337d7319af67c9c3e0d62b1" prefix="(" category="inline-code"></block>、<block ref="44cd0d720f00bad6e74a42424e7ed8f4" prefix=" " category="inline-code"></block> 和 <block ref="8b9a111ade9b794556795d7e1a7b3c98" prefix=" " category="inline-code"></block>）。首先使用 <block ref="685a5f7cc75b4796f6c6e00ccd384f01" prefix=" " category="inline-code"></block> 所有权和 700 权限创建 <block ref="65a71d91f393c3f42b6a422408b721ea" prefix=" " category="inline-code"></block>：</block>
+  <block id="6138feddf6c052f11f2a8d63c242ba36" category="list-text">在每个应用程序服务器上启动<block ref="4f5f1f9f60c4a16435a93d21fddc9b63" prefix=" " category="inline-code"></block>进程<block ref="71352b1aebf3422e7a38df76169166e4" prefix="(" category="inline-code"></block>和<block ref="559aaf7f71b82b1bf004ee24578d5079" prefix=" " category="inline-code"></block>），并验证其是否正在监听端口 27017：</block>
+  <block id="f23a0446af87ce7e72b38c602c6f59a4" category="list-text">从应用服务器连接到分片主节点 <block ref="8c255779fd470e05179419e1dbf5f3a6" prefix="(" category="inline-code"></block>），并使用 <block ref="fc8445ca890ef81c2919a2180b50c6e3" prefix=" " category="inline-code"></block> 初始化副本集：</block>
+  <block id="0ac3d75327c1baf46822a9a3bcb59bfd" category="list-text">从分片成员中检查副本集状态：</block>
+  <block id="946c77655944e6f972fc4bbabf6cc0e3" category="list-text">从应用程序服务器添加第一个分片。如果再次从另一个应用程序服务器添加相同的分片，MongoDB 会报告该分片已存在：</block>
+  <block id="8eaf342d5f5efb2ff328f0e275004bba" category="list-text">检查分片状态：</block>
+  <block id="27473c22089d6989a89f8a4df2d71ed7" category="list-text">添加第二个分片。以与第一个分片相同的方式准备<block ref="21cc88ebe602fd973673fe94d4fedb34" prefix=" " category="inline-code"></block>、<block ref="24dd7878f3dd251c302c8f8c6494f29b" prefix=" " category="inline-code"></block>和<block ref="05ad754a0b8817fa63d3ae0119541248" prefix=" " category="inline-code"></block>，初始化其副本集，并将其添加：</block>
+  <block id="89e92ebd00455f84a57e58f8b4cce620" category="list-text">再次运行<block ref="bf22756d7f65af7c5d94b51a56d17f8a" prefix=" " category="inline-code"></block>以确认两个分片 <block ref="c783bbb72b956e3f1818e9d4a59d76cb" prefix="(" category="inline-code"></block> 和<block ref="e6c81f2f91025f5719b5d173c6e330b7" prefix=" " category="inline-code"></block>）均已列出。添加分片不会自动分发集合数据。对于此处显示的 MongoDB 3.0.7 配置，请使用<block ref="b30e43296d03f10c653f24149218d08f" prefix=" " category="inline-code"></block>在数据库上启用分片，选择适当的分片键并创建任何所需的索引，然后使用<block ref="22284246c299440b9291e3a69a69af96" prefix=" " category="inline-code"></block>对每个预期的集合进行分片。</block>
+  <block id="83e23bca7fb6d307b75e22b6c2d18f27" category="summary">此页面对本报告的撰稿人表示感谢，并列出了参考文献和其他信息。</block>
+  <block id="d4d62620df50513ed537e332b809ed46" category="doc">致谢和参考资料</block>
+  <block id="d3e4b82a7818deaf9b1ad3a95d4e7e78" category="paragraph">本页面向本报告的贡献者致谢，并列出了从何处查找其他信息。</block>
+  <block id="5724d1b0f1f3601ca2089c4e6e637870" category="paragraph">作者感谢以下人士为本报告做出的贡献：</block>
+  <block id="ad94c6af68f60b0811cfe1d01e13e28f" category="list-text">Sheena Badani，MongoDB 技术和 VAR 合作伙伴总监</block>
+  <block id="bdf77e246b00c927abb70f39cd7bae88" category="list-text">Nilesh Bagad，大数据分析高级产品经理，NetApp</block>
+  <block id="cc1cdeb8af00f463c45e29a237c368d1" category="list-text">Scott Lane，工作负载工程高级经理，NetApp</block>
+  <block id="34b32e28805c6aa20b1813e55433882b" category="list-text">Chris Lemmons，DSG 业务处理工作负载技术营销总监，NetApp</block>
+  <block id="d9b9ef89e3ae7a481f755eb29486a2df" category="list-text">Sathish Thyagarajan，人工智能/数据管道团队技术营销工程师，NetApp</block>
+  <block id="fb52617ce7b2c17b3bb48e668ab33359" category="list-text">Kevin Hoke，解决方案工程总监，NetApp</block>
+  <block id="1229e37c6d355047e5427525e7e5f49e" category="list-text">Saji Joseph，软件工程总监，NetApp</block>
+  <block id="8e3cf82fb703a7ec6ec64e4a962d153b" category="list-text">Ross Ackerman，客户体验高级总监，NetApp</block>
+  <block id="541ab8e96ca3a6c25917f381723acca7" category="list-text">Mark Kwasnick，Active IQ Analytics 软件架构师，NetApp</block>
+  <block id="9cf22c2ab858bbda9727425deb30ed06" category="list-text">Dinaharan Ayyalusamy，高级 DevOps 工程师，开发者平台工程，NetApp</block>
+  <block id="3a318984f58d7080d7871d48458676d1" category="list-text">Jeffrey Gonzales，首席解决方案工程师，NetApp</block>
+  <block id="5d9cb6223fbe73518273e0aceaa324d6" category="list-text">AJ Mahajan，解决方案工程高级总监，NetApp</block>
+  <block id="9d01769e7f920579f0fc44ce336bed1d" category="list-text">Rodrigo Nascimento，Vortex TI 技术总监</block>
+  <block id="d95867deadfe690e40f42068d6b59df8" category="section-title">参考文献</block>
+  <block id="8506f690fe82046e5960ae21a0b0b8e6" category="paragraph">要了解有关本文中所述信息的更多信息，请查看以下文档和网站：</block>
+  <block id="31f7aaa17d101eda97a0a8399170b1f2" category="inline-link-macro">MongoDB 简介</block>
+  <block id="da5f1cf9e79b747eb84eef3790439a30" category="list-text"><block ref="da5f1cf9e79b747eb84eef3790439a30" category="inline-link-macro-rx"></block></block>
+  <block id="f9e61eeaf5098627b872063ba514c9e1" category="inline-link-macro">MongoDB 手册</block>
+  <block id="a6e0abe61026d610fb25b3a118fcedbf" category="list-text"><block ref="a6e0abe61026d610fb25b3a118fcedbf" category="inline-link-macro-rx"></block></block>
+  <block id="bf9164536356ac85f3508e3682db5492" category="inline-link-macro">WiredTiger 存储引擎</block>
+  <block id="5e18228ba17f04f6228a4d6ea3ba3f55" category="list-text"><block ref="5e18228ba17f04f6228a4d6ea3ba3f55" category="inline-link-macro-rx"></block></block>
+  <block id="6aea8d8c88969b7891d283cc6c7c4d16" category="inline-link-macro">生产集群架构</block>
+  <block id="f4bd470fb34b9485c0d892c9850303c7" category="list-text"><block ref="f4bd470fb34b9485c0d892c9850303c7" category="inline-link-macro-rx"></block></block>
+  <block id="48cb9590a363e44dc8b16ba2f464e944" category="inline-link-macro">mongoperf</block>
+  <block id="9b07689790deab542b482f250008790e" category="list-text"><block ref="9b07689790deab542b482f250008790e" category="inline-link-macro-rx"></block></block>
+  <block id="e8cd3741e8cc6cd5d1b87eac5e56ec84" category="inline-link-macro">MongoDB NetApp 合作伙伴页面</block>
+  <block id="83ddaca31affbfb3599552c7cfd1e8eb" category="list-text"><block ref="83ddaca31affbfb3599552c7cfd1e8eb" category="inline-link-macro-rx"></block></block>
+  <block id="9284b8bcc9b6f62f1ef04bc555bb97bc" category="inline-link-macro">YCSB</block>
+  <block id="d4016a0c64135f2524284238a119638a" category="list-text"><block ref="d4016a0c64135f2524284238a119638a" category="inline-link-macro-rx"></block></block>
+  <block id="adcd6fff3edafc0d59d5213a5a232223" category="list-text"><block ref="adcd6fff3edafc0d59d5213a5a232223" category="inline-link-macro-rx"></block></block>
+  <block id="61dd32f9fe9bf4c3c77c3c62e2ca3b69" category="inline-link-macro">NetApp SnapCenter 适用于 NetApp 支持的应用程序的插件</block>
+  <block id="cfdd81160d5163a9a47d5aa6a8129714" category="list-text"><block ref="cfdd81160d5163a9a47d5aa6a8129714" category="inline-link-macro-rx"></block></block>
+  <block id="ed0574635165a44a0262f82e64555ccc" category="inline-link-macro">ONTAP 集群和 SVM 对等</block>
+  <block id="e0864b6a6c7417450f30cfc2adcd314d" category="list-text"><block ref="e0864b6a6c7417450f30cfc2adcd314d" category="inline-link-macro-rx"></block></block>
+  <block id="09ea0908fbfc4cde85bf416e35dc55c8" category="inline-link-macro">NetApp 支持</block>
+  <block id="cf91ede40b5c3f696d34911a86398db2" category="list-text"><block ref="cf91ede40b5c3f696d34911a86398db2" category="inline-link-macro-rx"></block></block>
+  <block id="35cec04543ba763c09af3cc6e231ee76" category="paragraph">请参阅<block ref="13c648a659ced93d941b884253b2cfd0" category="inline-link-macro-rx"></block>以验证您的特定环境是否支持本文档中描述的确切产品和功能版本。NetApp IMT 定义了可用于构建 NetApp 支持的配置的产品组件和版本。具体结果取决于每个客户根据已发布的规范进行的安装。</block>
+  <block id="941f4eeb7436dbff52933a1eca58ef30" category="summary">本页介绍 MongoDB 分片集群架构、经过验证的架构以及 NetApp AFF 上的存储布局。</block>
+  <block id="4f40df1a19c503fb006e8b63907b4f7c" category="doc">解决方案设计</block>
+  <block id="00dec6911458a734b697ae7ea566b227" category="paragraph">本页介绍 MongoDB 架构，包括其组件和布局，然后是此解决方案中使用的经过验证的架构和存储架构。</block>
+  <block id="f4b942b61ecbc97b488483b1e3528491" category="section-title">MongoDB 架构</block>
+  <block id="d3defd5768e876a68696dd8a6d69cacf" category="paragraph">分片或水平扩展会分割数据集，并将其分布在多个服务器或分片上。每个分片都是一个独立的数据库，这些分片共同构成一个单一的逻辑数据库。下图显示了集合的分片如何分布在多个服务器上。</block>
+  <block id="17ce08ce74349aabc1f8f92ba800e1c6" category="paragraph-title">分布在多台服务器上的分片</block>
+  <block id="d6cb1d3c3a6df3896ca57679f7794582" category="inline-image-macro">显示一个集合被划分为分布在多个服务器上的多个分片的图表。</block>
+  <block id="c50527e9aa0baf9f082cfd77f5d7a056" category="paragraph"><block ref="c50527e9aa0baf9f082cfd77f5d7a056" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="a3a8722396f823a7d5fddac4b96f3335" category="paragraph">分片存储数据。在生产分片集群中，每个分片都是一个副本集，可提供高可用性和数据一致性。</block>
+  <block id="3418052426fbcb8be8220745b0db81c5" category="paragraph">查询路由器或<block ref="4f5f1f9f60c4a16435a93d21fddc9b63" prefix=" " category="inline-code"></block>实例与客户端应用程序交互，并将操作引导到一个或多个相应的分片。客户端将请求发送到<block ref="4f5f1f9f60c4a16435a93d21fddc9b63" prefix=" " category="inline-code"></block>，后者将操作路由到分片并将结果返回给客户端。分片集群可以包含多个<block ref="4f5f1f9f60c4a16435a93d21fddc9b63" prefix=" " category="inline-code"></block>以分担客户端请求负载，并且大多数分片集群具有多个。</block>
+  <block id="f9c313fbda9520e0080104a4fb986c98" category="paragraph">配置服务器（config servers）存储集群的元数据，该元数据将集群的数据集映射到分片。查询路由器使用此元数据将操作定位到特定分片，如下图所示。</block>
+  <block id="08820e67f3635e59d10ac740b99d0544" category="paragraph-title">查询路由器（mongos 实例）使用元数据将数据路由到分片</block>
+  <block id="2c673d4726cc5cd15a19e62cea32ef4e" category="inline-image-macro">显示 mongos 查询路由器使用配置服务器元数据将操作路由到分片的图。</block>
+  <block id="cef76407b5bf26207fdeff1b3cea924f" category="paragraph"><block ref="cef76407b5bf26207fdeff1b3cea924f" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="f36884d7843cbe37180c919d17e266ee" category="admonition">从 MongoDB 3.2 开始，分片集群的配置服务器可以部署为副本集，该副本集必须运行 WiredTiger 存储引擎。MongoDB 3.4 删除了镜像配置服务器，因此当前 MongoDB 版本要求将配置服务器部署为副本集。</block>
+  <block id="9c85c7a7e3f02d7a01031a72fd6af93f" category="section-title">经过验证的架构</block>
+  <block id="429dc4fca01312af4558c22cb7f4bf8d" category="paragraph">此解决方案使用在 VMware vSphere 上虚拟化的 MongoDB 分片集群。根据 MongoDB 对生产设置的建议，我们在测试期间部署了一个由两个分片组成的分片集群。每个分片都包含一个集合数据的子集，每个分片都是一个副本集。该集群还使用三个配置服务器和两个查询路由器 <block ref="4f5f1f9f60c4a16435a93d21fddc9b63" prefix="(" category="inline-code"></block> 实例），并且 MongoDB 配置了 WiredTiger 存储引擎。WiredTiger 管理数据在内存和磁盘上的存储方式，并在 <block ref="cf4b6bc5ca45c7952fa86b97b9b923cc" prefix=" " category="inline-code"></block> 或 <block ref="a6dc9b74ac4474d10e57e8d1ebbd77dd" prefix=" " category="inline-code"></block> 位置创建数据文件。</block>
+  <block id="5ddee616b729a9c4b9e9769b205bb589" category="paragraph">有关详细信息，请参见 <block ref="5e18228ba17f04f6228a4d6ea3ba3f55" category="inline-link-macro-rx"></block> 和 <block ref="f4bd470fb34b9485c0d892c9850303c7" category="inline-link-macro-rx"></block> 的 MongoDB 文档。</block>
+  <block id="028f1a38910f83032d7207681cbb26a8" category="section-title">存储架构</block>
+  <block id="ff7baba1f2dd08a6c2692fb1d3e07572" category="paragraph">在 NetApp AFF-A30 全闪存阵列上配置了六个 NFS 数据存储，这些数据存储是通过 NFS 第 3 版（NFSv3）访问的 NetApp 卷。NetApp SnapCenter Plug-in for VMware vSphere（SCV）用于托管该架构的各个组件。下表列出了这些组件。</block>
+  <block id="3460276ef9eb483d13aa31b870077a0d" category="cell">序列号</block>
+  <block id="3bdd6798a24cf59750caedf9a44d1fba" category="cell">NetApp 卷</block>
+  <block id="215d2dc82e72d861186fdfbb83bf2421" category="cell">MongoDB 角色</block>
+  <block id="9e4b67232571b76ba651c94503d09b87" category="cell">具有此角色的服务器数量</block>
+  <block id="a049d12e5b3c3457da04e62575670342" category="cell">验证中使用的虚拟磁盘格式</block>
+  <block id="622c322279b4be58541913a26f0d7bef" category="cell">由所有操作系统共享的操作系统映像卷（例如，<block ref="7e3f2e54253d10f084ad821f3c012f28" prefix=" " category="inline-code"></block>和<block ref="cd78fdec415553df253a607e2a7277f1" prefix=" " category="inline-code"></block>）</block>
+  <block id="e5236fcb5713f0acf93d778fedb42686" category="cell">查询/路由器服务器</block>
+  <block id="a5ea1323d0cb25a171ba35ce116c954d" category="cell">厚置备置零（.vmdk）</block>
+  <block id="9342a1ec9b4a3ad235b994e21ccb8ebe" category="cell">配置服务器</block>
+  <block id="ee45698db19bded45ae941cc99948ee5" category="cell">主分片服务器</block>
+  <block id="8d8ec7113fb42330114f7655f7570052" category="cell">二级分片服务器</block>
+  <block id="e4da3b7fbbce2345d7772b0674a318d5" category="cell">5</block>
+  <block id="3a1e719b8b2ff917db603f19a74aa956" category="cell">主数据库卷（例如，<block ref="146dcc21e62076599477c5f7d21ab4d7" prefix=" " category="inline-code"></block>和<block ref="c9d1f8158ae801108d390f18787fa208" prefix=" " category="inline-code"></block>）</block>
+  <block id="0a8740839ffe3ccaf500a554981618ae" category="cell">主分片数据库服务器</block>
+  <block id="ca9d7a73dff802f5ef813e202b6e072d" category="cell">辅助数据库卷（例如，<block ref="d4caec714461188f140be287c13d583d" prefix=" " category="inline-code"></block> 用于第一个分片辅助服务器，<block ref="5b3b22852f5e6888781e1f00c12ee86b" prefix=" " category="inline-code"></block> 用于第二个分片辅助服务器）</block>
+  <block id="83019a6f48b7c941d56c473b3ef24e0a" category="cell">辅助分片数据库服务器</block>
+  <block id="feb9ce4979a14f802a57502844b7ee4f" category="paragraph">验证使用了厚置备置零虚拟磁盘，这些磁盘在创建时（而不是在首次写入时）分配并置零整个磁盘。这样可以避免 MongoDB 数据文件增长时的首次写入延迟，并保持写入延迟一致。该格式不是 MongoDB 的要求。在 ONTAP 上，存储效率可保持较低的置零块空间成本，您可以为您的环境评估精简配置。</block>
+  <block id="0fb2f1c88a10b4662ca773aa215fdc53" category="paragraph">下图显示了存储布局。NFS 数据存储流量在两个以太网交换机上运行，以实现冗余。对于新部署，请使用 25GbE 或更快的网络。</block>
+  <block id="f37ba3b3ee88d2d8bd1946bfa0ff5ec4" category="paragraph-title">NetApp AFF-A30 上的存储布局</block>
+  <block id="7f97b36eaf2670112cba34f8fd994639" category="inline-image-macro">AFF-A30 上 MongoDB 虚拟机和数据库的卷和数据存储布局图。</block>
+  <block id="e6daec7d6783758d82ab00503829f09d" category="paragraph"><block ref="e6daec7d6783758d82ab00503829f09d" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="ccf6a02733a3f9510c5f8670c7c84d77" category="summary">本页介绍了基于 NetApp 智能数据基础设施的端到端 MongoDB 解决方案以及其中使用的 NetApp 产品。</block>
+  <block id="1576778dc0040465a502a1b1f6e1057b" category="paragraph">在下图所示的端到端解决方案中，虚拟化 MongoDB 托管在 NetApp AFF-A30 存储和 VMware vSphere 上。同样的解决方案也适用于最新的 AFF 存储。NetApp AFF 阵列提供低延迟和线内重复数据删除和压缩，以提供高性能并降低闪存存储要求。</block>
+  <block id="450693fab58264d7958762f148ad9f87" category="paragraph">NetApp SnapCenter 备份软件提供了调用即时 NetApp Snapshot 副本和克隆的框架。它们生成整个环境的零成本副本，用于备份和恢复。SnapCenter 还通过使用 SnapMirror 管理整个环境到 Amazon Web Services （AWS） 中的 Amazon FSx for NetApp ONTAP 的远程复制。复制的数据可用于灾难恢复和开发/测试环境。</block>
+  <block id="208a64407ff8c881db4504c91f03e66e" category="paragraph-title">基于 NetApp 智能数据基础设施的 MongoDB 端到端解决方案</block>
+  <block id="ec6d7f6ed11537d5bf64d86937c74533" category="inline-image-macro">基于 NetApp 智能数据基础架构的 MongoDB 端到端解决方案。本地 MongoDB 副本集在 AFF A 系列 ONTAP HA 对上运行，该 HA 对使用 SnapMirror 复制到 AWS 中的 Amazon FSx for NetApp ONTAP 以及辅助 AFF 或 FAS 站点，所有这些均通过云控制平面进行管理。</block>
+  <block id="8d1c0b39bbfd657438cb101929ab1ad9" category="paragraph"><block ref="8d1c0b39bbfd657438cb101929ab1ad9" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="9d44035bdc5aacddc734701d02385ad0" category="section-title">NetApp 智能数据基础设施</block>
+  <block id="bad385c9ae50002c8717c2b5445319b1" category="paragraph">NetApp 智能数据基础设施是 NetApp 当前的数据管理方法。它将跨本地系统和主要公有云的数据存储、数据服务和工作负载操作结合在一起，因此组织无论数据位于何处，都能以相同的方式管理、保护、保障安全并访问其数据。它建立在本报告早期版本中使用的 NetApp Data Fabric 概念的基础之上。</block>
+  <block id="53370c5e3a94b1898f490c9a60112502" category="paragraph">对于 MongoDB，这意味着本报告中使用的 ONTAP 数据管理功能（如 Snapshot 副本、克隆和复制）以相同的方式应用于物理服务器、虚拟化基础架构和云实例上的数据库。</block>
+  <block id="ed234c72db3c6588b1a1361b2af93a63" category="admonition">本报告中的产品名称和版本反映了原始验证，可能与当前 NetApp 产品不同。</block>
+  <block id="fc24b7e45b5cc36f0cb80ab300735c82" category="section-title">NetApp 全闪存 FAS</block>
+  <block id="0bc8620844b1b414ad4be8985c947625" category="paragraph">NetApp 全闪存 FAS （AFF） 是一系列运行 ONTAP 的企业级全闪存存储系统。当前的 AFF 产品组合包括用于性能敏感型工作负载的 A 系列系统和用于容量优化型闪存的 C 系列系统。本报告中的验证使用了 AFF-A30，并且当前的 AFF 型号也提供相同的 ONTAP 功能。</block>
+  <block id="991f7df0885d8040c5f8db5b5e08000e" category="paragraph">AFF 为 MongoDB 提供了以下功能：</block>
+  <block id="886c9ffb4790defd651fcf91b6c096f4" category="list-text">在具有可预测响应时间的闪存上运行对延迟敏感的数据库。</block>
+  <block id="18debfc535d9f5d258a9af124f012518" category="list-text">通过使用内联数据效率（包括重复数据删除、压缩和压实）来减少所需的闪存容量。实际节省的空间取决于部署中的数据。</block>
+  <block id="1b0ebe60a5b180e8aabea8270979f76c" category="list-text">作为集群进行纵向扩展或横向扩展，并在节点之间无中断地移动数据。</block>
+  <block id="aa9a940a07055c5ba6a39246b19579d0" category="list-text">使用内置于 ONTAP 的 NetApp Snapshot 副本、SnapRestore 和 SnapMirror 复制来保护数据。</block>
+  <block id="ae409369baedd55137e5d078e2ab570a" category="list-text">使用 ONTAP System Manager 管理系统，并通过 ONTAP REST API 自动执行操作。</block>
+  <block id="96d160ac7ec593e7b7a0105127bfff19" category="paragraph">有关 AFF 的详细信息，请参见<block ref="adcd6fff3edafc0d59d5213a5a232223" category="inline-link-macro-rx"></block>产品页面。</block>
+  <block id="4d82a1ec1af02725042c8c785564ee7a" category="section-title">Amazon FSx for NetApp ONTAP</block>
+  <block id="7f19fd8ba03550f7f852b312f5fbcb7a" category="paragraph">Amazon FSx for NetApp ONTAP 是一项完全托管的 AWS 服务，基于 ONTAP 构建，因此 AFF 阵列上使用的相同 ONTAP 数据管理功能也可在 AWS 中供 MongoDB 使用。AWS 负责运营文件系统，而您可以通过 AWS 控制台、ONTAP CLI、ONTAP System Manager、NetApp Console 或 ONTAP REST API 管理卷、Snapshot 副本、克隆及 SnapMirror 关系。</block>
+  <block id="1e0eb1f69f990f08a0b232e370c04594" category="paragraph">FSx for ONTAP 提供了本报告中使用的 ONTAP 功能：Snapshot 副本、FlexClone 卷、SnapMirror 复制以及重复数据删除、压缩和数据压实等数据效率功能。在此解决方案中，FSx for ONTAP 是用于从本地 AFF 阵列进行备份和灾难恢复的 SnapMirror 目标，也是云中 MongoDB 的开发/测试克隆的源。</block>
+  <block id="f0caf21c310a1eab7bd236cdf0023566" category="paragraph">原始验证在 AWS 中使用了基于软件的 ONTAP 实例。确认您的 FSx for ONTAP 部署的规模、性能和功能可用性。</block>
+  <block id="3c031b939f6ec312ee601d021e7a6644" category="section-title">NetApp Console</block>
+  <block id="242d0d297d498f3a325304cce1cfa238" category="paragraph">NetApp Console 提供跨本地和云 ONTAP 环境管理数据的单一控制平面。它用于发现和管理 Amazon FSx for NetApp ONTAP 和本地 ONTAP 系统。</block>
+  <block id="4f4cadfbedc80ad8510e2a5a1b768265" category="paragraph">NetApp Console 提供以下主要功能：</block>
+  <block id="0066d7ba621ed6e3b86c06179d3f832b" category="list-text">简化 Amazon FSx for NetApp ONTAP 文件系统的发现和管理。</block>
+  <block id="a7f3f51dd3fd43584bc4f8782874f2a3" category="list-text">为内部和云中的 ONTAP 系统提供中央控制点。</block>
+  <block id="5f4e40a0296133dafbb0705efe56202c" category="list-text">设置并监控本地 AFF 阵列与云 ONTAP 之间的 SnapMirror 复制，以进行备份和灾难恢复。</block>
+  <block id="659b1e6d33f4a54a2b35891291b80c29" category="list-text">为 ONTAP 卷提供备份和恢复服务。</block>
+  <block id="79011f599617dea4a58f8b54acb56cd1" category="list-text">支持混合环境，包括本地 ONTAP 和 Amazon FSx for NetApp ONTAP。</block>
+  <block id="805c9517e95d3e9efc4b46738ab825fc" category="section-title">NetApp SnapCenter</block>
+  <block id="6a651ef4d23b22308c7141d7538082aa" category="paragraph">NetApp SnapCenter 是 NetApp 的统一、可扩展软件，用于物理和虚拟化环境中的应用程序一致性数据保护。它使用 ONTAP Snapshot、SnapRestore、SnapMirror 和 FlexClone 技术来备份、还原和克隆应用程序数据，并将其复制以进行灾难恢复。对于虚拟化 MongoDB 部署，SnapCenter 可提供 MongoDB 虚拟机和数据库的即时备份和恢复，并可创建虚拟化 MongoDB 环境的快速克隆，以供开发/测试和 QA 使用。</block>
+  <block id="0a936e2316961c28519e8c8fb41cd8f6" category="paragraph">SnapCenter 通过插件保护应用程序。MongoDB 是 NetApp 支持的插件之一，此外还有 ORASCPM （Oracle Applications）、SAP ASE、SAP MaxDB 以及 Storage 插件。您可以从 SnapCenter 的 Add Host 页面安装该插件，它适用于 Windows 和 Linux 主机。安装插件后，您可以使用 SnapCenter 对 MongoDB 执行备份、还原和克隆操作，通过 SnapMirror 将备份集复制到另一个卷，以及使用 SnapVault 执行磁盘到磁盘的备份复制。</block>
+  <block id="8cbf68052a3eb9ac8e5969f38d31eb3d" category="paragraph">SnapCenter 支持涵盖插件框架、核心引擎以及相关的 API。它不涵盖基于该框架构建的插件源代码或脚本。在计划部署之前，请确认您的 MongoDB 拓扑和版本受支持。如果不支持某种配置，请通过 ONTAP REST API 编写 ONTAP Snapshot、FlexClone 和 SnapMirror 操作的脚本，以实现相同的备份、克隆和复制工作流。</block>
+  <block id="9f2a1aa33a44370efa36944d289c25af" category="summary">本页介绍如何验证解决方案，包括群集构建、备份和还原、克隆、复制和灾难恢复、YCSB 性能和内联效率。</block>
+  <block id="9fc7e91d0cfa196bee652e5b3ab8991b" category="doc">解决方案验证</block>
+  <block id="33e47d3e311bf442ce5ac065f30fa47e" category="paragraph">本页介绍了我们如何验证端到端解决方案，重点关注 <block ref="3d9ccf6a5d998ade9608f300abf7c55b" category="inline-xref-macro-rx"></block> 中列出的主要优势。</block>
+  <block id="e29a31d7f4726eaf82cff4e1f8334674" category="admonition">本页的 NetApp SnapCenter 过程遵循 SnapCenter 文档，不属于本报告中的验证测试。它们使用我们验证过的 ONTAP Snapshot、SnapRestore、FlexClone 和 SnapMirror 功能。有关详细信息，请参见 <block ref="e0a1ea3472b98d759b84360103c3fa73" category="inline-xref-macro-rx"></block>。</block>
+  <block id="daf5a698d806bca5a3d4c7ada7580431" category="section-title">构建 MongoDB 分片集群</block>
+  <block id="885c06570dde4c23a24900f3f9f6c430" category="paragraph">部署 MongoDB 分片集群涉及以下任务：</block>
+  <block id="3c747964b87ebb1fa42c6267f5e665f4" category="list-text">检查 MongoDB 数据库的挂载分区。</block>
+  <block id="2611d0f53bf83ebaf29aa247b9d00c74" category="list-text">检查并启动分片群集成员，创建所需的文件夹，并设置所需的权限。该 <block ref="563000bf2ad9bb017f91b15beb884445" prefix=" " category="inline-code"></block> 过程从默认端口（27018 和 28018）开始，您也可以指定不同的端口。</block>
+  <block id="a75d0ad0eec15153e72aa53dd8f8a953" category="list-text">验证配置服务器文件夹，例如日志路径 <block ref="65a71d91f393c3f42b6a422408b721ea" prefix="(" category="inline-code"></block>）和数据库路径 <block ref="0627f8b72b48041df2ac0c322f773dda" prefix="(" category="inline-code"></block>），是否存在并具有 <block ref="685a5f7cc75b4796f6c6e00ccd384f01" prefix=" " category="inline-code"></block> 用户权限（700）。验证 <block ref="563000bf2ad9bb017f91b15beb884445" prefix=" " category="inline-code"></block> 进程是否在正确的端口（27019）上以 fork 模式运行。</block>
+  <block id="4bce70c0c9957dfa9735cd5f3b0272c3" category="list-text">在 MongoDB 路由器或应用服务器上启动<block ref="4f5f1f9f60c4a16435a93d21fddc9b63" prefix=" " category="inline-code"></block>进程，并验证其是否在端口 27017 上侦听。</block>
+  <block id="ad597ed729c2dbbfed9e4c7a136a9cd2" category="list-text">通过从 MongoDB 应用服务器连接到 MongoDB 分片主服务器来初始化副本集。</block>
+  <block id="90df556c102a3447780ddf8cfef4859a" category="list-text">从分片成员检查副本集状态。</block>
+  <block id="000dca5292b597e42a0a9d48f061ce7c" category="list-text">从应用程序服务器添加分片。然后尝试从另一个应用程序服务器添加相同的分片。您应该会收到一条消息，表明分片已存在。</block>
+  <block id="9147cc235f9ad9f29939918bcfd67e73" category="list-text">从应用程序服务器检查分片状态。</block>
+  <block id="a090d50adb13a5865d9ef7309b16e19c" category="list-text">将另一个分片添加到现有分片集群。</block>
+  <block id="78234368bec94f9e01ebd378388edfa6" category="list-text">在 MongoDB 应用服务器上运行 <block ref="bf22756d7f65af7c5d94b51a56d17f8a" prefix=" " category="inline-code"></block> 命令，查看分片集群状态。</block>
+  <block id="2a73029cb2237d39c60ba5019382860c" category="inline-xref-macro">附录：MongoDB 操作</block>
+  <block id="6ba254272a7e6b5b6cb89ed0f9cbf711" category="paragraph">有关 MongoDB 的详细步骤，请参见 <block ref="0f12269507e5e2467f3b36ddb3d924ed" category="inline-xref-macro-rx"></block>。</block>
+  <block id="3894496be569ba1b8c419d72107e8f97" category="section-title">使用 NetApp SnapCenter 进行备份和还原</block>
+  <block id="d34070618cb0c0ddd8f244091c15e63d" category="paragraph">NetApp SnapCenter 使用节省空间的 NetApp Snapshot 技术来备份、还原和克隆虚拟化的 MongoDB 数据库环境。在我们对 NetApp Snapshot 技术的测试中，整个环境的备份不到一分钟，还原托管 MongoDB 数据库的 NetApp 卷也不到一分钟。</block>
+  <block id="f2e36418c1254e40755ce4a43ca717f8" category="paragraph">MongoDB 在此解决方案中使用 WiredTiger 存储引擎。在每个 Snapshot 副本前后，备份执行以下操作：</block>
+  <block id="b446dfcb45e073dafcf210ea14f00db7" category="list-text">停止平衡器。</block>
+  <block id="7ea81da948e192718799ba454386ca53" category="list-text">如有必要，请执行<block ref="e590322920bebc1156ab585bd6597d76" prefix=" " category="inline-code"></block>和锁定。</block>
+  <block id="d2ce7cdc067070946f0bde64c8a19943" category="list-text">为配置中使用的所有卷制作 NetApp Snapshot 副本。</block>
+  <block id="c5f66d214f53207c0f7095a8fc451173" category="list-text">如有必要，请解除数据库的写入锁定。</block>
+  <block id="0efe7f54af30c066e3176b64d8d8c548" category="list-text">重新启动平衡器。</block>
+  <block id="de0d04330cef843c9c78dd0c2e8dde5e" category="admonition">WiredTiger 存储引擎不需要对每个分片进行<block ref="e590322920bebc1156ab585bd6597d76" prefix=" " category="inline-code"></block>和写入锁定，也不需要您事后解锁数据库。如果使用 MMAPv1 存储引擎，则必须对每个分片执行<block ref="e590322920bebc1156ab585bd6597d76" prefix=" " category="inline-code"></block>和锁定以进行写入，然后解锁它们。MongoDB 4.2 及更高版本不包括 MMAPv1。</block>
+  <block id="739f3f3e8006e1976718647c77417d7b" category="paragraph">NetApp SnapCenter 提供中央控制台、基于角色的访问控制以及适用于 MongoDB 的插件，用于创建应用程序一致的 NetApp Snapshot 副本。数据库的大小不会影响 Snapshot 备份，创建该备份只需几秒钟。</block>
+  <block id="d1b52a0323efc5f61315318f17e5d04a" category="paragraph">下图显示了 SnapCenter 备份工作流。</block>
+  <block id="c05a20e0e4af3132e2ecd4b9467558e4" category="paragraph-title">SnapCenter 备份工作流程</block>
+  <block id="65b27f25786224f310e818d76d176775" category="inline-image-macro">SnapCenter 备份工作流。定义备份策略，添加资源，创建备份策略，创建资源组并附加策略，备份资源或资源组，监控备份操作，以及在拓扑页面中查看相关备份和克隆。</block>
+  <block id="7f07aecab0d6eca8b3e33620337a9929" category="paragraph"><block ref="7f07aecab0d6eca8b3e33620337a9929" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="9b5c5bff88d4faaa7baf32d8ec3291bc" category="paragraph">要使用 SnapCenter 保护 MongoDB 集群：</block>
+  <block id="0fe5cbd23c65a20a174fb2d7356f6c69" category="list-text">定义备份策略，包括 Snapshot 计划和保留。一个起点是保留 24 个每小时、30 个每天、7 个每周和 12 个每月的 Snapshot 副本。</block>
+  <block id="0db130775bb0d9982d96bd6a56c63d65" category="list-text">添加 MongoDB 资源。在“资源设置”页面上，提供下表中的自定义键值对。自定义键名称必须为大写。</block>
+  <block id="897356954c2cd3d41b221e3f24f99bba" category="cell">键</block>
+  <block id="09718f0e39337f8429c4b28d57d13ed5" category="cell"><block ref="e66aaf50e5b9f375ba99d9147045698b" prefix="" category="inline-code"></block></block>
+  <block id="e11d3ac377a32b1595f1e7d6e20c8048" category="cell">MongoDB 应用服务器（路由器）。当资源类型为分片集群时使用此键。</block>
+  <block id="45bf293dfcb0a8dd6e5bf997e831e6fa" category="cell"><block ref="ac944f4938e05976537053c2c98ef012" prefix="" category="inline-code"></block></block>
+  <block id="2858e67f8fe567f0cc228800b620b389" category="cell">副本集成员。当资源类型为副本集时使用此键。</block>
+  <block id="918899047cb5c3b6bf0d536ab19b500b" category="cell"><block ref="b3320c64c04da85facc30c01d6140646" prefix="" category="inline-code"></block></block>
+  <block id="d14cbfd8335765b0d7956d1971b514be" category="cell">可选。oplog 路径。在此处或在<block ref="a096b229b68ad0b5344573cee595a8b4" prefix=" " category="inline-code"></block>文件中提供。</block>
+  <block id="1ae411826f08eef7f47823285cb748a1" category="cell"><block ref="c6c965d30cf8641dfd51c02a040db8cc" prefix="" category="inline-code"></block></block>
+  <block id="ae2ea074d8ffbe29e317b871c6a6408a" category="cell"><block ref="f62eb0bf5e5c72e80983fbbac1cb70e5" prefix="" category="inline-code"></block> 用于 LDAP 身份验证，或<block ref="6adf97f83acf6453d4a6a4b1070f3754" prefix=" " category="inline-code"></block> 用于其他身份验证类型。</block>
+  <block id="eed7505b88aecedb6e5b796ace2af7fa" category="paragraph">在<block ref="a096b229b68ad0b5344573cee595a8b4" prefix=" " category="inline-code"></block>文件中，您还可以设置<block ref="1fb935298b8091c6102276bbea7eb9ab" prefix=" " category="inline-code"></block>。如果插件启动和停止 MongoDB 服务，请使用默认值<block ref="8d9c307cb7f3c4a32822a51922d1ceaa" prefix=" " category="inline-code"></block>。如果您自己启动和停止它们，请使用<block ref="57cec4137b614c87cb4e24a3d003a3e0" prefix=" " category="inline-code"></block>。</block>
+  <block id="7789a7d7131a1b87f9ebb95338d3b252" category="list-text">在“提供存储空间占用”页面上，选择 ONTAP 存储系统和存储 MongoDB 数据的卷。对于此解决方案，请选择四个数据库卷 <block ref="7c5e9a028aeece827587750784271926" prefix="(" category="inline-code"></block>、<block ref="510818f4d8c0522140aafa2a5b52ad5a" prefix=" " category="inline-code"></block>、<block ref="4efb4375ebcf42b581dac164eb9b9025" prefix=" " category="inline-code"></block> 和 <block ref="0813b439606568356c5393833dad32df" prefix=" " category="inline-code"></block>）。SnapCenter 不会自动发现这些资源的存储。</block>
+  <block id="275ea8af3a47ddbf67e5fce9a5674afc" category="list-text">创建备份策略。在策略脚本设置中，在 Snapshot 副本之前在 MongoDB 路由器或应用程序服务器上运行以下命令以停止平衡器，并在 Snapshot 副本之后运行第二个命令以重新启动它：</block>
+  <block id="11e3ad4dbeca8c383daf90d12930d2bd" category="paragraph">在运行命令的主机上安装<block ref="1f759f82a86e1e30bfdfc964f19e91df" prefix=" " category="inline-code"></block>，并为您的部署调整主机、端口和身份验证选项。</block>
+  <block id="79f9ef118e0e9f1e3b57ffb8980b9701" category="list-text">创建一个包含 MongoDB 资源的资源组，附加策略，并可选择创建一个计划。</block>
+  <block id="f8b7152819deabd03814fddc6f8e51c6" category="list-text">备份资源或资源组，监视操作，并在“拓扑”页面中查看相关备份和克隆。</block>
+  <block id="e362384a46c8ded8c26aed5aa70b68c1" category="paragraph">有关详细步骤，请参见以下 SnapCenter 文档：</block>
+  <block id="fdadbc4689c75884565947c7d9c98734" category="inline-link-macro">向 NetApp 支持的插件添加资源</block>
+  <block id="4faae4378e7354b8673f809279c4e232" category="list-text"><block ref="4faae4378e7354b8673f809279c4e232" category="inline-link-macro-rx"></block></block>
+  <block id="30801714b066d2f617acadd977561420" category="inline-link-macro">为 NetApp 支持的插件资源创建策略</block>
+  <block id="2e7167779c4ee7101b009973dd07c3b9" category="list-text"><block ref="2e7167779c4ee7101b009973dd07c3b9" category="inline-link-macro-rx"></block></block>
+  <block id="7f9a1e0f8fc64e3f207d5cd83dd8e67f" category="inline-link-macro">创建资源组并附加策略</block>
+  <block id="f107c1ab7e757085a9dd5c446201cf12" category="list-text"><block ref="f107c1ab7e757085a9dd5c446201cf12" category="inline-link-macro-rx"></block></block>
+  <block id="37a077fe53864717026a312c9cfed412" category="inline-link-macro">备份 NetApp 支持的插件资源</block>
+  <block id="572c5beab15efd8d1a4e18b3393e3d32" category="list-text"><block ref="572c5beab15efd8d1a4e18b3393e3d32" category="inline-link-macro-rx"></block></block>
+  <block id="15276bea751180f934c5cb4c4b954fc3" category="section-title">使用 SnapCenter 还原</block>
+  <block id="e904858e5554930e871a29f817a21c8c" category="paragraph">随着数据库的增长，备份和恢复变得更加困难。NetApp Snapshot 技术为备份和恢复任何规模的分布式数据库提供了最简单、最有效的方法。当备份基于 Snapshot 副本时，恢复由多个分片组成的大型数据库更多地取决于停止和启动数据库进程所需的时间，而不是恢复数据本身。从 Snapshot 备份还原通常只需要几秒钟，最多几分钟。</block>
+  <block id="50f617860715e7fcf19a1eb2ccf5d22a" category="paragraph">使用适用于 MongoDB 的 SnapCenter 插件从 SnapCenter 创建的 Snapshot 备份还原数据库。</block>
+  <block id="286d9da27539525025269fed09209854" category="paragraph">下图显示了 SnapCenter 还原工作流。</block>
+  <block id="c5ecf9c6b8efadb871b287d20f7a0511" category="paragraph-title">SnapCenter 还原工作流</block>
+  <block id="02e80a26d7805fb99bda4138da9c0d48" category="inline-image-macro">SnapCenter 还原工作流。定义还原策略、还原资源并监控还原操作。</block>
+  <block id="5fef7730f6afdf0ef1b133bc280e8424" category="paragraph"><block ref="5fef7730f6afdf0ef1b133bc280e8424" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="12f9ec225f6550699ab56db1b42d20c8" category="paragraph">要使用 SnapCenter 还原 MongoDB 资源：</block>
+  <block id="feae8d4063975c42383b7b7f1d960aa2" category="list-text">定义还原策略。对于手动添加的 NetApp 支持的插件资源，SnapCenter 支持两种策略：</block>
+  <block id="f20e794a35ed546c5a532d6a1f32f852" category="list-text">*完整资源*还原资源的所有卷、qtree 和 LUN。</block>
+  <block id="eccf52f7082732c0b6419ba3adc30887" category="list-text">*文件级别*从卷、qtree 或目录，或仅从选定的 LUN 还原文件。</block>
+  <block id="22229acfc8d26d4eed044b294330d45d" category="admonition">如果还原完整资源，则相同卷或 qtree 上比选定 Snapshot 副本更新的 Snapshot 副本将被删除，并且无法恢复。托管在同一卷或 qtree 上的任何其他资源也会受到影响。SnapCenter 无法恢复手动添加的 NetApp 支持的插件资源。</block>
+  <block id="faa66cb3270e19e44cabe1c6b61f852f" category="list-text">在 SnapCenter 中，选择 *Resources*，选择 MongoDB 插件，然后选择资源。在 *管理副本* 视图中，选择要恢复的备份。</block>
+  <block id="8527f86c5a1b0d5cb4585cc43ba5bc00" category="list-text">在“还原范围”页面上，选择*完整资源*或*文件级别*。</block>
+  <block id="e5a1aa6161a4dffad4eeaf624053b263" category="list-text">在 *操作前* 页面上，输入要在还原前运行的命令。对于此解决方案，请停止分片服务器上的 <block ref="563000bf2ad9bb017f91b15beb884445" prefix=" " category="inline-code"></block> 进程并卸载数据库卷，如以下示例所示。</block>
+  <block id="ef7588a47674238453861609ecd41d7c" category="list-text">在*操作后*页面上，输入要在还原后运行的命令。对于此解决方案，请挂载卷、删除 <block ref="445068e71187e2252971875a7ceaab7a" prefix=" " category="inline-code"></block> 文件并在分片服务器上启动 <block ref="563000bf2ad9bb017f91b15beb884445" prefix=" " category="inline-code"></block> 进程，如下例所示。</block>
+  <block id="82c24a9b85689e185c5e6badcaa02bc3" category="list-text">（可选）配置电子邮件通知，查看摘要，然后选择 *完成*。</block>
+  <block id="9237c69c04b752480ff9060de00715a0" category="list-text">通过选择 *Monitor* &gt; *Jobs* 来监控还原操作，然后在还原的数据库中检查分片状态和文档计数。</block>
+  <block id="67d899b4318f9296298e7c4bb8999573" category="inline-link-macro">还原 NetApp 支持的插件资源</block>
+  <block id="3a697dac73dcd799512863a6fd0162c7" category="list-text"><block ref="3a697dac73dcd799512863a6fd0162c7" category="inline-link-macro-rx"></block></block>
+  <block id="ff094cc811567cc7324b4e0488769c88" category="inline-link-macro">手动添加的 NetApp 支持的插件资源的还原策略类型</block>
+  <block id="37e550f382e3e70e0273884323b89c6e" category="list-text"><block ref="37e550f382e3e70e0273884323b89c6e" category="inline-link-macro-rx"></block></block>
+  <block id="d697fbdd5eef7a80e3797fe363484b61" category="inline-link-macro">还原资源备份</block>
+  <block id="3c89ec026b5f1e196469672afc842089" category="list-text"><block ref="3c89ec026b5f1e196469672afc842089" category="inline-link-macro-rx"></block></block>
+  <block id="3a90a83aabcb3a5ca50b525fd47881a7" category="paragraph">我们测试中的以下示例删除了<block ref="4d3a21d8c684c09c19b93be911827fd5" prefix=" " category="inline-code"></block>集合，停止了所有分片的所有<block ref="563000bf2ad9bb017f91b15beb884445" prefix=" " category="inline-code"></block>进程，卸载了<block ref="4caa791091d21d23e63637080226f370" prefix=" " category="inline-code"></block>文件系统，还原了卷，重新挂载了文件系统，删除了锁定文件，并重新启动了所有进程：</block>
+  <block id="43040a57f9dfc1cbe27992aa7b9d7c18" category="list-text">在还原之前，请从其中一台应用程序服务器检查数据库及其文档。<block ref="4d3a21d8c684c09c19b93be911827fd5" prefix=" " category="inline-code"></block> 数据库中的<block ref="1af7bc49e97fcb4278a392d1e7b04823" prefix=" " category="inline-code"></block> 集合在备份时包含 144,569,144 个文档。删除该集合以模拟数据丢失，并确认计数为 0：</block>
+  <block id="79df74b369301738a1ff0d5bd7fd78ba" category="list-text">使用 init 脚本或<block ref="534735884d341071762ede7af01c53e8" prefix=" " category="inline-code"></block>命令停止第一个分片副本集成员<block ref="8c255779fd470e05179419e1dbf5f3a6" prefix="(" category="inline-code"></block>、<block ref="0c55a0f6b748c2fc4c0199f7633135aa" prefix=" " category="inline-code"></block>和<block ref="28b44f9f2e88cbad7c00de21cc8671ab" prefix=" " category="inline-code"></block>）上的<block ref="563000bf2ad9bb017f91b15beb884445" prefix=" " category="inline-code"></block>进程，并卸载数据库卷。例如，在<block ref="8c255779fd470e05179419e1dbf5f3a6" prefix=" " category="inline-code"></block>上：</block>
+  <block id="44ef326f089f947c9d5ab3e3457ffc07" category="list-text">以相同方式停止第二个分片副本集成员 <block ref="21cc88ebe602fd973673fe94d4fedb34" prefix="(" category="inline-code"></block>、<block ref="24dd7878f3dd251c302c8f8c6494f29b" prefix=" " category="inline-code"></block> 和 <block ref="05ad754a0b8817fa63d3ae0119541248" prefix=" " category="inline-code"></block>）上的<block ref="563000bf2ad9bb017f91b15beb884445" prefix=" " category="inline-code"></block>进程，并卸载其数据库卷。</block>
+  <block id="38704377c3244142223aa052fbd70a21" category="list-text">从两个分片的虚拟机中删除现有的虚拟磁盘（MongoDB 数据库卷），包括主服务器和辅助服务器。</block>
+  <block id="9d458078965283c507c3d4b5efdcc304" category="list-text">从备份中恢复所有四个数据库卷 <block ref="7c5e9a028aeece827587750784271926" prefix="(" category="inline-code"></block>、<block ref="510818f4d8c0522140aafa2a5b52ad5a" prefix=" " category="inline-code"></block>、<block ref="4efb4375ebcf42b581dac164eb9b9025" prefix=" " category="inline-code"></block> 和 <block ref="0813b439606568356c5393833dad32df" prefix=" " category="inline-code"></block>），一次一个卷。</block>
+  <block id="e6ad62a2c681865b5dd32f7408e006b6" category="list-text">将还原的数据库卷作为现有磁盘重新连接到每个分片的主服务器和辅助服务器。</block>
+  <block id="eda485ac0ac4a002ad5fd6044d61e90b" category="list-text">挂载卷。</block>
+  <block id="d1e218cb7be43d7165d6b8342c659487" category="list-text">从挂载的 MongoDB 数据库卷中删除<block ref="445068e71187e2252971875a7ceaab7a" prefix=" " category="inline-code"></block>文件。</block>
+  <block id="08b3fd7cb4c0c67e7e13c4a5e478ea19" category="list-text">在分片服务器上启动<block ref="563000bf2ad9bb017f91b15beb884445" prefix=" " category="inline-code"></block>进程，并验证<block ref="563000bf2ad9bb017f91b15beb884445" prefix=" " category="inline-code"></block>端口（27018 和 28018）是否正在侦听。例如，在<block ref="8c255779fd470e05179419e1dbf5f3a6" prefix=" " category="inline-code"></block>上：</block>
+  <block id="46d91dfded59df5bbb7bae0db784bb60" category="list-text">在<block ref="0c55a0f6b748c2fc4c0199f7633135aa" prefix=" " category="inline-code"></block>、<block ref="28b44f9f2e88cbad7c00de21cc8671ab" prefix=" " category="inline-code"></block>、<block ref="21cc88ebe602fd973673fe94d4fedb34" prefix=" " category="inline-code"></block>、<block ref="24dd7878f3dd251c302c8f8c6494f29b" prefix=" " category="inline-code"></block>和<block ref="05ad754a0b8817fa63d3ae0119541248" prefix=" " category="inline-code"></block>上重复此过程。装载还原的卷，删除<block ref="445068e71187e2252971875a7ceaab7a" prefix=" " category="inline-code"></block>文件，并启动副本集的<block ref="563000bf2ad9bb017f91b15beb884445" prefix=" " category="inline-code"></block>进程。</block>
+  <block id="6315bd3d297f6c99a9eedb0ccced9b21" category="list-text">检查已还原数据库中的分片状态和文档计数。该<block ref="4d3a21d8c684c09c19b93be911827fd5" prefix=" " category="inline-code"></block>集合恢复为 144,569,144 个文档：</block>
+  <block id="166402f61b3038724657349c17045c36" category="paragraph">此示例演示了如何使用 NetApp SnapRestore 技术从 NetApp Snapshot 副本还原 MongoDB 数据库。</block>
+  <block id="e36520293eae188c1420a688be3af635" category="section-title">用于开发/测试和 QA 的 MongoDB 克隆</block>
+  <block id="da7a9b9ef21c9adc183ef53af47e4971" category="paragraph">生产 MongoDB 的 NetApp 快照备份使您能够构建预生产或开发环境。借助 NetApp FlexClone 技术，您可以将包含快照副本的卷呈现给任何克隆主机。这种方法使您可以快速构建开发/测试环境，而无需将所需的存储增加一倍。FlexClone 克隆提供了一种快速、可扩展且高效的方式来按需提供开发/测试环境。</block>
+  <block id="49b8465444bff71aa0e65a181523a833" category="section-title">使用 SnapCenter 克隆</block>
+  <block id="84f4ff5dda0e58f5e0d22084c54ae9cb" category="paragraph">使用适用于 MongoDB 的 SnapCenter 插件克隆 SnapCenter 创建的 Snapshot 备份。您可以从主备份或辅助备份进行克隆。</block>
+  <block id="969595da959f0e03ef211345d0d2500a" category="paragraph">您可以将 MongoDB 备份的克隆用于以下目的：</block>
+  <block id="1a6ca832b12b12b3ba6518f2f643a503" category="list-text">在应用程序开发过程中，针对当前数据库结构和内容测试功能。</block>
+  <block id="3794c8966b2c602a51d4f446e778deb8" category="list-text">提取和操作数据，例如在填充数据仓库时。</block>
+  <block id="18a1cc98063d9f98a42811dc96ee62a0" category="list-text">恢复错误删除或更改的数据。</block>
+  <block id="66dbdfa06bb4fd63e9f9a866ab720765" category="paragraph">下图显示了 SnapCenter 克隆工作流。</block>
+  <block id="666b53b10c6a52dced1110da70c5d502" category="paragraph-title">SnapCenter 克隆工作流</block>
+  <block id="894d6f39bccbe7153bab99eeb04c845c" category="inline-image-macro">SnapCenter 克隆工作流。克隆备份，监视克隆操作，如果需要，拆分克隆。</block>
+  <block id="7a4f3c54251444073b9e44a3c424dcc5" category="paragraph"><block ref="7a4f3c54251444073b9e44a3c424dcc5" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="108e45ca63f57e98efd9f54aeeaf4204" category="paragraph">要使用 SnapCenter 克隆 MongoDB 备份：</block>
+  <block id="7eb766faacf3a346b13c98fc0b8b093c" category="list-text">请确保已备份资源或资源组，并且承载卷的聚合位于 Storage Virtual Machine (SVM) 的分配聚合列表中。</block>
+  <block id="c57e88b448601cbb171614b4d5dc32d7" category="list-text">在 SnapCenter 中，选择 *Resources*，选择 MongoDB 插件，然后选择资源。在 *管理副本* 视图中，选择主备份或辅助备份，然后选择克隆图标。</block>
+  <block id="a58c0fdf031a167ae157620cef60793f" category="list-text">在“位置”页面上，选择克隆服务器，即挂载克隆并安装插件的主机。默认为源主机。如果克隆到与源相同的主机，则必须输入克隆后缀，例如<block ref="b4973203faca606cebfa4abda7a1c7bb" prefix=" " category="inline-code"></block>，以便克隆的资源是唯一的。否则，操作将失败。</block>
+  <block id="e3b0148f4d1fbdc759f1fb5bb183e432" category="list-text">在“脚本”页面上，输入克隆前和克隆后命令以及克隆卷的装载命令。对于此解决方案，请使用这些命令从克隆的数据库卷中删除<block ref="7b696216192711a740c8531e95bcc5c8" prefix=" " category="inline-code"></block>文件，分配新 IP 地址，更新<block ref="ad942c725cd0cae65ca4c63717ec464c" prefix=" " category="inline-code"></block>，并重新启动隔离克隆网络中的 MongoDB 进程，如下例所示。</block>
+  <block id="9d841e2ff06bd082c925c93f585480a6" category="list-text">通过选择 *监控* &gt; *作业* 来监控克隆操作。如果需要，将克隆从其父 Snapshot 副本中拆分出来。</block>
+  <block id="94838444933943a1ec7846a12ade734a" category="paragraph">将克隆的虚拟机附加到隔离网络，使其无法访问生产 MongoDB 主机，并为克隆增长预留存储容量。</block>
+  <block id="16ee2093a7a4ef5d61a3e32fb3cdb6aa" category="inline-link-macro">克隆 NetApp 支持的插件资源备份</block>
+  <block id="fbb82510e1cd72807225af154373479d" category="list-text"><block ref="fbb82510e1cd72807225af154373479d" category="inline-link-macro-rx"></block></block>
+  <block id="569002e953b26f14a2da67d9ad9dcc73" category="inline-link-macro">从备份克隆</block>
+  <block id="d4e5fc5e5dd810ede9bf353d84099dbb" category="list-text"><block ref="d4e5fc5e5dd810ede9bf353d84099dbb" category="inline-link-macro-rx"></block></block>
+  <block id="4407aea7395e232b9e3242a2cea0f86f" category="paragraph">我们测试中的以下示例将所有分片服务器上的所有数据库克隆到新的分片服务器中。在此示例中，还克隆了操作系统卷。</block>
+  <block id="96ed9c2227ef1be6571653f4a3ca58e1" category="list-text">从特定 Snapshot 副本为操作系统和数据库卷创建 FlexClone 卷。</block>
+  <block id="2aa2ce09119893582681f03177aedf2a" category="list-text">在 VMware 服务器上创建包含克隆的操作系统和数据库卷的数据存储。</block>
+  <block id="682e254947f9adf46a638da60c3e5788" category="inline-image-macro">从克隆的操作系统卷创建的 VMware 数据存储。</block>
+  <block id="a5c7b8ee45120873eec8a64ca6e8f523" category="paragraph"><block ref="a5c7b8ee45120873eec8a64ca6e8f523" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="05aa862746812c3dcd6510b38fe1a56b" category="admonition">此过程中的 VMware 屏幕截图和菜单路径来自较早的 VMware vSphere 和 ESXi 版本。在当前的 VMware vSphere 和 ESXi 版本中，屏幕和菜单名称不同。步骤相同，因此请遵循适用于您版本的 VMware 文档。</block>
+  <block id="62e1f1482ee96044287df94d1fe6ef2f" category="inline-image-macro">从克隆的数据库卷创建的 VMware 数据存储。</block>
+  <block id="a33d01b311f1dfd7fbd88784242d3f4f" category="paragraph"><block ref="a33d01b311f1dfd7fbd88784242d3f4f" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="5332eafda56ce0bf732f0cb4913cc0b4" category="list-text">根据 <block ref="a152e2dbf09e3a377894288958a20ba2" prefix=" " category="inline-code"></block> 文件从数据存储创建克隆的虚拟机：</block>
+  <block id="f6a1fdd463376debd1e71e08d74cc30f" category="list-text">选择在上一步中创建的数据存储。</block>
+  <block id="041ca80eef22b60b8c497cb722897238" category="list-text">找到<block ref="a152e2dbf09e3a377894288958a20ba2" prefix=" " category="inline-code"></block>文件。</block>
+  <block id="37ecb0c2f569872927caf3eefb0dfb74" category="list-text">注册 VM。</block>
+  <block id="084b306232353b23fed2bb607df6edbc" category="list-text">以<block ref="412278351b725dbd52d202a37b0feef0" prefix=" " category="inline-code"></block>格式命名克隆的 VM。</block>
+  <block id="903f0a6d81a0fd93583069de620cfe8f" category="list-text">选择 VMware 集群和服务器以完成创建克隆的 VM。</block>
+  <block id="6f091ba671916e925c8d78fe26c5d1a6" category="list-text">克隆（新注册）的 VM 从另一个克隆的数据库卷访问数据库<block ref="63962ced28f4fed37c6869c7a8ef2613" prefix=" " category="inline-code"></block>文件。验证<block ref="63962ced28f4fed37c6869c7a8ef2613" prefix=" " category="inline-code"></block>文件是否标识为现有磁盘。如果不是，在克隆的 VM 中，选择 *编辑 &gt; 设置 &gt; 删除磁盘 &gt; 确认*。请确保不要从存储库中删除磁盘。</block>
+  <block id="a49345c98b8924fca570f892214c12b6" category="list-text">从克隆的数据库卷中删除<block ref="9c91d49e43778b7af6e0b37f2a8668bd" prefix=" " category="inline-code"></block>文件。在 VMware 或 Linux 服务器中装载克隆的卷并删除<block ref="7b696216192711a740c8531e95bcc5c8" prefix=" " category="inline-code"></block>文件：</block>
+  <block id="b73fbded883bfb181612d8bbc1932118" category="list-text">在开启任何克隆的虚拟机之前，将其网络适配器连接到无法到达生产 MongoDB 主机的隔离端口组。</block>
+  <block id="bce23f290fd4529263f4a4d3023e5c3d" category="list-text">在启动 MongoDB 之前，开启克隆的 VM 并使用 VM 控制台为所有克隆成员分配新的 IP 地址并更新<block ref="ad942c725cd0cae65ca4c63717ec464c" prefix=" " category="inline-code"></block>。仅在隔离的克隆网络中保留主机名。</block>
+  <block id="7811355e936d156c361f683408cba1ee" category="list-text">使用来自克隆虚拟机的新 IP 地址重新启动 MongoDB 配置、应用程序和副本集或分片服务器。</block>
+  <block id="45a092dcd60005dfbc6253860d213eda" category="paragraph">此过程创建生产 MongoDB 数据库的工作克隆副本。克隆是隔离的，因此您可以使用它进行写入、故障排除、开发或测试。FlexClone 与父快照副本共享未更改的块，从而避免了初始的完整数据复制。新的和修改的块会消耗额外的存储空间，因此请为克隆增长保留容量。</block>
+  <block id="c93c33ba8c96b0c4b65eca84a2ca2c0f" category="section-title">复制到 Amazon FSx for NetApp ONTAP 以进行灾难恢复</block>
+  <block id="670deb02982b4b8ee06d02b9334dcb23" category="paragraph">Amazon FSx for NetApp ONTAP 是一项运行 NetApp ONTAP 的完全托管的 AWS 服务。AWS 运行文件系统和底层基础架构，您可以获得与本地 AFF 阵列提供的相同的 ONTAP 数据管理。FSx for ONTAP 支持 NFS、SMB 和 iSCSI 访问，它包括快照副本、FlexClone 卷、存储效率和 SnapMirror 复制。因为它是 ONTAP，所以您可以使用 SnapMirror 将 MongoDB 卷从本地 AFF 阵列复制到 FSx for ONTAP，并将其用作灾难恢复目标。</block>
+  <block id="7a00156379995fe92b6fdee14067c1c0" category="paragraph">您可以使用 AWS Management Console、AWS CLI 或 AWS API 创建和管理文件系统。您可以使用 ONTAP CLI、ONTAP REST API、ONTAP System Manager 或 NetApp Console 管理 ONTAP 资源，例如 Storage Virtual Machine、卷和 SnapMirror 关系。</block>
+  <block id="33378fb20c51dffc50bf4aaa6b6e8d32" category="admonition">原始验证在 AWS 及其 Web 控制台中使用了基于软件的 ONTAP 实例。对于 FSx for ONTAP，SnapMirror 步骤是相同的，但管理屏幕不同。有关详细信息，请参见 <block ref="7796587e6cadf7a029e0a201a3c7d766" category="inline-xref-macro-rx"></block>。</block>
+  <block id="74bdb8ed1c91d01d195c6e529e044d70" category="section-title">到云的灾难恢复验证</block>
+  <block id="347eb114f8a436c2383e7ca2e055e485" category="paragraph">此解决方案通过使用 SnapMirror 将 MongoDB 数据复制到 Amazon FSx for NetApp ONTAP 来保护这些数据。本地集群和 VPC 之间的网络连接（例如 VPN 或 AWS Direct Connect）必须允许集群间流量。复制需要执行以下任务：</block>
+  <block id="5abbfd5c15f85682467302b635f34da7" category="list-text">在 Amazon FSx 控制台中，打开文件系统并记录群集间端点 IP 地址。</block>
+  <block id="deb1ff0516a11c86291464712bff1312" category="list-text">在本地 ONTAP 集群上创建集群对等关系。</block>
+  <block id="d9fa22d3fa6ec2178ac159737860eedd" category="list-text">在 FSx for ONTAP 文件系统上创建对等关系。</block>
+  <block id="b0742675864f03025ca02195a90df014" category="list-text">配置并初始化 SnapMirror 关系。</block>
+  <block id="2cb48f644f1060d0e6293311476dbc1e" category="paragraph">在原始验证中，SnapMirror 关系和复制状态显示如下：</block>
+  <block id="176064a36f9abe7982b9338b2a12d1e0" category="list-text">一个卷关系，从本地 AFF 集群上的<block ref="7c5e9a028aeece827587750784271926" prefix=" " category="inline-code"></block>卷到 AWS 中的 ONTAP 实例上的镜像卷 <block ref="f9e4ba3c96772452236dc6a556f7284d" prefix="(" category="inline-code"></block>）</block>
+  <block id="1326b99f8a3a16accd459af5df6d3af0" category="list-text">处于 SnapMirrored 状态的健康关系，具有空闲传输状态、<block ref="e162cfb3e9ccdaa06cb8c6b686825bee" prefix=" " category="inline-code"></block> 策略和 <block ref="5466e92251b427ad87956d1588d063f4" prefix=" " category="inline-code"></block> 传输计划。</block>
+  <block id="16c7e6f99dcd29bfaff61e5c70cea203" category="list-text">559GB 的复制容量，没有正在进行的传输，也没有失败的关系。</block>
+  <block id="fc4d22f12b1b3cab21605cd08015be69" category="list-text">最后一次传输是没有错误的更新，延迟时间显示目标落后于源的程度。</block>
+  <block id="71013bd7bcf7c3f199de3bc817d02e3a" category="list-text">两种环境，即本地 AFF 集群和 AWS 中的 ONTAP 实例，两边都分配了容量。</block>
+  <block id="7f486f02749657e502a94e45d8232366" category="paragraph">您可以在 AWS 控制台、ONTAP System Manager 或 NetApp Console 中检查有关 FSx for ONTAP 文件系统的相同信息。</block>
+  <block id="186946d790aa0865b6436850b23fc482" category="paragraph">要验证灾难恢复，请执行以下操作：</block>
+  <block id="9252aa10541ffdfee7b46547e7b9c58a" category="list-text">确认 SnapMirror 状态为 <block ref="f36b749ca12a9c329d74b06de7936389" prefix=" " category="inline-code"></block>，关系状态为 <block ref="741839f346d6e8126ae38ee76a96fd12" prefix=" " category="inline-code"></block>。</block>
+  <block id="1d9e6f13dd1374de22f9865c1a799f28" category="list-text">为 SnapMirror 关系启用灾难恢复：</block>
+  <block id="b4f3f73c3ea3495f241ad8349a7ce723" category="list-text">在 Amazon EC2 上构建 Linux 操作系统实例，并在其上安装 MongoDB 数据库，就像在生产数据库上一样。</block>
+  <block id="f1c4d1b75c42f061f70671a738feeef0" category="list-text">在 FSx for ONTAP 文件系统上，暂停和中断 SnapMirror 关系。</block>
+  <block id="d34fef62555fe990a5a7ead0b59ecba8" category="list-text">从目标卷创建 FlexClone 卷。</block>
+  <block id="ef54d9832aec99b4f9842ce6e767c7fa" category="list-text">在相应的操作系统实例上挂载主数据库卷和二级数据库卷。</block>
+  <block id="322091b66a699493f4572d2d351a7a41" category="list-text">使用 init 脚本或 CLI 命令启动配置服务器、主分片服务器和辅助分片服务器，以及应用程序或查询服务器<block ref="563000bf2ad9bb017f91b15beb884445" prefix=" " category="inline-code"></block>和<block ref="4f5f1f9f60c4a16435a93d21fddc9b63" prefix=" " category="inline-code"></block>进程。</block>
+  <block id="9a02e3d37eb69ec201490d2a0c8d6d86" category="list-text">验证数据库和文档是否存在于上次成功复制的 Snapshot 副本中，以及新的灾难恢复数据库是否仍可写入。记录最后传输时间以确定恢复点。</block>
+  <block id="2a98e01c9d16dd05250b11a0cbc93d39" category="section-title">性能和认证验证</block>
+  <block id="de38e61e1563fbc5955e0788e5f946d0" category="section-title">认证验证</block>
+  <block id="babb987a3dfdc2be31d221180202136a" category="paragraph">为了验证 NetApp 存储与 MongoDB 的互操作性，我们完成了 MongoDB 认证流程。为了进行认证验证，我们使用了 AFF-A30 全闪存阵列，通过光纤通道交换机连接到运行 RHEL 7.1 操作系统的具有 24 核和 128GB RAM 的 x86 服务器。我们在 RHEL 服务器上安装了 MongoDB Enterprise v3.2。这些版本反映了原始测试。对于新的部署，请使用当前支持的操作系统和 MongoDB 版本。</block>
+  <block id="ee146864e5c98b0b39c2882b7eab664e" category="paragraph">通过此配置，NetApp 存储系统通过了所有 MongoDB 认证测试，并在测试时被列为 MongoDB 认证平台。有关详细信息，请参见 <block ref="83ddaca31affbfb3599552c7cfd1e8eb" category="inline-link-macro-rx"></block>。请查看该页面，了解当前认证状态。</block>
+  <block id="f093e7fd4baa8569a1751cebe2f24dff" category="inline-xref-macro">解决方案设计</block>
+  <block id="053c0a4d7812eec02535ba80d1abfebd" category="admonition">该认证使用通过光纤通道连接到 AFF-A30 的物理服务器，即块存储。它不涵盖在 <block ref="65f3279d5f4a3cdebd7a80909a3c762c" category="inline-xref-macro-rx"></block> 中托管 MongoDB 虚拟机的 NFS 数据存储设计。</block>
+  <block id="d657dbf0f18465913c06a5898422de5e" category="paragraph">除了认证测试之外，我们还使用 YCSB 测试框架验证了采用 NetApp 存储的 MongoDB 性能。</block>
+  <block id="894e6aa91d053d38626b19ee9e836026" category="section-title">使用 YCSB 进行性能验证</block>
+  <block id="b087991e8b82c99b108c72b712c47b5e" category="admonition">YCSB 测试在使用光纤通道 LUN 的三台物理服务器上运行，而不是在 <block ref="65f3279d5f4a3cdebd7a80909a3c762c" category="inline-xref-macro-rx"></block> 中的虚拟化、基于 NFS 的配置上运行。结果表明了 AFF-A30 在高负载下可以为 MongoDB 提供怎样的性能，它们并非对 NFS 数据存储设计的衡量。请测试您自己的配置和协议以估算部署规模。</block>
+  <block id="5f4eccd299371347f0e4bc133fb76007" category="paragraph">Yahoo! Cloud Serving Benchmark (YCSB) 是一个框架和一组通用工作负载，用于评估不同键值存储和云服务存储的性能。它包含两个组件：</block>
+  <block id="09cafa82fe20385aae068df884c70fee" category="list-text">YCSB 客户端，一个可扩展的工作负载生成器。</block>
+  <block id="9ae6369e36517533c6bc5c6507814350" category="list-text">核心工作负载，生成器运行的一组工作负载方案。</block>
+  <block id="d027e804e6b0e1d6c6961c009fcb222c" category="paragraph">我们从六个核心工作负载中选择了工作负载 A、B、C 和自定义 C：</block>
+  <block id="c32a600d606134ac18cdbf14395639ae" category="list-text">*工作负载 A* 是一个以更新为主的工作负载，包含 50/50 的读取和写入组合。示例应用程序是记录最近操作的会话存储。</block>
+  <block id="81133eb6a214314231dbd8ffa7ba5811" category="list-text">*工作负载 B* 是一个以读取为主的工作负载，包含 95/5 的读取和写入混合。一个示例应用程序是照片标记，其中添加标记是一种更新，但大多数操作都是读取标记。</block>
+  <block id="3040bc57dad36ef7431f10e5779c9242" category="list-text">*工作负载 C* 是具有 100% 读取的只读工作负载。示例应用程序是用户配置文件缓存，其中配置文件在其他位置构建，例如在 Hadoop 部署中。</block>
+  <block id="e6b81201ed4867a435b840e433e8ef87" category="list-text">*Workload customized C* 是我们创建的只读工作负载，因为 YCSB 主要用于测试数据库性能，而不是为了给数据库 I/O 层施加压力。它显示了当应用程序 I/O 请求对其施加重负载时，您可以从 AFF-A30 获得的吞吐量和响应时间。</block>
+  <block id="67ec39545044c1456868ca8ed3fd2977" category="paragraph">在我们的验证中，数据库包含 700GB 的数据。每个文档的大小为 1,000 字节，有 10 个字段。YCSB 工具加载了数据。</block>
+  <block id="e6ca429b4317161deafdb58d20c38765" category="paragraph-title">用于验证的副本集</block>
+  <block id="8fc802b7384d38690d4509398bc1f5f8" category="inline-image-macro">用于 YCSB 验证的主要和两个辅助 MongoDB 副本集。</block>
+  <block id="fb0e01b21f8fe7b6ad2212418fc063f9" category="paragraph"><block ref="fb0e01b21f8fe7b6ad2212418fc063f9" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="43f2f5a89b7b2cfdf71723f04f8f6510" category="section-title">用于 YCSB 的存储架构</block>
+  <block id="739f69ba5eb6b416c9aae9765cd4a98f" category="paragraph">我们使用三台物理服务器来构建主、辅、辅（PSS）MongoDB 副本集。</block>
+  <block id="8a8ec3c089d7977a014393f13cc13868" category="inline-image-macro">三个 RHEL 服务器，每个都有两个 16Gbps 光纤通道连接到 FC 交换机，该交换机通过四个 16Gbps 光纤通道链路连接到运行 ONTAP 9.1 和 24 个 800GB SSD 的双节点 AFF-A30 HA 对。</block>
+  <block id="fd70024549b52e42dfcb5e19e0382e78" category="paragraph"><block ref="fd70024549b52e42dfcb5e19e0382e78" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="2b215493c070bf7569084280ad7e316a" category="paragraph">每台服务器都具有以下配置：</block>
+  <block id="3b63a934f24699a3abc944472864815f" category="list-text">256 GB 内存</block>
+  <block id="73eef1de35cb5fcb68bb9259a90a87d0" category="list-text">两个 2.60GHz 的 Intel Xeon E5-2630 v2 处理器（共 24 核）</block>
+  <block id="d799887e8ec293eb94a951278de21008" category="list-text">两个 16Gbps 光纤通道端口</block>
+  <block id="16460b68d485420cdb53d11efecc5f3f" category="list-text">安装 Red Hat Enterprise Linux 7.2 或更高版本的 MongoDB 服务器</block>
+  <block id="293a421babc818bed2af24d94644ffd9" category="list-text">Brocade 光纤通道交换机</block>
+  <block id="b0f6d5baf402fe41fcc9bb540b0e091d" category="paragraph">存储控制器为 AFF-A30 HA 对。每个控制器都有：</block>
+  <block id="f9854c288cb8e17908a921f2701304eb" category="list-text">128GB 缓存</block>
+  <block id="d4ed10567bccc25d4430c3c313a8b034" category="list-text">8GB NVMEM</block>
+  <block id="fa9c6f1f952a3295fffe597fefa5f6c5" category="list-text">1TB Flash Cache</block>
+  <block id="50ebbd59173ef6445e26d08febb1cf7e" category="list-text">四个 16Gbps 光纤通道端口</block>
+  <block id="b87249ff0b0d1fe6bf519c6a2d41d855" category="list-text">配备 24 个 800GB 固态硬盘的 DS2246 磁盘架的一半</block>
+  <block id="5c3a741125f62ff748b6e0780263418a" category="paragraph">我们按如下方式为副本集构建了文件系统：</block>
+  <block id="4c656e514f7eb3116f15f8b662d727a5" category="list-text">我们为每个 AFF-A30 存储控制器创建了四个卷，总共八个卷。每个卷为 386GB。</block>
+  <block id="6c87d34bb8cee57cd7d6a526a3522857" category="list-text">每个卷都有三个 128GB 的 LUN。我们将每个卷中的一个 LUN 调配给主服务器，将另外两个 LUN 调配给辅助服务器。</block>
+  <block id="86965ec44b40daae81bc2ae0a457412c" category="list-text">在每台服务器上，我们从八个 LUN 创建了一个逻辑卷组，然后在卷组中的八个 LUN 上创建了一个条带化逻辑卷。</block>
+  <block id="7b7784ba8ac89e23eae6a3906acaeddd" category="list-text">我们在条带化逻辑卷之上创建了 XFS 文件系统。</block>
+  <block id="f9ac4116f9d98e46b87eb6b92f593fa4" category="paragraph-title">AFF-A30 上的存储布局和文件系统各层</block>
+  <block id="a2bea2a92e92d26434cb205b9cd92111" category="inline-image-macro">AFF-A30 上的卷和 LUN 布局。</block>
+  <block id="5e56aee25749bdc183940d236f5d41bb" category="inline-image-macro">从 LUN 到 XFS 文件系统的文件系统层。</block>
+  <block id="29a7192e04661a101f7a003326003cdd" category="paragraph"><block ref="a2bc6621b4587946827daa135344d5a1" category="inline-image-macro-rx" type="image"></block> <block ref="82403afdd675448c52e7f029682d0fa0" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="9a45308a4c13d6ef3e8824b7b18d05d0" category="section-title">YCSB 性能测试</block>
+  <block id="5f1636a7cc1bbc2410e85c4687f47b4d" category="paragraph">我们针对 YCSB 工作负载 A、B 和 C 运行了以下测试：</block>
+  <block id="381c35389c05524b09190837c183a2bc" category="list-text">一个 YCSB 实例针对一个数据库运行。</block>
+  <block id="d4c39efb1ab2de03e6a6278ce57c126d" category="list-text">测试开始时，YCSB 线程数为 8。</block>
+  <block id="d3b436cc8901734a92223cc47e832105" category="list-text">线程数增加，直到延迟增加且每秒操作数减少。</block>
+  <block id="01558d421517bfc72f7c7188f397dce8" category="list-text">在每次运行结束时，从 YCSB 输出中收集 YCSB 性能指标。</block>
+  <block id="51b119b8d672e3f7a3f6c98d3601ece6" category="paragraph">随着 YCSB 对数据运行，服务器上的负载会逐渐增加。将集合索引加载到服务器的内存后，所有读取都将从内存提供，而写入将进入存储。</block>
+  <block id="9f9ec9ecca4ef8f1f2db3214218f2cf1" category="paragraph-title">工作负载 A：50% 读取，50% 更新</block>
+  <block id="72e94c3c79d502dd4f1f12b8218c1c18" category="inline-image-macro">YCSB 工作负载 A 在增加线程数时的每秒操作数和延迟。</block>
+  <block id="6a2eb16e9377ca62f6a1db0801b389a1" category="paragraph"><block ref="6a2eb16e9377ca62f6a1db0801b389a1" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="2d25748e91b13de6b61835c4e9a2e809" category="paragraph">以下命令运行工作负载 A。我们使用 8、16、32 和 64 个线程重复此命令：</block>
+  <block id="98d25799b50c03aa1958d9f3102919ea" category="paragraph-title">工作负载 B：95% 读取，5% 更新</block>
+  <block id="dd3eac6b9fbff72c90508175ed4d2b22" category="inline-image-macro">YCSB 工作负载 B 在增加线程数时的每秒操作数和延迟。</block>
+  <block id="cd9fc55feb65d79a7cc5b571a4e9e74b" category="paragraph"><block ref="cd9fc55feb65d79a7cc5b571a4e9e74b" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="514f11b171d54b9311eabd8d19575b14" category="paragraph">以下命令运行工作负载 B。我们使用 8、16、32 和 64 个线程重复了此命令：</block>
+  <block id="8cc113b8b3f436535215a98ab3b59bae" category="paragraph-title">工作负载 C：100% 读取</block>
+  <block id="289c039d1bd3e4f03cce3fc2b800b1ad" category="inline-image-macro">每秒操作数和延迟（针对 YCSB 工作负载 C，随线程数增加而变化）。</block>
+  <block id="10818f60cc6f7b3d090460e477cd3593" category="paragraph"><block ref="10818f60cc6f7b3d090460e477cd3593" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="ec4ef062b4af75ba09c8361f0404958f" category="paragraph">以下命令运行了工作负载 C：</block>
+  <block id="7ae957e7e24d9b4b0b761301ddd1817e" category="paragraph">自定义工作负载 C 使用 YCSB 选项<block ref="033bc0c3752ebaf6b5be0b42791c9f64" prefix=" " category="inline-code"></block>和<block ref="65346ce69dc048c52726a2ae0205eed3" prefix=" " category="inline-code"></block>。这些选项允许 YCSB 遍历 MongoDB 游标返回的所有文档。使用这些选项，发送到数据库的查询会在存储级别生成大量随机读取。</block>
+  <block id="02445241d8c7e47787d05ac90683f34c" category="paragraph">在存储端测量，AFF-A30 在 0.53 毫秒的延迟下处理了 175,400 IOPS，读取 2.1GBps 的数据。</block>
+  <block id="6b105cfda8f560c29356be88cb5d7d10" category="paragraph-title">工作负载定制 C：100% 读取，FCP 吞吐量</block>
+  <block id="bb78818eb71f3fd62f16112812e71c35" category="inline-image-macro">在定制的 C 工作负载期间，AFF-A30 上的光纤通道吞吐量。</block>
+  <block id="a6e74626d5bd15db313367806f189526" category="paragraph"><block ref="a6e74626d5bd15db313367806f189526" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="41f9adc8fbcb05fc11f162baa2fba13a" category="paragraph-title">工作负载定制 C：100% 读取，FCP 延迟</block>
+  <block id="5b840e82140d1e7d4d2d8df890aedf2b" category="inline-image-macro">在定制的 C 工作负载期间，AFF-A30 上的光纤通道延迟。</block>
+  <block id="42d20b8738ea08e7d93930a15be89775" category="paragraph"><block ref="42d20b8738ea08e7d93930a15be89775" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="f3dbe1339093507d8257bf1d52f3c3af" category="paragraph-title">工作负载定制 C：100% 读取，读取吞吐量（GBps）</block>
+  <block id="af8156239c07c7754d91c4c71f831cd6" category="inline-image-macro">在定制的 C 工作负载期间，AFF-A30 上以 GBps 为单位的读取吞吐量。</block>
+  <block id="05f7cc4a690ee8b8b8c11d60114d79b3" category="paragraph"><block ref="05f7cc4a690ee8b8b8c11d60114d79b3" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="f3feb76fe51747aee454bcd02f5d6636" category="paragraph">以下命令运行了自定义工作负载 C：</block>
+  <block id="967553b3dffbb0d2582a33fb5efd0202" category="section-title">实时效率</block>
+  <block id="0f2c42fc17ec69fac7939a45846a9b15" category="paragraph">NetApp 重复数据删除和压缩是内联存储效率技术，可提高 SSD 的有效容量并降低每 GB 的有效成本。内联存储效率也可以提高系统性能，因为存储给定数量的逻辑数据所写入的物理块较少。内联重复数据删除和内联压缩是 NetApp AFF 的两个关键组件，可让您以尽可能低的成本存储最大数量的数据。这些互补技术协同工作，以实现最佳节省效果。</block>
+  <block id="83f45cad5e6f535ff10e564a526baad0" category="section-title">重复数据删除</block>
+  <block id="ceaa0f85efbc61b7b290ff4091876dec" category="paragraph">重复数据删除通过消除冗余数据块来降低存储容量要求，如下图所示。NetApp 重复数据删除通过在 NetApp FlexVol 卷中定位相同的 4K 数据块并将相同的块替换为对单个共享块的引用来提高存储效率。在删除这些块之前，它会执行字节级验证检查，以确认这些块是相同的。此检查可防止与哈希冲突相关的潜在问题。</block>
+  <block id="998cb0db0996c1970883f3e152d05ce5" category="paragraph-title">通过重复数据删除降低存储容量要求</block>
+  <block id="23a45e5bfe3c5f5001e05a10a191a347" category="inline-image-macro">显示相同块被对单个共享块的引用所替换的图表。</block>
+  <block id="dea806b8ecd416bcd42f234bb8af4e25" category="paragraph"><block ref="dea806b8ecd416bcd42f234bb8af4e25" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="b877bf62f36eeff406338cea950d1e7e" category="paragraph">NetApp AFF 系统支持将重复数据删除作为内联和后处理操作。当写入数据进入系统时，内联重复数据删除会消除内存中的重复块，从而减少存储数据所需的空间。</block>
+  <block id="e44d6b39a84bffb94da3976212ed1c73" category="paragraph">如果启用了后处理重复数据删除，它会通过扫描现有数据以查找重复项并消除它们来回收额外的空间。默认情况下，AFF 系统会同时启用内联重复数据删除和内联零块重复数据删除。内联零块重复数据删除可内联检测零块，并在将其写入磁盘之前对其进行重复数据删除。</block>
+  <block id="82af841589057aa8922b1ac3bb4a28a4" category="section-title">数据压缩</block>
+  <block id="c0ba6b1a9392a4f21d164550893204cf" category="paragraph">NetApp 压缩在文件级别提供透明的数据压缩。它不会将整个文件压缩为单个连续的字节流，因为这会使处理对文件部分内容的小规模读取或覆盖操作的成本过高。在处理请求之前，必须从磁盘读取整个文件并进行解压缩，这对于大文件来说尤其繁琐。</block>
+  <block id="635d33654caf38b4b188bf76444cbfef" category="paragraph">为避免此问题，NetApp 数据压缩会压缩一小部分连续块，称为压缩组。当读取或覆盖请求到达时，只需读取这一小部分块，而不是整个文件。此方法可优化读取和覆盖性能，并使压缩文件的大小具有更高的可扩展性。</block>
+  <block id="20d07796b25d9fcf9a893cb66439182f" category="paragraph">NetApp 支持两种类型的压缩：</block>
+  <block id="5e785cc62481273d52eb3f86a4f3e984" category="list-text">自适应压缩（8K 压缩组大小）</block>
+  <block id="b6aba30d79e42f2c8faa5bf8def593d6" category="list-text">二级压缩（32K 压缩组大小）</block>
+  <block id="694bf05f3feafb122b6db0b096ae2057" category="paragraph">自适应压缩更适合主要由随机写入或顺序和随机写入混合组成的工作负载。二级压缩更适合主要由大型顺序 I/O（32K 或更大）组成的工作负载。</block>
+  <block id="a1a363d6da5d43959c37f6118cfa77fc" category="paragraph">在 AFF 系统上，压缩仅作为内联操作受支持，并且默认情况下，AFF 系统上的所有新卷都会启用自适应内联压缩。如果同时启用了压缩和重复数据删除，则首先运行压缩，然后运行重复数据删除。您可以在 FlexVol volume 级别启用或禁用这两者。</block>
+  <block id="09a7ad9e879da779e22ba8b3c35eef27" category="paragraph">下图中的第一个结果显示了 MongoDB 在全闪存 FAS 控制器上运行<block ref="48cb9590a363e44dc8b16ba2f464e944" prefix=" " category="inline-code"></block>工作负载的存储效率统计数据。第二个图表示内联重复数据删除和内联压缩的数据减少比率均大于 15:1。</block>
+  <block id="80e00f26d492aad057d7d232be346195" category="paragraph-title">来自 Perfstat 的卷效率统计数据</block>
+  <block id="18661a9658058cf10a2df660ada9828a" category="inline-image-macro">Perfstat 输出显示 MongoDB 卷的卷效率统计信息。</block>
+  <block id="b218f482d90e84cb2ea649ded688c9f8" category="paragraph"><block ref="b218f482d90e84cb2ea649ded688c9f8" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="7f43f762c8fc5bce90a3eef77f1e2d74" category="paragraph-title">通过内联重复数据删除和内联压缩，数据缩减率超过 15:1</block>
+  <block id="d34786a07d01b8a1efadd25fb68c6ba4" category="inline-image-macro">存储效率输出显示数据缩减比率大于 15:1。</block>
+  <block id="e7a82edef6e237f137c290484b61f381" category="paragraph"><block ref="e7a82edef6e237f137c290484b61f381" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="5936e9053450f7860fc27412be866194" category="admonition">由于其内联重复数据删除和压缩功能，NetApp 全闪存 FAS 在整个测试过程中显示出大于 15:1 的数据缩减率。<block ref="48cb9590a363e44dc8b16ba2f464e944" prefix=" " category="inline-code"></block> 工作负载在其读取和写入操作中写入许多零，因此您的存储效率可能会因部署中的数据类型和数量而异。</block>
+  <block id="cdf00d72456fd75492896105c666149b" category="summary">本页总结了在 NetApp ONTAP 上为 MongoDB 验证的优势。</block>
+  <block id="6d5090a2f1c2116df605a16f540f2257" category="paragraph">此参考架构为在 NetApp 智能数据基础设施上高效部署虚拟化、横向扩展的 MongoDB NoSQL 数据库提供了端到端解决方案。在将 NetApp 存储技术与 VMware vSphere 相结合的测试架构中，MongoDB 虚拟机和数据库托管在横向扩展的 NetApp AFF 阵列上。NetApp SnapCenter 管理备份，而 SnapMirror 将其复制到 AWS 中的 Amazon FSx for NetApp ONTAP 以进行灾难恢复。</block>
+  <block id="7c8beda37b60ec7daf15dd1d238d4ffb" category="paragraph">此解决方案验证了以下主要优势：</block>
+  <block id="15c8d87223e590a0b189999114c22083" category="list-text">可预测、高性能且始终如一的低延迟，这为要求最苛刻的基于 MongoDB 的分析应用程序提供了非常快的响应时间。</block>
+  <block id="01d2fde38293c9fbafa4311447a7b2c6" category="list-text">内联重复数据删除和压缩，使闪存存储上的 MongoDB 具有成本效益。</block>
+  <block id="fa08e41c96f5ebdf37dd064ea998dc86" category="list-text">即时、节省空间的数据库克隆，无需新存储即可加快开发/测试和 QA 环境的设置。</block>
+  <block id="c27172dc84e351956cd4c9d4a7d7190f" category="list-text">基于节省空间的 NetApp 快照副本和远程复制到云的备份和恢复。</block>
+  <block id="47e234feff81918c67e7cca7d228c60c" category="paragraph">除了验证结果之外，NetApp AFF 还通过以下关键功能对 MongoDB 进行了补充：</block>
+  <block id="3d282fae4edff7e028d130112ec4391b" category="list-text">纵向扩展和横向扩展的全闪存阵列，允许存储随 MongoDB 模块化扩展。</block>
+  <block id="188f6f5650614d2603c3ec96f77c7b81" category="list-text">提供最长正常运行时间和高可用性的无中断操作。</block>
+  <block id="1d0202a68958d9ae6d4e7a83062380d1" category="paragraph">在 YCSB 性能测试中，NetApp AFF 提供了出色的结果，展示了用于扩展 MongoDB 部署的高性能、经济高效的全闪存阵列。</block>
+  <block id="ad255d9b1b984056828f69586d14006b" category="paragraph">本报告还描述了两个客户用例：从 MongoDB Atlas 提供 Digital Advisor，以及使用 MongoDB Ops Manager 进行企业级备份和恢复。对于 Ops Manager，它提供了有关添加 NetApp SnapCenter 以实现存储级 Snapshot 副本、快速恢复和灾难恢复的设计指导（仍有待评估）。</block>
+  <block id="2cfdfd9881c4e64e4f97da519dc31b8e" category="summary">本页介绍了两个客户用例，从 MongoDB Atlas 提供 Digital Advisor 服务，以及使用 Ops Manager 和 NetApp SnapCenter 进行企业级 MongoDB 备份和恢复。</block>
+  <block id="3f5f50c629fb3eca04d9af7f0a1ebbff" category="paragraph">此页面描述了两个用例，展示了本报告中的 MongoDB 和 NetApp 模式如何在实践中应用。第一个展示了 MongoDB 提供 NetApp 服务。第二个展示了 MongoDB Ops Manager 如何保护 MongoDB 数据库，以及 NetApp 存储可以位于其快照存储之后的位置。两者均作为通用模式编写。大小、计划、身份和产品版本已特意省略。</block>
+  <block id="8b85fb28d1c6bc5b52a7b8055375cbe1" category="section-title">从 MongoDB Atlas 提供 NetApp Digital Advisor (AIQ)</block>
+  <block id="96f7250d3520f2fccc3f5f99a5c84829" category="paragraph">Digital Advisor 通过 AWS 上的 MongoDB Atlas 为客户、合作伙伴和 NetApp 员工提供风险、容量和升级建议。由于 Atlas 包含预构建的文档以及每个文档上的访问规则，因此页面加载无需等待分析，每个受众只能看到自己的数据，并且用户操作在节点故障后仍然存在。</block>
+  <block id="b8036d72c6059747fd432bf7907d1346" category="section-title">为什么选择 MongoDB</block>
+  <block id="8fe5115cbee94d7110a95b5be9896398" category="cell">MongoDB 功能</block>
+  <block id="2183efcaa92ee96915a25d0105c239db" category="cell">Digital Advisor 获取的内容</block>
+  <block id="7acf486e0a60fdb8923247d10c6db1c1" category="cell">带索引的灵活文档</block>
+  <block id="ada941c6c4a583a522ad0c5d29d37e7c" category="cell">快速读取，在一个查询中联接系统、卷和风险。</block>
+  <block id="942da1e711705de542089d65b8e86013" category="cell">从多个作业更新插入到一个集合中</block>
+  <block id="49c5975596e718b3bac0baab6c112b2b" category="cell">每个源都会根据自己的时间表刷新。</block>
+  <block id="f61a1798badb1f38504d3d272fdd1761" category="cell">访问每个文档上的字段</block>
+  <block id="38a371113c11e08d307171635f07980c" category="cell">每个受众的范围视图。</block>
+  <block id="e2dac1ad04704277a9ae0024202bae66" category="cell">大多数写操作和时间点恢复</block>
+  <block id="c28607e1e6d735cf7c17b3301662ce09" category="cell">确认和缓解在故障转移后仍然有效。</block>
+  <block id="750d07f5577ad13224cd3a3aecbb148f" category="paragraph-title">AIQ 服务层架构</block>
+  <block id="c04fc7d5f2dfe3da929eed959df9d67b" category="inline-image-macro">MongoDB Atlas 上的 Digital Advisor 服务层架构，从 AutoSupport 遥测，经过本地数据湖和刷新作业，再到 Atlas 集合和 API 层。</block>
+  <block id="372cbbe4a21637c350178c826f240646" category="paragraph"><block ref="372cbbe4a21637c350178c826f240646" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="d75b52ce16fb4b2a67a7b5f5329182dc" category="paragraph">数据将通过以下步骤传输：</block>
+  <block id="df5e48e4991a7dc51f95166f5886c8c2" category="list-text">已安装的系统将 AutoSupport 遥测上传到 NetApp。</block>
+  <block id="1d8ec7921b90dbb07ff4f53924dfaf15" category="list-text">本地数据湖准备数据并将其公开为虚拟数据集。</block>
+  <block id="44e115886c25591ce9003375194dfd8c" category="list-text">计划刷新作业采用 majority 写入关注将每个数据集批量更新插入到一个 Atlas 集合中。</block>
+  <block id="1726bf72ae1a59d6dd10b6e1964ebfb4" category="list-text">AWS 上的 API 层读取 Atlas，将访问过滤器添加到每个查询，并为 Digital Advisor 用户提供服务。</block>
+  <block id="a37552c55840265f2e5c7d0625389f87" category="list-text">单独的授权服务仅读取角色、用户和令牌集合以构建用户配置文件。</block>
+  <block id="c2ffe02d76c4f089648f1647b43e4ee5" category="section-title">最佳实践</block>
+  <block id="7b5191323d1c76de7cdb6b4395db8498" category="list-text">为每个写入器*使用大多数和可重试的写入*。</block>
+  <block id="49b34722d768c1dd0c0b314af4f3abd6" category="list-text">*在代码中声明每个索引。*手动添加的索引可能会在下一次部署时被删除。</block>
+  <block id="d6aeaa7270aafa07e3bdf8ec22a3a016" category="list-text">*仅设置您拥有的叶子路径。*设置父对象会擦除其他作业所拥有的字段。</block>
+  <block id="1638b840f59b783d2f078b3171732cd5" category="list-text">*按键而不是偏移量分页，*仅投影您需要的字段。</block>
+  <block id="a1233402ea440be2c5e122585a3a96c6" category="list-text">*备份无法重建的内容，*确认时间点恢复覆盖用户状态，并测试单集合还原。</block>
+  <block id="6c579d08963749157730cf3b55866a97" category="section-title">使用 Ops Manager 实现企业 MongoDB 备份和恢复</block>
+  <block id="36080af76a8c931a5fa815c53c35a612" category="paragraph">在 Kubernetes 和虚拟机上运行 MongoDB 即服务的组织需要一种方式来部署、监控、备份和恢复每个数据库。MongoDB Ops Manager 和 MongoDB Enterprise Operator 提供了这种方式。此用例描述了它们如何协同工作，以及 NetApp 存储可以位于快照存储后端的什么位置。</block>
+  <block id="80f91b21bc9ae18a4c9ab80530c7af11" category="section-title">问题和要求</block>
+  <block id="b5f5623b6137a89a1dadf079a5e92266" category="cell">挑战</block>
+  <block id="716a07aab333d77270c725b0b02a78a2" category="cell">对客户的价值</block>
+  <block id="aabf1db85a5e6e4843c32f500be8fec8" category="cell">*备份至关重要。*每个生产数据库都需要一个可恢复的副本。</block>
+  <block id="540bd8d01d45aa134a7ca73b9080f0bb" category="cell">通过一个接口实现*安全、实时备份*。</block>
+  <block id="652b6450086ab6351107380ef942b34f" category="cell">无需自定义脚本即可从丢失或损坏中恢复。</block>
+  <block id="95046e3a0ac42e1ef36bfeec8af5ab0f" category="cell">*混合平台。*数据库在 Kubernetes 和 VM 上运行。</block>
+  <block id="abcb2492bcefe2adb3d115b351cbd2ef" category="cell">*一个工具*即可对两者进行部署、监控、升级、备份和扩展。</block>
+  <block id="6ea605a3ad5828a1d32967185c35f808" category="cell">每个数据库都有一个运营模式。</block>
+  <block id="d594f8245f33961d2314921c11babafe" category="cell">*手动配置。*手工构建的副本集漂移。</block>
+  <block id="08b5aff547af411933e543a32772c9b2" category="cell">来自简短清单的*声明性部署*。</block>
+  <block id="502ddfbd447ba49857eb72b7743bc66c" category="cell">每次都是相同的数据库。</block>
+  <block id="35426163386560287b73f780877fcfb4" category="cell">*可见性。*备份健康状况很难看到。</block>
+  <block id="47294584d5e6fc32cba57b75597870ef" category="cell">使用 REST API 进行 *监控* 以实现自动化。</block>
+  <block id="c603032dc4be135c7b1dbfb2a77facd5" category="cell">在需要还原之前会显示问题。</block>
+  <block id="6470dfffa025cb2333f5f984a0c768f4" category="cell">*存储选择。*快照大小和保留时间因数据库而异。</block>
+  <block id="a3d6b941be35abba7aa9cec59b012a30" category="cell">*可插拔快照存储：* 块存储、S3 或文件系统。</block>
+  <block id="8ea3e5f40f1b29f8c56cef20e848fa8b" category="cell">每个数据库的成本和恢复需求相匹配。</block>
+  <block id="4422eef92a61882f90ad5c263c2b97fb" category="paragraph-title">使用 MongoDB Ops Manager 的备份和还原架构</block>
+  <block id="5db6dbc67652470f591cd996a79a7cb9" category="inline-image-macro">显示 MongoDB Enterprise Operator、Ops Manager、备份代理以及块存储、S3 和文件系统快照存储的体系结构。</block>
+  <block id="ac9284ed27ef0787938aff26a5f64a66" category="paragraph"><block ref="ac9284ed27ef0787938aff26a5f64a66" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="67e972ea6485a3775a54020db27d09a3" category="paragraph">*部署。*Enterprise Operator 监视副本集清单并创建成员。项目配置和凭据密钥将它们连接到 Ops Manager。</block>
+  <block id="4eee079c95fe676f6743f6efe365262a" category="paragraph">*备份。*Ops Manager 选择快照节点。备份代理打开<block ref="9bca21caa0ee1a3f164d9f20f4bec26f" prefix=" " category="inline-code"></block>，复制数据文件，并将其发送到 Ops Manager。Ops Manager 将它们写入块存储、S3 存储或文件系统存储。</block>
+  <block id="ab162ecbbaf30c663d19b207fe75585e" category="paragraph">*还原。*用户请求快照链接，Ops Manager 创建还原作业。快照从存储流式传输到目标服务器。还原实用程序启动临时数据库，获取 oplog，并将其应用于快照。</block>
+  <block id="168c22bd9ed348452934d8f9ec59da1e" category="paragraph">*NetApp 适用性。*针对 Ops Manager 组件提出了三个 NetApp 选项。它们是待评估的设计指南，未在本报告中验证：</block>
+  <block id="ec1365366ba88d3f05ac605467bfce8e" category="cell">Ops Manager 组件</block>
+  <block id="665648b613a173567e05f87b062c503b" category="cell">NetApp 选项</block>
+  <block id="aebe0dc0f703f3dead827d44f727aed8" category="cell">为什么要考虑</block>
+  <block id="70d2e0e2d314a60dc4dfe7ddd37730b5" category="cell">S3 存储</block>
+  <block id="6b6e2578b249fceb72862c344ea0cd78" category="cell">NetApp StorageGRID（S3）</block>
+  <block id="ddcb3ca241f59366783bfd3b75004998" category="cell">具有基于策略的数据放置的对象存储。</block>
+  <block id="fc15f8cb99537c7851782b944de47c96" category="cell">文件系统存储</block>
+  <block id="6701504e0bc88b2be3a2612797d125d1" category="cell">NetApp ONTAP （NFS）</block>
+  <block id="637fb1ec62f96d0c528a56870cef4d47" category="cell">ONTAP 数据管理。SnapCenter 获取卷的快照副本，而 SnapMirror 将其复制到第二个站点或云端。</block>
+  <block id="6c2a791ffd82e26c0a7263d809eb0e30" category="cell">应用程序和备份数据库</block>
+  <block id="2d9513913a5e823aecb14bfc1ef15777" category="cell">NetApp ONTAP（NFS 或 iSCSI）搭配 SnapCenter</block>
+  <block id="4f5a77525f4d33680355aceef05e6d0b" category="cell">Snapshot 副本使备份平台本身在故障后能够快速恢复。</block>
+  <block id="de6b8d4f0d990daa6966a07ed72829ce" category="section-title">将 NetApp SnapCenter 与 Ops Manager 结合使用</block>
+  <block id="c413fde17fa8183a4267c61b83e400b5" category="paragraph">Ops Manager 在应用程序级别保护 MongoDB。NetApp SnapCenter 借助 ONTAP 快照、SnapRestore、SnapMirror 和 FlexClone 技术在存储级别添加了第二层。各层互为补充，推荐的设计同时运行两者，如下图所示。</block>
+  <block id="c5efbb9c4e24d0cc57d7e52c29a6ba2f" category="admonition">本节是需要评估的设计指南。它使用与 <block ref="a8cb2a64835957e4a6ed5e17925c2fc5" category="inline-xref-macro-rx"></block> 中的 SnapCenter 程序相同的 Snapshot、SnapMirror 和 FlexClone 工作流。</block>
+  <block id="0e64172fbdb5dff4ea877ae81027dcca" category="paragraph-title">结合 Ops Manager 和 NetApp SnapCenter 的分层保护</block>
+  <block id="dfcdd0cdb406c647fa8ddeb2660280d6" category="inline-image-macro">分层保护设计，由 Ops Manager 提供应用程序级备份，并由 SnapCenter 提供存储级快照副本和复制。</block>
+  <block id="09eb89645967df5a40c80b3f1b2051af" category="paragraph"><block ref="09eb89645967df5a40c80b3f1b2051af" category="inline-image-macro-rx" type="image"></block></block>
+  <block id="4b4ede5b647592af8aaac19c7aa478fe" category="paragraph">下表将工作分为两层。</block>
+  <block id="fa97f6975c9b94a252d204cd22159ff4" category="cell">功能</block>
+  <block id="4684e8b4fc61fb2a5ddb57202b213919" category="cell">Ops Manager</block>
+  <block id="5c014f8939a89da0166a347a0237cf4f" category="cell">SnapCenter</block>
+  <block id="4b9c026ebe03f0e95ba72206c774f612" category="cell">备份单元</block>
+  <block id="f88cd4b5e7d1cd7f80cac5da6e6495c8" category="cell">来自备份游标的副本集的快照，以及 oplog 的连续副本。</block>
+  <block id="3219ba02adb6624e795adc0e93aa07a3" category="cell">一个保存数据文件和日志的 ONTAP 卷的 Snapshot 副本。</block>
+  <block id="045d00063a21cbf1a9003f0ef114ddd7" category="cell">时间点恢复</block>
+  <block id="3b7dc4d83d887eca65b7cef76adae671" category="cell">是。还原快照并将 oplog 重放到所选时间。</block>
+  <block id="746a14f3885edb50203d3f038df72374" category="cell">到 Snapshot 副本的时间。将其与 Ops Manager 的 oplog 重播相结合，以实现更精细的恢复。</block>
+  <block id="51632a4bfc00ab2c05a20da594d196bb" category="cell">恢复速度</block>
+  <block id="460be1261d3716f6f66394419bdb30f6" category="cell">快照从存储流式传输到目标服务器。</block>
+  <block id="6e265a3992310819333aa76844c776db" category="cell">SnapRestore 返回卷而不复制数据。在您自己的数据上衡量结果。</block>
+  <block id="39709989a702dd9ca02103fae12d5469" category="cell">计划和保留</block>
+  <block id="739d7fa1cea957ba7e735db79a33ac47" category="cell">为每个项目和每个数据库设置。</block>
+  <block id="976bdc1344a8a0852e29f9f0cbfb0b73" category="cell">由策略为每个 ONTAP 卷设置。</block>
+  <block id="217601d383b816e6a2548e57b5006f92" category="cell">克隆</block>
+  <block id="4846205b0d9e3a7594a717134297e003" category="cell">还原到新服务器。</block>
+  <block id="41956f9ad3c6c92f201cf7b874ed1ffe" category="cell">按需分配 FlexClone 卷，这些卷与 Snapshot 副本共享块。</block>
+  <block id="645a84975202e30700b572b49a5ee29d" category="cell">灾难恢复</block>
+  <block id="d3f38d6a483b30c9c3b76f2f4320a53a" category="cell">从已复制或远程快照存储还原。</block>
+  <block id="7a61d90653d4bc6fe107af89e174a733" category="cell">SnapMirror 到第二个站点或云中的 Amazon FSx for NetApp ONTAP</block>
+  <block id="09a21c1a27cad04d257d84dab5caf4e9" category="cell">Ops Manager 管理的 Kubernetes 和 VM 上的数据库。</block>
+  <block id="7054b44e972ce3d21e16127a2567c25a" category="cell">ONTAP 上的卷。Kubernetes 持久卷需要 NetApp Trident 保护。</block>
+  <block id="d8dbd4360073ccdc3fdeb92d663819df" category="paragraph">下表介绍了部署 SnapCenter 的三种方法。从模式 A 开始，并在演练恢复后移至模式 C。</block>
+  <block id="57391192dfa1f247ad015a0fe2eca48e" category="cell">模式</block>
+  <block id="7be5dc7d04fd82c5baeca99bda16e359" category="cell">哪些内容受 SnapCenter 保护</block>
+  <block id="670710b3fa61e6c6d0f5f3f76f837f33" category="cell">用于</block>
+  <block id="79808377ee373a41ba72056214d42f63" category="cell">A. 保护 Ops Manager 资产（从这里开始）</block>
+  <block id="6c458b259ae0803b76e3007b23958015" category="cell">文件系统存储卷、Ops Manager 应用程序数据库、备份数据库和 oplog 存储。</block>
+  <block id="044f28ce55255d85f3d253594dbbe08d" category="cell">快速恢复备份平台本身，以及将存储 SnapMirror 到第二个站点或云端。</block>
+  <block id="b10b6b3ca08c4b22fa1e7c33779db40e" category="cell">B. 保护 MongoDB 数据卷</block>
+  <block id="f401477ed716a932a1605fd91054e265" category="cell">ONTAP 上隐藏的二级成员的数据和日志卷，例如 VM 数据存储或 NFS、iSCSI 或 FC 卷。</block>
+  <block id="16b9fcc2b49921bf2d270083801bc4ca" category="cell">无需流式传输完整快照即可还原，并为开发/测试和 QA 提供即时 FlexClone 副本。</block>
+  <block id="81174d7ef270d289efaac674bcb57d4d" category="cell">C. 合并（建议目标）</block>
+  <block id="4d7f9f9fd6b08be8d4e1888a67bd8974" category="cell">模式 B 用于快速恢复和克隆，Ops Manager 仍然跨 Kubernetes 和虚拟机提供基于 oplog 的时间点恢复和策略。</block>
+  <block id="6ffebf520d7ade7b53a91d985081d92c" category="cell">需要恢复阶梯的生产数据库：SnapRestore，然后是 Ops Manager 时间点还原，然后是 SnapMirror 故障转移。</block>
+  <block id="387c99f8c1638edae74bd165f449868d" category="inline-xref-macro">附录：静默和平衡器命令</block>
+  <block id="06d8e4b438cf6eec83a4058ca4de0d3c" category="paragraph">*应用程序一致性。*WiredTiger 写入日志，因此将数据文件和日志保存在一起的卷的 Snapshot 副本是崩溃一致的，并且<block ref="563000bf2ad9bb017f91b15beb884445" prefix=" " category="inline-code"></block>会在启动时将其恢复。如果它们位于不同的卷上，请将 Snapshot 副本作为一个一致性组，或者先使用<block ref="5c89fcbe4065aa8d23c6bdffb408ffdd" prefix=" " category="inline-code"></block>使数据库静默，然后再将其释放。有关可以改编为前置命令和后置命令的命令，请参阅<block ref="0b8b1cee4ba788e90ea7a4cd612ff075" category="inline-xref-macro-rx"></block>。</block>
+  <block id="ff7080bc856f6c9b5c2cdfe6f4b69c15" category="paragraph">*快照位置。*针对隐藏的辅助成员（优先级为 0）运行 SnapCenter 备份，以便快照副本不会与应用程序流量竞争。对其进行调度，以免与同一成员上的 Ops Manager 备份重叠。</block>
+  <block id="a18381e92d9fa2a9a384238bf212e573" category="paragraph">*备份。*SnapCenter 根据需要运行预命令，并根据策略对数据卷和日志卷创建 Snapshot 副本。然后运行后命令，并启动 SnapMirror 更新，将数据更新到第二个站点或云中的 Amazon FSx for NetApp ONTAP。Ops Manager 继续对副本集和 oplog 执行自身备份。</block>
+  <block id="954f18c1408d6745158cd48d428840fc" category="paragraph">*还原。*在使用此过程之前，请验证 ONTAP 卷是否专用于目标成员，并且不包含其他 VM 或成员磁盘。对于共享数据存储，请勿使用此单成员过程还原整个卷；而是计划从 FlexClone 进行特定于成员的磁盘还原，或者对所有受影响的使用者进行协调恢复。在目标成员上停止<block ref="563000bf2ad9bb017f91b15beb884445" prefix=" " category="inline-code"></block>，并使用 SnapRestore 从所选 Snapshot 副本还原其卷。您还可以先挂载 FlexClone 卷以检查数据。启动<block ref="563000bf2ad9bb017f91b15beb884445" prefix=" " category="inline-code"></block>，让成员重新加入副本集。对于时间点恢复，请将 Snapshot 副本还原到独立服务器，并将 Ops Manager 中的 oplog 应用到所选时间。如果 Snapshot 副本早于 oplog 窗口，则成员需要从主节点进行初始同步。</block>
+  <block id="14bbe9e904e1fbc140d97c77a4558e1c" category="paragraph">*恢复路径。*对于发生故障的成员，请使用 SnapRestore 还原其卷，并使其从运行状况良好的副本集同步数据。对于已复制到其他成员的逻辑数据丢失或损坏，请使用隔离还原或 Ops Manager 时间点恢复；将还原的成员重新加入活动副本集会重放不需要的操作。对于站点丢失，请使用演练过的 SnapMirror 故障转移过程。</block>
+  <block id="625357f9a9f0d10dcc23df05403a0038" category="paragraph">*恢复目标。*重新加入活动副本集的已还原成员会同步至其当前状态；其恢复点不是 Snapshot 时间。隔离的 Snapshot 还原会恢复捕获的状态，而 Ops Manager 时间点还原使用快照和 oplog 达到所选时间。SnapRestore 避免了复制数据，而 Ops Manager 还原会流式传输快照，因此恢复时间有所不同。此报告未提供测量值，因此请针对您自己的数据测量这两种路径。</block>
+  <block id="c0baeca6c152271e8a5b0541f2f811de" category="paragraph">*约束。*SnapCenter 通过 NetApp 支持的 MongoDB 插件保护 MongoDB，如 <block ref="e0a1ea3472b98d759b84360103c3fa73" category="inline-xref-macro-rx"></block> 中所述。确认您的 MongoDB 拓扑和版本受支持。如果不支持，请通过 ONTAP REST API 编写相同操作的脚本。SnapCenter 不会直接保护 Kubernetes 持久卷。请使用 NetApp Trident protect 保护这些卷，并将 Ops Manager 保留为其备份路径。</block>
+  <block id="c413a068c48250266e6c229effd8583e" category="section-title">为客户带来的优势</block>
+  <block id="8f66898a0140441d074115644614a1e0" category="cell">对数据库所有者进行了哪些更改</block>
+  <block id="e000cfe7da0db4f62876d29ee2d650f4" category="cell">*保护*</block>
+  <block id="9e570ca28392e3679da0c305f7279e29" category="cell">实时、安全的备份，可还原到所选快照并重播 oplog。</block>
+  <block id="5ed263bebe939bb0ff3339b811412265" category="cell">*一致性*</block>
+  <block id="093c0b3dc71765f39c0990a3bb833972" category="cell">相同的清单和工具部署每个副本集。</block>
+  <block id="7f433e97a05912f50e132c6548c2e787" category="cell">*速度*</block>
+  <block id="eed09682a8a639629869fd10fb572836" category="cell">简短的清单取代了手动设置，并通过链接请求还原。</block>
+  <block id="a24a86b818dff9a4de6bfcd9b80e343e" category="cell">*灵活性*</block>
+  <block id="a2aa49bff2c9c44c6fb36525375401c7" category="cell">三个快照存储允许每个团队选择成本和保留期。</block>
+  <block id="c56001efa30a8504a3f184340be68c2e" category="cell">*自动化*</block>
+  <block id="fae83e85bfd4cb5419d6cac5a45f8079" category="cell">REST API 允许编排工具驱动部署、备份和还原。</block>
+  <block id="d567f5f48f2c9bf05c17819af891d8ec" category="section-title">此设计中的 NetApp 价值</block>
+  <block id="1a52a216500015d0f4ee5f1a1c879763" category="list-text">*保护第一。*Ops Manager 备份和还原从第一个清单开始即已内置，而 SnapCenter 在底层添加了存储级快照副本。</block>
+  <block id="70186b5717462403b2824ae18b5a37ac" category="list-text">*存储选择。*Ops Manager 快照可以通过 S3 存储在 StorageGRID 上，或存储在 ONTAP NFS 卷上，SnapCenter 也可以对其进行保护。</block>
+  <block id="c079f47522de73cb4fba5a8f417e4b19" category="list-text">*可信操作。*凭据位于 Kubernetes 密钥中，每个更改都在代码中声明。</block>
+  <block id="18de71400d0a0a0074551d87a7f276c1" category="list-text">*混合设计。*相同的模式适用于 OpenShift、Kubernetes 和虚拟机，无论是在本地还是在云端。</block>
+  <block id="0d805a98535d1420c04d0ab663ce0456" category="list-text">*快速恢复和克隆。*SnapRestore 可从 Snapshot 副本返回成员卷，而无需流式传输数据，并且 FlexClone 可创建开发/测试副本，而无需复制数据。</block>
+  <block id="957c3df196c2c3b568a013b393533c4c" category="list-text">*灾难恢复。*SnapMirror 将 Snapshot 副本复制到第二个站点或云中的 Amazon FSx for NetApp ONTAP。</block>
+  <block id="1168a248dd61e08e3f2798ea6213a3b1" category="list-text">*将每个清单保留在版本控制中，*并更改版本字段以进行升级。</block>
+  <block id="2721e850ae1d1e3d8513c920cbe55f6c" category="list-text">为每个副本集*运行三个成员*，包括 Ops Manager 应用程序和备份数据库。</block>
+  <block id="51182828c6d2e4f56bbfc38f91045645" category="list-text">*将 API 密钥存储在机密中*，并仅授予其所需的访问权限。</block>
+  <block id="cbddd063e772c9f71a137fc53f616db5" category="list-text">*根据恢复需求选择快照存储，*然后调整其大小以进行保留。</block>
+  <block id="ffaa17448ccc48b5e23a8a460a572c05" category="list-text">*保持 oplog 存储的健康，*因为时间点恢复需要它。</block>
+  <block id="4abeb269746f4c029d31977c829b07da" category="list-text">使用 Ops Manager 监控功能，*对陈旧快照发出警报*。</block>
+  <block id="66d8e36ae736a1d7b32f51ccf0a69d02" category="list-text">*按计划练习恢复*并计时。</block>
+  <block id="241df02e6ae372500999a38dd7b9168a" category="list-text">*限制谁可以请求快照链接，* 并首先检查目标服务器上的可用空间。</block>
+  <block id="56a7dff54ea1534db4d6217fb0d757d4" category="list-text">*通过 REST API 实现自动化*并使用审核日志记录，同时使 Ops Manager 和代理保持在受支持的版本上。</block>
+  <block id="d2f7406c010224afc2152fad7ea523d8" category="list-text">从模式 A 开始，并在演练恢复后移至模式 C。</block>
+  <block id="7a7a9181dbd99116a7d36ab99016446e" category="list-text">从隐藏的辅助成员获取 SnapCenter Snapshot 副本，并将其保留在 Ops Manager 备份窗口之外。</block>
+  <block id="06f988ee642300a753ba3a6fe3f46faf" category="list-text">将数据文件和日志放在一个卷上，或者在创建 Snapshot 副本之前使用<block ref="5c89fcbe4065aa8d23c6bdffb408ffdd" prefix=" " category="inline-code"></block>静默数据库，并在之后将其释放。</block>
+  <block id="66e1e43663ef7ed2791af31cdd67ab41" category="list-text">确保 Snapshot 副本足够新，以便处于副本集 oplog 窗口内。否则，还原的成员需要初始同步。</block>
+  <block id="95bc66fefd41c4b3a79bb20af17f0a97" category="list-text">按计划测试到第二个站点的 SnapMirror 故障转移，并记录每个恢复路径所需的时间。</block>
+  <block id="50c5036a054a886f66759e66ac1d1c73" category="list-text">在依赖它之前，请确认 SnapCenter 插件对您的 MongoDB 版本的支持，并将 ONTAP REST API 脚本作为后备保留。</block>
+  <block id="a2dd93f63ed2daaa8ab63c3afaa934b0" category="summary">本技术报告介绍了一种经过验证的参考架构，用于在 NetApp ONTAP 存储上使用 VMware vSphere 部署和保护虚拟化分片 MongoDB 数据库，包括备份、还原、克隆、云灾难恢复、性能结果和两个客户用例。</block>
+  <block id="51b79755fcf8cc722d5a3158f4b40853" category="doc">TR-4492：NetApp ONTAP 上的 MongoDB</block>
+  <block id="b8242b4fb0ddd9bcce0fb1feeabfa9f6" category="paragraph">本参考架构介绍如何在 NetApp ONTAP 上搭配 VMware vSphere 部署和保护虚拟化分片 MongoDB 数据库。该架构可为 MongoDB 团队提供一致的低延迟性能、用于备份、恢复、开发/测试和 QA 的即时空间高效副本，以及向云端 ONTAP 进行灾难恢复的能力。横向扩展 NetApp AFF 阵列托管 MongoDB 虚拟机 （VM） 和数据库。NetApp SnapCenter 管理 MongoDB 环境的 NetApp Snapshot 副本，SnapMirror 将其复制到云端。本报告还介绍了两个客户使用案例：通过 MongoDB Atlas 提供 NetApp Digital Advisor 服务，以及使用 Ops Manager 进行企业级 MongoDB 备份和恢复。</block>
+  <block id="8b32e0542d2243a3c42e5219b8b5274a" category="paragraph">MongoDB 是一个流行的开源、横向扩展的 NoSQL 数据库。它为需要低读取和写入延迟、高可用性和高级数据管理的现代数据湖应用提供支持。MongoDB 的关键用例包括实时分析、产品目录、内容管理和移动应用程序。</block>
+  <block id="05b5858f341fa8e723176801248e3d20" category="paragraph">该 NetApp 解决方案为部署任务关键型 MongoDB 应用程序提供了以下主要优势：</block>
+  <block id="67444ac9b5473b2c76fb3884fba7c19d" category="list-text">与直连存储相比，它具有可预测的高性能和始终如一的低延迟，为基于 MongoDB 构建的最苛刻的分析应用程序提供出色的响应时间。</block>
+  <block id="6626e731655dc1b40d4cc668b5031ce4" category="list-text">内联重复数据删除和压缩带来的内联效率，最大限度地减少了 MongoDB 所需的闪存存储。</block>
+  <block id="5cf1a901066248bf2c4f8aacc2fd4bd9" category="list-text">即时、节省空间且经济高效的数据库克隆，无需购买新存储即可快速设置开发/测试或 QA 环境。</block>
+  <block id="4d2d25bbf4ff5b8870bf4932488b7f74" category="list-text">基于节省空间的 NetApp 快照技术进行备份和恢复，并远程复制到云。</block>
+  <block id="66dbd19ea13dcb00ae7f4f2e9fae4a54" category="list-text">来自纵向扩展和横向扩展 AFF 阵列的可扩展性，该阵列可随 MongoDB 模块化扩展存储。</block>
+  <block id="d7f2057e74ef632f8c85b20ec1a9463d" category="list-text">具有高可用性的无中断操作，提供最大的正常运行时间和一致的性能，特别是在驱动器故障期间。</block>
+  <block id="9bfe453913db06f4611ac0c17d7904d6" category="list-text">在异构环境中部署 MongoDB，提供灵活性和额外的成本节约。</block>
+  <block id="7cce4d9d0aacfe20def2d153bcfabf56" category="list-text">通过 NetApp SnapCenter 实现备份、还原和克隆的单一界面管理。</block>
+  <block id="96dc9121365fbc78870705f59627c71e" category="sidebar">基于 NetApp ONTAP 的 MongoDB</block>
 </blocks>

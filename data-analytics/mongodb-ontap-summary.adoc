@@ -1,0 +1,35 @@
+---
+sidebar: sidebar 
+permalink: data-analytics/mongodb-ontap-summary.html 
+keywords: mongodb, ontap, summary, conclusion 
+summary: 本页总结了在 NetApp ONTAP 上为 MongoDB 验证的优势。 
+---
+= 摘要
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+此参考架构为在 NetApp 智能数据基础设施上高效部署虚拟化、横向扩展的 MongoDB NoSQL 数据库提供了端到端解决方案。在将 NetApp 存储技术与 VMware vSphere 相结合的测试架构中，MongoDB 虚拟机和数据库托管在横向扩展的 NetApp AFF 阵列上。NetApp SnapCenter 管理备份，而 SnapMirror 将其复制到 AWS 中的 Amazon FSx for NetApp ONTAP 以进行灾难恢复。
+
+此解决方案验证了以下主要优势：
+
+* 可预测、高性能且始终如一的低延迟，这为要求最苛刻的基于 MongoDB 的分析应用程序提供了非常快的响应时间。
+* 内联重复数据删除和压缩，使闪存存储上的 MongoDB 具有成本效益。
+* 即时、节省空间的数据库克隆，无需新存储即可加快开发/测试和 QA 环境的设置。
+* 基于节省空间的 NetApp 快照副本和远程复制到云的备份和恢复。
+
+
+除了验证结果之外，NetApp AFF 还通过以下关键功能对 MongoDB 进行了补充：
+
+* 纵向扩展和横向扩展的全闪存阵列，允许存储随 MongoDB 模块化扩展。
+* 提供最长正常运行时间和高可用性的无中断操作。
+
+
+在 YCSB 性能测试中，NetApp AFF 提供了出色的结果，展示了用于扩展 MongoDB 部署的高性能、经济高效的全闪存阵列。
+
+本报告还描述了两个客户用例：从 MongoDB Atlas 提供 Digital Advisor，以及使用 MongoDB Ops Manager 进行企业级备份和恢复。对于 Ops Manager，它提供了有关添加 NetApp SnapCenter 以实现存储级 Snapshot 副本、快速恢复和灾难恢复的设计指导（仍有待评估）。

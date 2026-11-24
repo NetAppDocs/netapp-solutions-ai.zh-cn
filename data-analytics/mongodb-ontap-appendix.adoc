@@ -1,0 +1,116 @@
+---
+sidebar: sidebar 
+permalink: data-analytics/mongodb-ontap-appendix.html 
+keywords: mongodb, quiesce, balancer, sharding, commands, appendix 
+summary: 本附录列出了验证中使用的静默和平衡器命令以及 MongoDB 集群命令。 
+---
+= 附录
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+本附录列出了验证中使用的静默和均衡器命令以及 MongoDB 命令。
+
+
+
+[[quiesce-and-balancer-commands]]
+== 静默和平衡器命令
+
+验证过程在 MongoDB 应用程序服务器上使用 Python 2.7 脚本作为静默、取消静默和预退出命令；这些脚本不包含在内。为避免该依赖关系，请使用 `mongosh`中xref:mongodb-ontap-solution-validation.html#snapcenter-backup[使用 SnapCenter 备份]的命令配置钩子。在运行命令的主机上安装 `mongosh`，并根据您的部署情况调整主机、端口和身份验证选项。验证脚本使用了早期的 PyMongo 版本，该版本提供了 `Connection`类；Python 2 和 `Connection`已不再受支持。
+
+[cols="35%,65%"]
+|===
+| 验证中使用的脚本 | 操作 
+
+
+| `wait-for-cleared-locks.py` | 等待平衡器锁清除，然后停止平衡器。在 `mongosh`中，运行 `sh.stopBalancer()`，这也会等待任何正在进行的平衡轮次完成。 
+
+
+| `start-balancer.py` | 重新启动平衡器。在 `mongosh`中，运行 `sh.startBalancer()`。 
+
+
+| `fsync-lock.py` | 当备份需要静默时，将写入刷新到磁盘并阻止新写入，包括没有一致性组快照的单独卷上的 WiredTiger 数据和日志。在 `mongosh`中，对要备份的每个成员运行 `db.fsyncLock()`。 
+
+
+| `fsync-unlock.py` | 释放为备份获取的每个写入锁，包括在发生故障后。在 `mongosh`中，运行 `db.fsyncUnlock()`。 
+|===
+
+
+[[mongodb-operations]]
+== MongoDB 操作
+
+以下操作用于配置分片集群并向其添加两个分片。命令和输出是使用 MongoDB 3.0.7 及旧版 `mongo` shell 捕获的。在当前 MongoDB 版本中，请使用 `mongosh`，将配置服务器部署为副本集（使用 `--configsvr`和 `--replSet`启动它们，并通过 `--configdb`将副本集名称传递给 `mongos`），并省略已移除的 `--rest`选项。
+
+. 检查每个分片成员 (`mdb-srv-1`、 `mdb-srv-10`、 `mdb-srv-11`、 `mdb-srv-2`、 `mdb-srv-20` 和  `mdb-srv-21`）上 MongoDB 数据库的挂载分区。每个成员将 XFS 文件系统挂载到  `/data`：
++
+[listing]
+----
+[mongodb@mdb-srv-1 db_wt]$ df -h /data
+[mongodb@mdb-srv-1 db_wt]$ cat /etc/fstab | grep sdb
+/dev/sdb1 /data xfs defaults 0 0
+----
+. 在每个分片成员上，创建所需的文件夹，设置所有权和权限，然后启动 `mongod`。对于第一个分片，成员是 `mdb-srv-1`、 `mdb-srv-10`和 `mdb-srv-11`。例如，在 `mdb-srv-1`上：
++
+[listing]
+----
+[root@mdb-srv-1 ~]# mkdir -p /mongodb/data
+[root@mdb-srv-1 ~]# mkdir -p /data/db_wt
+[root@mdb-srv-1 ~]# chown -R mongodb:mongodb /mongodb
+[root@mdb-srv-1 ~]# chown -R mongodb:mongodb /data
+[root@mdb-srv-1 ~]# chmod -R 700 /mongodb
+[mongodb@mdb-srv-1 ~]$ mongod --replSet shard1/mdb-srv-10,mdb-srv-11 --journal --rest --shardsvr --fork --storageEngine wiredTiger --dbpath /data/db_wt --logpath /mongodb/data/mongod.log --directoryperdb
+----
+. 在端口 27019 上启动配置服务器 (`mdb-cfg-1`、 `mdb-cfg-2` 和  `mdb-cfg-3`）。首先使用  `mongodb` 所有权和 700 权限创建  `/mongodb/data/configdb`：
++
+[listing]
+----
+[mongodb@mdb-cfg-3 ~]$ mongod --configsvr --dbpath /mongodb/data/configdb --port 27019 --fork --logpath /mongodb/data/arbiter.log
+----
+. 在每个应用程序服务器上启动 `mongos`进程(`mdb-ms-1`和 `mdb-ms-2`），并验证其是否正在监听端口 27017：
++
+[listing]
+----
+[mongodb@mdb-ms-1 ~]$ mongos --configdb mdb-cfg-1:27019,mdb-cfg-2:27019,mdb-cfg-3:27019 --logpath /mongodb/data/mongos.log --fork --port 27017
+----
+. 从应用服务器连接到分片主节点 (`mdb-srv-1`），并使用  `rs.initiate(cfg)` 初始化副本集：
++
+[listing]
+----
+[mongodb@mdb-ms-1 ~]$ mongo mdb-srv-1:27018/admin
+> var cfg = { _id: "shard1", members: [ { _id: 0, host: "mdb-srv-1:27018" }, { _id: 1, host: "mdb-srv-10:27018" }, { _id: 2, host: "mdb-srv-11:27018" } ] };
+> rs.initiate(cfg);
+----
+. 从分片成员中检查副本集状态：
++
+[listing]
+----
+[mongodb@mdb-srv-1 ~]$ mongo --host mdb-srv-1 --port 27018
+shard1:PRIMARY> rs.printReplicationInfo()
+PRIMARY> rs.status()
+----
+. 从应用程序服务器添加第一个分片。如果再次从另一个应用程序服务器添加相同的分片，MongoDB 会报告该分片已存在：
++
+[listing]
+----
+[mongodb@mdb-ms-1 ~]$ mongo mdb-ms-1:27017/admin
+mongos> db.adminCommand( { addShard : "shard1/mdb-srv-1:27018,mdb-srv-10:27018,mdb-srv-11:27018" } )
+----
+. 检查分片状态：
++
+[listing]
+----
+mongos> sh.status();
+----
+. 添加第二个分片。以与第一个分片相同的方式准备 `mdb-srv-2`、 `mdb-srv-20`和 `mdb-srv-21`，初始化其副本集，并将其添加：
++
+[listing]
+----
+mongos> db.adminCommand( { addShard : "shard2/mdb-srv-2:27018,mdb-srv-20:27018,mdb-srv-21:27018" } )
+----
+. 再次运行 `sh.status()`以确认两个分片 (`shard1` 和 `shard2`）均已列出。添加分片不会自动分发集合数据。对于此处显示的 MongoDB 3.0.7 配置，请使用 `sh.enableSharding()`在数据库上启用分片，选择适当的分片键并创建任何所需的索引，然后使用 `sh.shardCollection()`对每个预期的集合进行分片。
+

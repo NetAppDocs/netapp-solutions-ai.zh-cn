@@ -188,6 +188,25 @@ entries:
 - title: NetApp E系列E5700和Splunk Enterprise
   pdf-filename: NetApp E系列E5700和Splunk Enterprise
   url: "/data-analytics/tr-4623.html"
+- title: 基于 NetApp ONTAP 的 MongoDB
+  pdf-filename: 基于 NetApp ONTAP 的 MongoDB
+  entries:
+  - title: 简介
+    url: "/data-analytics/mongodb-ontap.html"
+  - title: 解决方案概述
+    url: "/data-analytics/mongodb-ontap-solution-overview.html"
+  - title: 解决方案设计
+    url: "/data-analytics/mongodb-ontap-solution-design.html"
+  - title: 解决方案验证
+    url: "/data-analytics/mongodb-ontap-solution-validation.html"
+  - title: 客户用例
+    url: "/data-analytics/mongodb-ontap-use-cases.html"
+  - title: 摘要
+    url: "/data-analytics/mongodb-ontap-summary.html"
+  - title: 附录
+    url: "/data-analytics/mongodb-ontap-appendix.html"
+  - title: 致谢和参考资料
+    url: "/data-analytics/mongodb-ontap-references.html"
 - title: 使用NetApp存储部署 Apache Spark 工作负载
   pdf-filename: Apache Spark 工作负载与NetApp存储解决方案（部署指南）
   url: "/data-analytics/nva-1157-deploy.html"

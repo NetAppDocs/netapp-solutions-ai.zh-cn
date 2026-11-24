@@ -1,0 +1,547 @@
+---
+sidebar: sidebar 
+permalink: data-analytics/mongodb-ontap-solution-validation.html 
+keywords: mongodb, snapcenter, snapshot, flexclone, snapmirror, disaster recovery, ycsb, deduplication, compression, certification 
+summary: 本页介绍如何验证解决方案，包括群集构建、备份和还原、克隆、复制和灾难恢复、YCSB 性能和内联效率。 
+---
+= 解决方案验证
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+本页介绍了我们如何验证端到端解决方案，重点关注 xref:mongodb-ontap.html[简介] 中列出的主要优势。
+
+
+NOTE: 本页的 NetApp SnapCenter 过程遵循 SnapCenter 文档，不属于本报告中的验证测试。它们使用我们验证过的 ONTAP Snapshot、SnapRestore、FlexClone 和 SnapMirror 功能。有关详细信息，请参见 xref:mongodb-ontap-solution-overview.html#snapcenter[NetApp SnapCenter]。
+
+
+
+[[build-the-mongodb-sharded-cluster]]
+== 构建 MongoDB 分片集群
+
+部署 MongoDB 分片集群涉及以下任务：
+
+. 检查 MongoDB 数据库的挂载分区。
+. 检查并启动分片群集成员，创建所需的文件夹，并设置所需的权限。该  `mongod` 过程从默认端口（27018 和 28018）开始，您也可以指定不同的端口。
+. 验证配置服务器文件夹，例如日志路径 (`/mongodb/data/configdb`）和数据库路径 (`/data/db`），是否存在并具有  `mongodb` 用户权限（700）。验证  `mongod` 进程是否在正确的端口（27019）上以 fork 模式运行。
+. 在 MongoDB 路由器或应用服务器上启动 `mongos`进程，并验证其是否在端口 27017 上侦听。
+. 通过从 MongoDB 应用服务器连接到 MongoDB 分片主服务器来初始化副本集。
+. 从分片成员检查副本集状态。
+. 从应用程序服务器添加分片。然后尝试从另一个应用程序服务器添加相同的分片。您应该会收到一条消息，表明分片已存在。
+. 从应用程序服务器检查分片状态。
+. 将另一个分片添加到现有分片集群。
+. 在 MongoDB 应用服务器上运行  `sh.status()` 命令，查看分片集群状态。
+
+
+有关 MongoDB 的详细步骤，请参见 xref:mongodb-ontap-appendix.html#mongodb-operations[附录：MongoDB 操作]。
+
+
+
+[[back-up-and-restore-with-netapp-snapcenter]]
+== 使用 NetApp SnapCenter 进行备份和还原
+
+NetApp SnapCenter 使用节省空间的 NetApp Snapshot 技术来备份、还原和克隆虚拟化的 MongoDB 数据库环境。在我们对 NetApp Snapshot 技术的测试中，整个环境的备份不到一分钟，还原托管 MongoDB 数据库的 NetApp 卷也不到一分钟。
+
+MongoDB 在此解决方案中使用 WiredTiger 存储引擎。在每个 Snapshot 副本前后，备份执行以下操作：
+
+. 停止平衡器。
+. 如有必要，请执行 `fsync`和锁定。
+. 为配置中使用的所有卷制作 NetApp Snapshot 副本。
+. 如有必要，请解除数据库的写入锁定。
+. 重新启动平衡器。
+
+
+
+NOTE: WiredTiger 存储引擎不需要对每个分片进行 `fsync`和写入锁定，也不需要您事后解锁数据库。如果使用 MMAPv1 存储引擎，则必须对每个分片执行 `fsync`和锁定以进行写入，然后解锁它们。MongoDB 4.2 及更高版本不包括 MMAPv1。
+
+
+
+[[back-up-with-snapcenter]]
+[[snapcenter-backup]]
+=== 使用 SnapCenter 备份
+
+NetApp SnapCenter 提供中央控制台、基于角色的访问控制以及适用于 MongoDB 的插件，用于创建应用程序一致的 NetApp Snapshot 副本。数据库的大小不会影响 Snapshot 备份，创建该备份只需几秒钟。
+
+下图显示了 SnapCenter 备份工作流。
+
+.SnapCenter 备份工作流程
+image:mongodb-ontap-028.png["SnapCenter 备份工作流。定义备份策略，添加资源，创建备份策略，创建资源组并附加策略，备份资源或资源组，监控备份操作，以及在拓扑页面中查看相关备份和克隆。"]
+
+要使用 SnapCenter 保护 MongoDB 集群：
+
+. 定义备份策略，包括 Snapshot 计划和保留。一个起点是保留 24 个每小时、30 个每天、7 个每周和 12 个每月的 Snapshot 副本。
+. 添加 MongoDB 资源。在“资源设置”页面上，提供下表中的自定义键值对。自定义键名称必须为大写。
++
+[cols="1,2"]
+|===
+| 键 | 值 
+
+
+| `MONGODB_APP_SERVER` | MongoDB 应用服务器（路由器）。当资源类型为分片集群时使用此键。 
+
+
+| `MONGODB_REPLICASET_SERVER` | 副本集成员。当资源类型为副本集时使用此键。 
+
+
+| `OPLOG_PATH` | 可选。oplog 路径。在此处或在 `MongoDB.properties`文件中提供。 
+
+
+| `MONGODB_AUTHENTICATION_TYPE` | `PLAIN` 用于 LDAP 身份验证，或 `None` 用于其他身份验证类型。 
+|===
++
+在 `MongoDB.properties`文件中，您还可以设置 `DISABLE_STARTING_STOPPING_SERVICES`。如果插件启动和停止 MongoDB 服务，请使用默认值 `N`。如果您自己启动和停止它们，请使用 `Y`。
+
+. 在“提供存储空间占用”页面上，选择 ONTAP 存储系统和存储 MongoDB 数据的卷。对于此解决方案，请选择四个数据库卷 (`n1_mdbdata_p_01`、 `n1_mdbdata_s_02`、 `n2_mdbdata_p_02` 和  `n2_mdbdata_s_01`）。SnapCenter 不会自动发现这些资源的存储。
+. 创建备份策略。在策略脚本设置中，在 Snapshot 副本之前在 MongoDB 路由器或应用程序服务器上运行以下命令以停止平衡器，并在 Snapshot 副本之后运行第二个命令以重新启动它：
++
+[listing]
+----
+mongosh --quiet --host mdb-ms-1 --port 27017 --eval 'sh.stopBalancer()'
+mongosh --quiet --host mdb-ms-1 --port 27017 --eval 'sh.startBalancer()'
+----
++
+在运行命令的主机上安装 `mongosh`，并为您的部署调整主机、端口和身份验证选项。
+
+. 创建一个包含 MongoDB 资源的资源组，附加策略，并可选择创建一个计划。
+. 备份资源或资源组，监视操作，并在“拓扑”页面中查看相关备份和克隆。
+
+
+有关详细步骤，请参见以下 SnapCenter 文档：
+
+* link:https://docs.netapp.com/us-en/snapcenter-60/protect-nsp/add_resources_to_netapp_supported_plugins.html["向 NetApp 支持的插件添加资源"^]
+* link:https://docs.netapp.com/us-en/snapcenter-60/protect-nsp/create_policies_for_netapp_supported_plugins_resources.html["为 NetApp 支持的插件资源创建策略"^]
+* link:https://docs.netapp.com/us-en/snapcenter-60/protect-nsp/create_resource_groups_and_attach_policies.html["创建资源组并附加策略"^]
+* link:https://docs.netapp.com/us-en/snapcenter-60/protect-nsp/back_up_netapp_supported_plugins_resources.html["备份 NetApp 支持的插件资源"^]
+
+
+
+
+[[restore-with-snapcenter]]
+[[snapcenter-restore]]
+=== 使用 SnapCenter 还原
+
+随着数据库的增长，备份和恢复变得更加困难。NetApp Snapshot 技术为备份和恢复任何规模的分布式数据库提供了最简单、最有效的方法。当备份基于 Snapshot 副本时，恢复由多个分片组成的大型数据库更多地取决于停止和启动数据库进程所需的时间，而不是恢复数据本身。从 Snapshot 备份还原通常只需要几秒钟，最多几分钟。
+
+使用适用于 MongoDB 的 SnapCenter 插件从 SnapCenter 创建的 Snapshot 备份还原数据库。
+
+下图显示了 SnapCenter 还原工作流。
+
+.SnapCenter 还原工作流
+image:mongodb-ontap-029.png["SnapCenter 还原工作流。定义还原策略、还原资源并监控还原操作。"]
+
+要使用 SnapCenter 还原 MongoDB 资源：
+
+. 定义还原策略。对于手动添加的 NetApp 支持的插件资源，SnapCenter 支持两种策略：
++
+** *完整资源*还原资源的所有卷、qtree 和 LUN。
+** *文件级别*从卷、qtree 或目录，或仅从选定的 LUN 还原文件。
++
+
+NOTE: 如果还原完整资源，则相同卷或 qtree 上比选定 Snapshot 副本更新的 Snapshot 副本将被删除，并且无法恢复。托管在同一卷或 qtree 上的任何其他资源也会受到影响。SnapCenter 无法恢复手动添加的 NetApp 支持的插件资源。
+
+
+
+. 在 SnapCenter 中，选择 *Resources*，选择 MongoDB 插件，然后选择资源。在 *管理副本* 视图中，选择要恢复的备份。
+. 在“还原范围”页面上，选择*完整资源*或*文件级别*。
+. 在 *操作前* 页面上，输入要在还原前运行的命令。对于此解决方案，请停止分片服务器上的  `mongod` 进程并卸载数据库卷，如以下示例所示。
+. 在*操作后*页面上，输入要在还原后运行的命令。对于此解决方案，请挂载卷、删除  `mongod.lock` 文件并在分片服务器上启动  `mongod` 进程，如下例所示。
+. （可选）配置电子邮件通知，查看摘要，然后选择 *完成*。
+. 通过选择 *Monitor* > *Jobs* 来监控还原操作，然后在还原的数据库中检查分片状态和文档计数。
+
+
+有关详细步骤，请参见以下 SnapCenter 文档：
+
+* link:https://docs.netapp.com/us-en/snapcenter-60/protect-nsp/restore_netapp_supported_plugins_resources.html["还原 NetApp 支持的插件资源"^]
+* link:https://docs.netapp.com/us-en/snapcenter-60/protect-nsp/types_of_restore_strategies_supported_for_manually_added_netapp_supported_plugins_resources.html["手动添加的 NetApp 支持的插件资源的还原策略类型"^]
+* link:https://docs.netapp.com/us-en/snapcenter-60/protect-nsp/restore_a_resource_backup.html["还原资源备份"^]
+
+
+我们测试中的以下示例删除了 `c7`集合，停止了所有分片的所有 `mongod`进程，卸载了 `/data`文件系统，还原了卷，重新挂载了文件系统，删除了锁定文件，并重新启动了所有进程：
+
+. 在还原之前，请从其中一台应用程序服务器检查数据库及其文档。 `c7` 数据库中的 `db7` 集合在备份时包含 144,569,144 个文档。删除该集合以模拟数据丢失，并确认计数为 0：
++
+[listing]
+----
+mongos> use db7;
+mongos> db.c7.count();
+144569144
+mongos> db.c7.drop();
+true
+mongos> db.c7.count();
+0
+----
+. 使用 init 脚本或 `kill`命令停止第一个分片副本集成员 `mdb-srv-1`、 `mdb-srv-10`和 `mdb-srv-11`）上的 `mongod`进程，并卸载数据库卷。例如，在 `mdb-srv-1`上：
++
+[listing]
+----
+[mongodb@mdb-srv-1 ~]$ pkill mongod
+[root@mdb-srv-1 ~]# umount /data
+----
+. 以相同方式停止第二个分片副本集成员 (`mdb-srv-2`、 `mdb-srv-20` 和  `mdb-srv-21`）上的 `mongod`进程，并卸载其数据库卷。
+. 从两个分片的虚拟机中删除现有的虚拟磁盘（MongoDB 数据库卷），包括主服务器和辅助服务器。
+. 从备份中恢复所有四个数据库卷 (`n1_mdbdata_p_01`、 `n1_mdbdata_s_02`、 `n2_mdbdata_p_02` 和  `n2_mdbdata_s_01`），一次一个卷。
+. 将还原的数据库卷作为现有磁盘重新连接到每个分片的主服务器和辅助服务器。
+. 挂载卷。
+. 从挂载的 MongoDB 数据库卷中删除 `mongod.lock`文件。
+. 在分片服务器上启动 `mongod`进程，并验证 `mongod`端口（27018 和 28018）是否正在侦听。例如，在 `mdb-srv-1`上：
++
+[listing]
+----
+[root@mdb-srv-1 ~]# mount /data
+[mongodb@mdb-srv-1 ~]$ cd /data/db_wt/
+[mongodb@mdb-srv-1 db_wt]$ rm -f mongod.lock
+[mongodb@mdb-srv-1 db_wt]$ mongod --replSet shard1/mdb-srv-10,mdb-srv-11 --journal --rest --shardsvr --fork --storageEngine wiredTiger --dbpath /data/db_wt --logpath /mongodb/data/mongod.log --directoryperdb
+----
+. 在 `mdb-srv-10`、 `mdb-srv-11`、 `mdb-srv-2`、 `mdb-srv-20`和 `mdb-srv-21`上重复此过程。装载还原的卷，删除 `mongod.lock`文件，并启动副本集的 `mongod`进程。
+. 检查已还原数据库中的分片状态和文档计数。该 `c7`集合恢复为 144,569,144 个文档：
++
+[listing]
+----
+mongos> use db7
+mongos> show collections;
+c7
+mongos> db.c7.count();
+144569144
+----
+
+
+此示例演示了如何使用 NetApp SnapRestore 技术从 NetApp Snapshot 副本还原 MongoDB 数据库。
+
+
+
+[[mongodb-cloning-for-devtest-and-qa]]
+== 用于开发/测试和 QA 的 MongoDB 克隆
+
+生产 MongoDB 的 NetApp 快照备份使您能够构建预生产或开发环境。借助 NetApp FlexClone 技术，您可以将包含快照副本的卷呈现给任何克隆主机。这种方法使您可以快速构建开发/测试环境，而无需将所需的存储增加一倍。FlexClone 克隆提供了一种快速、可扩展且高效的方式来按需提供开发/测试环境。
+
+
+
+[[clone-with-snapcenter]]
+[[snapcenter-clone]]
+=== 使用 SnapCenter 克隆
+
+使用适用于 MongoDB 的 SnapCenter 插件克隆 SnapCenter 创建的 Snapshot 备份。您可以从主备份或辅助备份进行克隆。
+
+您可以将 MongoDB 备份的克隆用于以下目的：
+
+* 在应用程序开发过程中，针对当前数据库结构和内容测试功能。
+* 提取和操作数据，例如在填充数据仓库时。
+* 恢复错误删除或更改的数据。
+
+
+下图显示了 SnapCenter 克隆工作流。
+
+.SnapCenter 克隆工作流
+image:mongodb-ontap-030.png["SnapCenter 克隆工作流。克隆备份，监视克隆操作，如果需要，拆分克隆。"]
+
+要使用 SnapCenter 克隆 MongoDB 备份：
+
+. 请确保已备份资源或资源组，并且承载卷的聚合位于 Storage Virtual Machine (SVM) 的分配聚合列表中。
+. 在 SnapCenter 中，选择 *Resources*，选择 MongoDB 插件，然后选择资源。在 *管理副本* 视图中，选择主备份或辅助备份，然后选择克隆图标。
+. 在“位置”页面上，选择克隆服务器，即挂载克隆并安装插件的主机。默认为源主机。如果克隆到与源相同的主机，则必须输入克隆后缀，例如 `_clone`，以便克隆的资源是唯一的。否则，操作将失败。
+. 在“脚本”页面上，输入克隆前和克隆后命令以及克隆卷的装载命令。对于此解决方案，请使用这些命令从克隆的数据库卷中删除 `.lck`文件，分配新 IP 地址，更新 `/etc/hosts`，并重新启动隔离克隆网络中的 MongoDB 进程，如下例所示。
+. （可选）配置电子邮件通知，查看摘要，然后选择 *完成*。
+. 通过选择 *监控* > *作业* 来监控克隆操作。如果需要，将克隆从其父 Snapshot 副本中拆分出来。
+
+
+将克隆的虚拟机附加到隔离网络，使其无法访问生产 MongoDB 主机，并为克隆增长预留存储容量。
+
+有关详细步骤，请参见以下 SnapCenter 文档：
+
+* link:https://docs.netapp.com/us-en/snapcenter-60/protect-nsp/clone_netapp_supported_plugins_resource_backups.html["克隆 NetApp 支持的插件资源备份"^]
+* link:https://docs.netapp.com/us-en/snapcenter-60/protect-nsp/clone_from_a_backup.html["从备份克隆"^]
+
+
+我们测试中的以下示例将所有分片服务器上的所有数据库克隆到新的分片服务器中。在此示例中，还克隆了操作系统卷。
+
+. 从特定 Snapshot 副本为操作系统和数据库卷创建 FlexClone 卷。
+. 在 VMware 服务器上创建包含克隆的操作系统和数据库卷的数据存储。
++
+image:mongodb-ontap-008.png["从克隆的操作系统卷创建的 VMware 数据存储。"]
+
++
+
+NOTE: 此过程中的 VMware 屏幕截图和菜单路径来自较早的 VMware vSphere 和 ESXi 版本。在当前的 VMware vSphere 和 ESXi 版本中，屏幕和菜单名称不同。步骤相同，因此请遵循适用于您版本的 VMware 文档。
+
++
+image:mongodb-ontap-009.png["从克隆的数据库卷创建的 VMware 数据存储。"]
+
+. 根据  `.vmx` 文件从数据存储创建克隆的虚拟机：
++
+.. 选择在上一步中创建的数据存储。
+.. 找到 `.vmx`文件。
+.. 注册 VM。
+.. 以 `cl_<old VM name>`格式命名克隆的 VM。
+.. 选择 VMware 集群和服务器以完成创建克隆的 VM。
+
+
+. 克隆（新注册）的 VM 从另一个克隆的数据库卷访问数据库 `.vmdk`文件。验证 `.vmdk`文件是否标识为现有磁盘。如果不是，在克隆的 VM 中，选择 *编辑 > 设置 > 删除磁盘 > 确认*。请确保不要从存储库中删除磁盘。
+. 从克隆的数据库卷中删除 `.lck-<16 alphanumeric characters>`文件。在 VMware 或 Linux 服务器中装载克隆的卷并删除 `.lck`文件：
++
+[listing]
+----
+[root@stlrx300s8-9:/vmfs/volumes/24631f70-b7e80cce/mdb-srv-1] ls -la
+-rwxrwxr-x 1 root root 84 Dec 18 14:41 .lck-be54694500000000
+-rwxrwxr-x 1 root root 84 Dec 18 2015 .lck-be546a4500000000
+-rw------- 1 root root 1088516510720 Dec 18 14:41 mdb-srv-1-flat.vmdk
+-rw------- 1 root root 475 Nov 22 17:51 mdb-srv-1.vmdk
+[root@stlrx300s8-9:/vmfs/volumes/24631f70-b7e80cce/mdb-srv-1] rm -fr .lck-be546*
+----
+. 在开启任何克隆的虚拟机之前，将其网络适配器连接到无法到达生产 MongoDB 主机的隔离端口组。
+. 在启动 MongoDB 之前，开启克隆的 VM 并使用 VM 控制台为所有克隆成员分配新的 IP 地址并更新 `/etc/hosts`。仅在隔离的克隆网络中保留主机名。
+. 使用来自克隆虚拟机的新 IP 地址重新启动 MongoDB 配置、应用程序和副本集或分片服务器。
+
+
+此过程创建生产 MongoDB 数据库的工作克隆副本。克隆是隔离的，因此您可以使用它进行写入、故障排除、开发或测试。FlexClone 与父快照副本共享未更改的块，从而避免了初始的完整数据复制。新的和修改的块会消耗额外的存储空间，因此请为克隆增长保留容量。
+
+
+
+[[replicate-to-amazon-fsx-for-netapp-ontap-for-disaster-recovery]]
+== 复制到 Amazon FSx for NetApp ONTAP 以进行灾难恢复
+
+Amazon FSx for NetApp ONTAP 是一项运行 NetApp ONTAP 的完全托管的 AWS 服务。AWS 运行文件系统和底层基础架构，您可以获得与本地 AFF 阵列提供的相同的 ONTAP 数据管理。FSx for ONTAP 支持 NFS、SMB 和 iSCSI 访问，它包括快照副本、FlexClone 卷、存储效率和 SnapMirror 复制。因为它是 ONTAP，所以您可以使用 SnapMirror 将 MongoDB 卷从本地 AFF 阵列复制到 FSx for ONTAP，并将其用作灾难恢复目标。
+
+您可以使用 AWS Management Console、AWS CLI 或 AWS API 创建和管理文件系统。您可以使用 ONTAP CLI、ONTAP REST API、ONTAP System Manager 或 NetApp Console 管理 ONTAP 资源，例如 Storage Virtual Machine、卷和 SnapMirror 关系。
+
+
+NOTE: 原始验证在 AWS 及其 Web 控制台中使用了基于软件的 ONTAP 实例。对于 FSx for ONTAP，SnapMirror 步骤是相同的，但管理屏幕不同。有关详细信息，请参见 xref:mongodb-ontap-solution-overview.html#amazon-fsx-for-ontap[Amazon FSx for NetApp ONTAP]。
+
+
+
+[[disaster-recovery-validation-to-the-cloud]]
+== 到云的灾难恢复验证
+
+此解决方案通过使用 SnapMirror 将 MongoDB 数据复制到 Amazon FSx for NetApp ONTAP 来保护这些数据。本地集群和 VPC 之间的网络连接（例如 VPN 或 AWS Direct Connect）必须允许集群间流量。复制需要执行以下任务：
+
+. 在 Amazon FSx 控制台中，打开文件系统并记录群集间端点 IP 地址。
+. 在本地 ONTAP 集群上创建集群对等关系。
+. 在 FSx for ONTAP 文件系统上创建对等关系。
+. 配置并初始化 SnapMirror 关系。
+
+
+在原始验证中，SnapMirror 关系和复制状态显示如下：
+
+* 一个卷关系，从本地 AFF 集群上的 `n1_mdbdata_p_01`卷到 AWS 中的 ONTAP 实例上的镜像卷 (`mongodb_n1_mdbdata_p_01_mirror`）
+* 处于 SnapMirrored 状态的健康关系，具有空闲传输状态、 `MirrorLatest` 策略和  `mongodbbackup` 传输计划。
+* 559GB 的复制容量，没有正在进行的传输，也没有失败的关系。
+* 最后一次传输是没有错误的更新，延迟时间显示目标落后于源的程度。
+* 两种环境，即本地 AFF 集群和 AWS 中的 ONTAP 实例，两边都分配了容量。
+
+
+您可以在 AWS 控制台、ONTAP System Manager 或 NetApp Console 中检查有关 FSx for ONTAP 文件系统的相同信息。
+
+要验证灾难恢复，请执行以下操作：
+
+. 确认 SnapMirror 状态为  `snapmirrored`，关系状态为  `healthy`。
+. 为 SnapMirror 关系启用灾难恢复：
++
+.. 在 Amazon EC2 上构建 Linux 操作系统实例，并在其上安装 MongoDB 数据库，就像在生产数据库上一样。
+.. 在 FSx for ONTAP 文件系统上，暂停和中断 SnapMirror 关系。
+.. 从目标卷创建 FlexClone 卷。
+.. 在相应的操作系统实例上挂载主数据库卷和二级数据库卷。
+.. 使用 init 脚本或 CLI 命令启动配置服务器、主分片服务器和辅助分片服务器，以及应用程序或查询服务器 `mongod`和 `mongos`进程。
+.. 验证数据库和文档是否存在于上次成功复制的 Snapshot 副本中，以及新的灾难恢复数据库是否仍可写入。记录最后传输时间以确定恢复点。
+
+
+
+
+
+
+[[performance-and-certification-validation]]
+== 性能和认证验证
+
+
+
+[[certification-validation]]
+=== 认证验证
+
+为了验证 NetApp 存储与 MongoDB 的互操作性，我们完成了 MongoDB 认证流程。为了进行认证验证，我们使用了 AFF-A30 全闪存阵列，通过光纤通道交换机连接到运行 RHEL 7.1 操作系统的具有 24 核和 128GB RAM 的 x86 服务器。我们在 RHEL 服务器上安装了 MongoDB Enterprise v3.2。这些版本反映了原始测试。对于新的部署，请使用当前支持的操作系统和 MongoDB 版本。
+
+通过此配置，NetApp 存储系统通过了所有 MongoDB 认证测试，并在测试时被列为 MongoDB 认证平台。有关详细信息，请参见 link:https://www.mongodb.com/partners/netapp["MongoDB NetApp 合作伙伴页面"^]。请查看该页面，了解当前认证状态。
+
+
+NOTE: 该认证使用通过光纤通道连接到 AFF-A30 的物理服务器，即块存储。它不涵盖在 xref:mongodb-ontap-solution-design.html[解决方案设计] 中托管 MongoDB 虚拟机的 NFS 数据存储设计。
+
+除了认证测试之外，我们还使用 YCSB 测试框架验证了采用 NetApp 存储的 MongoDB 性能。
+
+
+
+[[performance-validation-with-ycsb]]
+=== 使用 YCSB 进行性能验证
+
+
+NOTE: YCSB 测试在使用光纤通道 LUN 的三台物理服务器上运行，而不是在 xref:mongodb-ontap-solution-design.html[解决方案设计] 中的虚拟化、基于 NFS 的配置上运行。结果表明了 AFF-A30 在高负载下可以为 MongoDB 提供怎样的性能，它们并非对 NFS 数据存储设计的衡量。请测试您自己的配置和协议以估算部署规模。
+
+Yahoo! Cloud Serving Benchmark (YCSB) 是一个框架和一组通用工作负载，用于评估不同键值存储和云服务存储的性能。它包含两个组件：
+
+* YCSB 客户端，一个可扩展的工作负载生成器。
+* 核心工作负载，生成器运行的一组工作负载方案。
+
+
+我们从六个核心工作负载中选择了工作负载 A、B、C 和自定义 C：
+
+* *工作负载 A* 是一个以更新为主的工作负载，包含 50/50 的读取和写入组合。示例应用程序是记录最近操作的会话存储。
+* *工作负载 B* 是一个以读取为主的工作负载，包含 95/5 的读取和写入混合。一个示例应用程序是照片标记，其中添加标记是一种更新，但大多数操作都是读取标记。
+* *工作负载 C* 是具有 100% 读取的只读工作负载。示例应用程序是用户配置文件缓存，其中配置文件在其他位置构建，例如在 Hadoop 部署中。
+* *Workload customized C* 是我们创建的只读工作负载，因为 YCSB 主要用于测试数据库性能，而不是为了给数据库 I/O 层施加压力。它显示了当应用程序 I/O 请求对其施加重负载时，您可以从 AFF-A30 获得的吞吐量和响应时间。
+
+
+在我们的验证中，数据库包含 700GB 的数据。每个文档的大小为 1,000 字节，有 10 个字段。YCSB 工具加载了数据。
+
+.用于验证的副本集
+image:mongodb-ontap-012.png["用于 YCSB 验证的主要和两个辅助 MongoDB 副本集。"]
+
+
+
+[[storage-architecture-used-for-ycsb]]
+=== 用于 YCSB 的存储架构
+
+我们使用三台物理服务器来构建主、辅、辅（PSS）MongoDB 副本集。
+
+.用于 YCSB 的存储架构
+image:mongodb-ontap-013.png["三个 RHEL 服务器，每个都有两个 16Gbps 光纤通道连接到 FC 交换机，该交换机通过四个 16Gbps 光纤通道链路连接到运行 ONTAP 9.1 和 24 个 800GB SSD 的双节点 AFF-A30 HA 对。"]
+
+每台服务器都具有以下配置：
+
+* 256 GB 内存
+* 两个 2.60GHz 的 Intel Xeon E5-2630 v2 处理器（共 24 核）
+* 两个 16Gbps 光纤通道端口
+* 安装 Red Hat Enterprise Linux 7.2 或更高版本的 MongoDB 服务器
+* Brocade 光纤通道交换机
+
+
+存储控制器为 AFF-A30 HA 对。每个控制器都有：
+
+* 16 核
+* 128GB 缓存
+* 8GB NVMEM
+* 1TB Flash Cache
+* 四个 16Gbps 光纤通道端口
+* 配备 24 个 800GB 固态硬盘的 DS2246 磁盘架的一半
+
+
+我们按如下方式为副本集构建了文件系统：
+
+. 我们为每个 AFF-A30 存储控制器创建了四个卷，总共八个卷。每个卷为 386GB。
+. 每个卷都有三个 128GB 的 LUN。我们将每个卷中的一个 LUN 调配给主服务器，将另外两个 LUN 调配给辅助服务器。
+. 在每台服务器上，我们从八个 LUN 创建了一个逻辑卷组，然后在卷组中的八个 LUN 上创建了一个条带化逻辑卷。
+. 我们在条带化逻辑卷之上创建了 XFS 文件系统。
+
+
+.AFF-A30 上的存储布局和文件系统各层
+image:mongodb-ontap-014.png["AFF-A30 上的卷和 LUN 布局。"] image:mongodb-ontap-015.png["从 LUN 到 XFS 文件系统的文件系统层。"]
+
+
+
+[[ycsb-performance-testing]]
+=== YCSB 性能测试
+
+我们针对 YCSB 工作负载 A、B 和 C 运行了以下测试：
+
+* 一个 YCSB 实例针对一个数据库运行。
+* 测试开始时，YCSB 线程数为 8。
+* 线程数增加，直到延迟增加且每秒操作数减少。
+* 在每次运行结束时，从 YCSB 输出中收集 YCSB 性能指标。
+
+
+随着 YCSB 对数据运行，服务器上的负载会逐渐增加。将集合索引加载到服务器的内存后，所有读取都将从内存提供，而写入将进入存储。
+
+.工作负载 A：50% 读取，50% 更新
+image:mongodb-ontap-016.png["YCSB 工作负载 A 在增加线程数时的每秒操作数和延迟。"]
+
+以下命令运行工作负载 A。我们使用 8、16、32 和 64 个线程重复此命令：
+
+[listing]
+----
+/root/YCSB/bin/ycsb run mongodb -s -P /root/YCSB/workloads/workloada -p mongodb.url="mongodb://mongodb-s1:27017/ycsb1" -p operationcount=120000000 -p maxexecutiontime=1800 -threads 16
+----
+.工作负载 B：95% 读取，5% 更新
+image:mongodb-ontap-017.png["YCSB 工作负载 B 在增加线程数时的每秒操作数和延迟。"]
+
+以下命令运行工作负载 B。我们使用 8、16、32 和 64 个线程重复了此命令：
+
+[listing]
+----
+/root/YCSB/bin/ycsb run mongodb -s -P /root/YCSB/workloads/workloadb -p mongodb.url="mongodb://mongodb-s1:27017/ycsb1" -p operationcount=120000000 -p maxexecutiontime=1800 -threads 16
+----
+.工作负载 C：100% 读取
+image:mongodb-ontap-018.png["每秒操作数和延迟（针对 YCSB 工作负载 C，随线程数增加而变化）。"]
+
+以下命令运行了工作负载 C：
+
+[listing]
+----
+/root/YCSB/bin/ycsb run mongodb -s -P /root/YCSB/workloads/workloadc -p mongodb.url="mongodb://mongodb-s1:27017/ycsb1" -p operationcount=120000000 -p maxexecutiontime=1800 -threads 16
+----
+自定义工作负载 C 使用 YCSB 选项 `scanproportion`和 `maxscanlength`。这些选项允许 YCSB 遍历 MongoDB 游标返回的所有文档。使用这些选项，发送到数据库的查询会在存储级别生成大量随机读取。
+
+在存储端测量，AFF-A30 在 0.53 毫秒的延迟下处理了 175,400 IOPS，读取 2.1GBps 的数据。
+
+.工作负载定制 C：100% 读取，FCP 吞吐量
+image:mongodb-ontap-019.png["在定制的 C 工作负载期间，AFF-A30 上的光纤通道吞吐量。"]
+
+.工作负载定制 C：100% 读取，FCP 延迟
+image:mongodb-ontap-020.png["在定制的 C 工作负载期间，AFF-A30 上的光纤通道延迟。"]
+
+.工作负载定制 C：100% 读取，读取吞吐量（GBps）
+image:mongodb-ontap-021.png["在定制的 C 工作负载期间，AFF-A30 上以 GBps 为单位的读取吞吐量。"]
+
+以下命令运行了自定义工作负载 C：
+
+[listing]
+----
+/root/YCSB/bin/ycsb run mongodb -s -P /root/YCSB/workloads/workloadc -p mongodb.url="mongodb://mongodb-s1:27017/ycsb1" -p operationcount=120000000 -p maxexecutiontime=1800 -p scanproportion=1 -p updateproportion=0 -p readproportion=0 -p maxscanlength=8000 -threads 64
+----
+
+
+[[inline-efficiency]]
+=== 实时效率
+
+NetApp 重复数据删除和压缩是内联存储效率技术，可提高 SSD 的有效容量并降低每 GB 的有效成本。内联存储效率也可以提高系统性能，因为存储给定数量的逻辑数据所写入的物理块较少。内联重复数据删除和内联压缩是 NetApp AFF 的两个关键组件，可让您以尽可能低的成本存储最大数量的数据。这些互补技术协同工作，以实现最佳节省效果。
+
+
+
+==== 重复数据删除
+
+重复数据删除通过消除冗余数据块来降低存储容量要求，如下图所示。NetApp 重复数据删除通过在 NetApp FlexVol 卷中定位相同的 4K 数据块并将相同的块替换为对单个共享块的引用来提高存储效率。在删除这些块之前，它会执行字节级验证检查，以确认这些块是相同的。此检查可防止与哈希冲突相关的潜在问题。
+
+.通过重复数据删除降低存储容量要求
+image:mongodb-ontap-022.png["显示相同块被对单个共享块的引用所替换的图表。"]
+
+NetApp AFF 系统支持将重复数据删除作为内联和后处理操作。当写入数据进入系统时，内联重复数据删除会消除内存中的重复块，从而减少存储数据所需的空间。
+
+如果启用了后处理重复数据删除，它会通过扫描现有数据以查找重复项并消除它们来回收额外的空间。默认情况下，AFF 系统会同时启用内联重复数据删除和内联零块重复数据删除。内联零块重复数据删除可内联检测零块，并在将其写入磁盘之前对其进行重复数据删除。
+
+
+
+==== 数据压缩
+
+NetApp 压缩在文件级别提供透明的数据压缩。它不会将整个文件压缩为单个连续的字节流，因为这会使处理对文件部分内容的小规模读取或覆盖操作的成本过高。在处理请求之前，必须从磁盘读取整个文件并进行解压缩，这对于大文件来说尤其繁琐。
+
+为避免此问题，NetApp 数据压缩会压缩一小部分连续块，称为压缩组。当读取或覆盖请求到达时，只需读取这一小部分块，而不是整个文件。此方法可优化读取和覆盖性能，并使压缩文件的大小具有更高的可扩展性。
+
+NetApp 支持两种类型的压缩：
+
+* 自适应压缩（8K 压缩组大小）
+* 二级压缩（32K 压缩组大小）
+
+
+自适应压缩更适合主要由随机写入或顺序和随机写入混合组成的工作负载。二级压缩更适合主要由大型顺序 I/O（32K 或更大）组成的工作负载。
+
+在 AFF 系统上，压缩仅作为内联操作受支持，并且默认情况下，AFF 系统上的所有新卷都会启用自适应内联压缩。如果同时启用了压缩和重复数据删除，则首先运行压缩，然后运行重复数据删除。您可以在 FlexVol volume 级别启用或禁用这两者。
+
+下图中的第一个结果显示了 MongoDB 在全闪存 FAS 控制器上运行 `mongoperf`工作负载的存储效率统计数据。第二个图表示内联重复数据删除和内联压缩的数据减少比率均大于 15:1。
+
+.来自 Perfstat 的卷效率统计数据
+image:mongodb-ontap-023.png["Perfstat 输出显示 MongoDB 卷的卷效率统计信息。"]
+
+.通过内联重复数据删除和内联压缩，数据缩减率超过 15:1
+image:mongodb-ontap-024.png["存储效率输出显示数据缩减比率大于 15:1。"]
+
+
+NOTE: 由于其内联重复数据删除和压缩功能，NetApp 全闪存 FAS 在整个测试过程中显示出大于 15:1 的数据缩减率。 `mongoperf` 工作负载在其读取和写入操作中写入许多零，因此您的存储效率可能会因部署中的数据类型和数量而异。

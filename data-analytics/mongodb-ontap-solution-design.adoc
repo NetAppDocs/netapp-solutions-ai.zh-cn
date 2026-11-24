@@ -1,0 +1,84 @@
+---
+sidebar: sidebar 
+permalink: data-analytics/mongodb-ontap-solution-design.html 
+keywords: mongodb, sharded cluster, mongos, config server, storage layout, aff-a30 
+summary: 本页介绍 MongoDB 分片集群架构、经过验证的架构以及 NetApp AFF 上的存储布局。 
+---
+= 解决方案设计
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+本页介绍 MongoDB 架构，包括其组件和布局，然后是此解决方案中使用的经过验证的架构和存储架构。
+
+
+
+[[mongodb-architecture]]
+== MongoDB 架构
+
+分片或水平扩展会分割数据集，并将其分布在多个服务器或分片上。每个分片都是一个独立的数据库，这些分片共同构成一个单一的逻辑数据库。下图显示了集合的分片如何分布在多个服务器上。
+
+.分布在多台服务器上的分片
+image:mongodb-ontap-002.png["显示一个集合被划分为分布在多个服务器上的多个分片的图表。"]
+
+分片存储数据。在生产分片集群中，每个分片都是一个副本集，可提供高可用性和数据一致性。
+
+查询路由器或 `mongos`实例与客户端应用程序交互，并将操作引导到一个或多个相应的分片。客户端将请求发送到 `mongos`，后者将操作路由到分片并将结果返回给客户端。分片集群可以包含多个 `mongos`以分担客户端请求负载，并且大多数分片集群具有多个。
+
+配置服务器（config servers）存储集群的元数据，该元数据将集群的数据集映射到分片。查询路由器使用此元数据将操作定位到特定分片，如下图所示。
+
+.查询路由器（mongos 实例）使用元数据将数据路由到分片
+image:mongodb-ontap-003.png["显示 mongos 查询路由器使用配置服务器元数据将操作路由到分片的图。"]
+
+
+NOTE: 从 MongoDB 3.2 开始，分片集群的配置服务器可以部署为副本集，该副本集必须运行 WiredTiger 存储引擎。MongoDB 3.4 删除了镜像配置服务器，因此当前 MongoDB 版本要求将配置服务器部署为副本集。
+
+
+
+[[validated-architecture]]
+== 经过验证的架构
+
+此解决方案使用在 VMware vSphere 上虚拟化的 MongoDB 分片集群。根据 MongoDB 对生产设置的建议，我们在测试期间部署了一个由两个分片组成的分片集群。每个分片都包含一个集合数据的子集，每个分片都是一个副本集。该集群还使用三个配置服务器和两个查询路由器 (`mongos` 实例），并且 MongoDB 配置了 WiredTiger 存储引擎。WiredTiger 管理数据在内存和磁盘上的存储方式，并在  `--dbpath` 或  `storage.dbPath` 位置创建数据文件。
+
+有关详细信息，请参见 link:https://www.mongodb.com/docs/manual/core/wiredtiger/["WiredTiger 存储引擎"^] 和 link:https://docs.mongodb.org/manual/core/sharded-cluster-architectures-production/["生产集群架构"^] 的 MongoDB 文档。
+
+
+
+[[storage-architecture]]
+== 存储架构
+
+在 NetApp AFF-A30 全闪存阵列上配置了六个 NFS 数据存储，这些数据存储是通过 NFS 第 3 版（NFSv3）访问的 NetApp 卷。NetApp SnapCenter Plug-in for VMware vSphere（SCV）用于托管该架构的各个组件。下表列出了这些组件。
+
+[cols="10%,35%,20%,15%,20%"]
+|===
+| 序列号 | NetApp 卷 | MongoDB 角色 | 具有此角色的服务器数量 | 验证中使用的虚拟磁盘格式 
+
+
+| 1 | 由所有操作系统共享的操作系统映像卷（例如， `vol_vmOS_01`和 `vol_vmOS_02`） | 查询/路由器服务器 | 2 | 厚置备置零（.vmdk） 
+
+
+| 2 | 由所有操作系统共享的操作系统映像卷（例如， `vol_vmOS_01`和 `vol_vmOS_02`） | 配置服务器 | 3 | 厚置备置零（.vmdk） 
+
+
+| 3 | 由所有操作系统共享的操作系统映像卷（例如， `vol_vmOS_01`和 `vol_vmOS_02`） | 主分片服务器 | 2 | 厚置备置零（.vmdk） 
+
+
+| 4 | 由所有操作系统共享的操作系统映像卷（例如， `vol_vmOS_01`和 `vol_vmOS_02`） | 二级分片服务器 | 4 | 厚置备置零（.vmdk） 
+
+
+| 5 | 主数据库卷（例如， `vol_mdbdata_p_01`和 `vol_mdbdata_p_02`） | 主分片数据库服务器 | 2 | 厚置备置零（.vmdk） 
+
+
+| 6 | 辅助数据库卷（例如， `vol_mdbdata_s_01` 用于第一个分片辅助服务器， `vol_mdbdata_s_02` 用于第二个分片辅助服务器） | 辅助分片数据库服务器 | 4 | 厚置备置零（.vmdk） 
+|===
+验证使用了厚置备置零虚拟磁盘，这些磁盘在创建时（而不是在首次写入时）分配并置零整个磁盘。这样可以避免 MongoDB 数据文件增长时的首次写入延迟，并保持写入延迟一致。该格式不是 MongoDB 的要求。在 ONTAP 上，存储效率可保持较低的置零块空间成本，您可以为您的环境评估精简配置。
+
+下图显示了存储布局。NFS 数据存储流量在两个以太网交换机上运行，以实现冗余。对于新部署，请使用 25GbE 或更快的网络。
+
+.NetApp AFF-A30 上的存储布局
+image:mongodb-ontap-004.png["AFF-A30 上 MongoDB 虚拟机和数据库的卷和数据存储布局图。"]

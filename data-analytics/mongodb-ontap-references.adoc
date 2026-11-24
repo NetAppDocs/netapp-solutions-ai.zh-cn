@@ -1,0 +1,61 @@
+---
+sidebar: sidebar 
+permalink: data-analytics/mongodb-ontap-references.html 
+keywords: mongodb, references, acknowledgements, additional information 
+summary: 此页面对本报告的撰稿人表示感谢，并列出了参考文献和其他信息。 
+---
+= 致谢和参考资料
+:hardbreaks:
+:allow-uri-read: 
+:nofooter: 
+:icons: font
+:linkattrs: 
+:imagesdir: ../media/
+
+
+[role="lead"]
+本页面向本报告的贡献者致谢，并列出了从何处查找其他信息。
+
+
+
+[[acknowledgements]]
+== 致谢
+
+作者感谢以下人士为本报告做出的贡献：
+
+* Sheena Badani，MongoDB 技术和 VAR 合作伙伴总监
+* Nilesh Bagad，大数据分析高级产品经理，NetApp
+* Scott Lane，工作负载工程高级经理，NetApp
+* Chris Lemmons，DSG 业务处理工作负载技术营销总监，NetApp
+* Sathish Thyagarajan，人工智能/数据管道团队技术营销工程师，NetApp
+* Kevin Hoke，解决方案工程总监，NetApp
+* Saji Joseph，软件工程总监，NetApp
+* Ross Ackerman，客户体验高级总监，NetApp
+* Mark Kwasnick，Active IQ Analytics 软件架构师，NetApp
+* Dinaharan Ayyalusamy，高级 DevOps 工程师，开发者平台工程，NetApp
+* Jeffrey Gonzales，首席解决方案工程师，NetApp
+* AJ Mahajan，解决方案工程高级总监，NetApp
+* Rodrigo Nascimento，Vortex TI 技术总监
+
+
+
+
+[[references]]
+== 参考文献
+
+要了解有关本文中所述信息的更多信息，请查看以下文档和网站：
+
+* link:https://www.mongodb.com/docs/manual/core/introduction/["MongoDB 简介"^]
+* link:https://www.mongodb.com/docs/manual/["MongoDB 手册"^]
+* link:https://www.mongodb.com/docs/manual/core/wiredtiger/["WiredTiger 存储引擎"^]
+* link:https://docs.mongodb.org/manual/core/sharded-cluster-architectures-production/["生产集群架构"^]
+* link:https://docs.mongodb.org/manual/reference/program/mongoperf/["mongoperf"^]
+* link:https://www.mongodb.com/partners/netapp["MongoDB NetApp 合作伙伴页面"^]
+* link:https://github.com/brianfrankcooper/YCSB/wiki["YCSB"^]
+* link:http://www.netapp.com/us/products/storage-systems/all-flash-fas/["NetApp AFF"^]
+* link:https://docs.netapp.com/us-en/snapcenter/protect-nsp/netapp_supported_plugins_overview.html["NetApp SnapCenter 适用于 NetApp 支持的应用程序的插件"^]
+* link:https://docs.netapp.com/us-en/ontap/peering/index.html["ONTAP 集群和 SVM 对等"^]
+* link:http://mysupport.netapp.com/["NetApp 支持"^]
+
+
+请参阅link:http://mysupport.netapp.com/matrix["NetApp 互操作性矩阵工具 (IMT)"^]以验证您的特定环境是否支持本文档中描述的确切产品和功能版本。NetApp IMT 定义了可用于构建 NetApp 支持的配置的产品组件和版本。具体结果取决于每个客户根据已发布的规范进行的安装。
